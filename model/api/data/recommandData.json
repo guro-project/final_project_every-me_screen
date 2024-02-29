@@ -1,0 +1,61 @@
+[
+    {
+        "I2790": {
+            "total_count": "2",
+            "row": [
+                {
+                    "NUTR_CONT8": "0.36",
+                    "NUTR_CONT9": "0",
+                    "NUTR_CONT4": "0.97",
+                    "NUTR_CONT5": "0",
+                    "NUTR_CONT6": "45",
+                    "NUM": "1",
+                    "NUTR_CONT7": "56.11",
+                    "NUTR_CONT1": "107",
+                    "NUTR_CONT2": "0",
+                    "SUB_REF_NAME": "농진청('15)",
+                    "NUTR_CONT3": "22.97",
+                    "RESEARCH_YEAR": "2019",
+                    "MAKER_NAME": "",
+                    "GROUP_NAME": "육류",
+                    "SERVING_SIZE": "100",
+                    "SERVING_UNIT": "104",
+                    "SAMPLING_REGION_NAME": "전국(대표)",
+                    "SAMPLING_MONTH_CD": "AVG",
+                    "SAMPLING_MONTH_NAME": "평균",
+                    "DESC_KOR": "닭가슴살",
+                    "SAMPLING_REGION_CD": "ZZ",
+                    "FOOD_CD": "R001515"
+                },
+                {
+                    "NUTR_CONT8": "1.17",
+                    "NUTR_CONT9": "0.02",
+                    "NUTR_CONT4": "3.15",
+                    "NUTR_CONT5": "0",
+                    "NUTR_CONT6": "46",
+                    "NUM": "2",
+                    "NUTR_CONT7": "67.85",
+                    "NUTR_CONT1": "123",
+                    "NUTR_CONT2": "0",
+                    "SUB_REF_NAME": "농진청('14)",
+                    "NUTR_CONT3": "22.21",
+                    "RESEARCH_YEAR": "2019",
+                    "MAKER_NAME": "",
+                    "GROUP_NAME": "육류",
+                    "SERVING_SIZE": "100",
+                    "SERVING_UNIT": "104",
+                    "SAMPLING_REGION_NAME": "전국(대표)",
+                    "SAMPLING_MONTH_CD": "AVG",
+                    "SAMPLING_MONTH_NAME": "평균",
+                    "DESC_KOR": "돼지고기 안심",
+                    "SAMPLING_REGION_CD": "ZZ",
+                    "FOOD_CD": "R001578"
+                }
+            ],
+            "RESULT": {
+                "MSG": "정상처리되었습니다.",
+                "CODE": "INFO-000"
+            }
+        }
+    }
+]

@@ -13,7 +13,7 @@ const EmailSignUp = () => {
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
 
-    const [emailCheckResult, setEmailCheckResult] = useState('');
+    const [emailCheckResult, setEmailCheckResult] = useState('');   
     const [passCheckResult, setPassCheckResult] = useState('');
 
     const emailChangeHandler = (email) => {
