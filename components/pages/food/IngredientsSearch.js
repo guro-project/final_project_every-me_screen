@@ -5,7 +5,7 @@ import RecommendFood from "./RecommendButton";
 import FoodItemComponent from "../../../model/api/FoodItemList";
 
 // 검색페이지
-const IngredientsSearch = () => {
+const IngredientsSearch = ({ navigation }) => {
     const [name, setName] = useState('');
     const [groupNames, setGroupNames] = useState([]); //여러 데이터를 담기위해 배열로 만듬
     const [clickedNames, setClickedNames] = useState([]);
@@ -79,6 +79,11 @@ const IngredientsSearch = () => {
         setRecommendedNames(prevClickedNames => [...prevClickedNames, recommendedNames]);
     };
 
+    // 이동
+    const page = () => {
+        navigation.navigate("DetailIngredients");
+    } 
+
     return (
         <>
             <View>
@@ -109,6 +114,9 @@ const IngredientsSearch = () => {
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : null}
+                <TouchableOpacity onPress={page}>
+                    <Text>등록</Text>
+                </TouchableOpacity>
             </View>
         </>
     )
