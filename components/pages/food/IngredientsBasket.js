@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 //재료박스 페이지
 const IngredientsBasket = ({ clickedNames, setClickedNames, recommendedNames, setRecommendedNames }) => {
@@ -24,13 +24,15 @@ const IngredientsBasket = ({ clickedNames, setClickedNames, recommendedNames, se
                 renderItem={({ item }) => (
                     <View>
                         <Text>{item}</Text>
-                        <Button onPress={() => {
+                        <TouchableOpacity onPress={() => {
                             if (clickedNames.includes(item)) {
                                 removeItem(item);
                             } else if (recommendedNames.includes(item)) {
                                 removeButton(item);
                             }
-                        }} title="삭제" />
+                        }}>
+                            <Text>삭제</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
                 keyExtractor={(item, index) => index.toString()}

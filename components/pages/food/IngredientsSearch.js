@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Alert, Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IngredientsBasket from "./IngredientsBasket";
-import RecommendButton from "./RecommendButton";
+import RecommendFood from "./RecommendButton";
 
 // 검색페이지
 const IngredientsSearch = () => {
@@ -73,6 +73,7 @@ const IngredientsSearch = () => {
     // 버튼 클릭시 재료박스에 담는 곳
     const handleRecommendations = (recommendedNames) => {
         console.log("데이터 : " + recommendedNames)
+        console.log("dd")
         setRecommendedNames(recommendedNames);
     };
 
@@ -85,14 +86,14 @@ const IngredientsSearch = () => {
             {/* 재료박스에 담는 곳 */}
             </View>
             <View>
-                <RecommendButton onButtonClicked={handleRecommendations} />
+                <RecommendFood onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
             </View>
             <View>
                 <Text>식품</Text>
                 <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력"
                     keyboardType="default" value={name} />
-                <Button onPress={FindGroupName} title="검색" />
+                <TouchableOpacity onPress={FindGroupName}><Text>검색</Text></TouchableOpacity>
                 <Text>{name}</Text>
                 {/* groupNames의 길이가 0보다 클때 실행
                     keyExtractor : 각각의 키를 만들어줘서 react-natvie가 FlatList를 관리하기 쉽게 해줌
