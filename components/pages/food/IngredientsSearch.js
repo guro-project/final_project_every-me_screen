@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
+import FoodItemComponent from "../../../model/api/FoodItemList";
 
 // 검색페이지
 const IngredientsSearch = () => {
@@ -10,6 +11,7 @@ const IngredientsSearch = () => {
     const [clickedNames, setClickedNames] = useState([]);
     const [onButtonClicked, setOnButtonClicked] = useState();
     const [recommendedNames, setRecommendedNames] = useState([]);
+    const [food,setFood] = useState([]);
 
     const FindGroupName = () => {
         const apiUrl = `http://openapi.foodsafetykorea.go.kr/api/0e28c65abe314f1c9981/I2790/json/1/20/DESC_KOR=${name},`
@@ -73,20 +75,18 @@ const IngredientsSearch = () => {
     // 버튼 클릭시 재료박스에 담는 곳
     const handleRecommendations = (recommendedNames) => {
         console.log("데이터 : " + recommendedNames)
-        console.log("dd")
-        setRecommendedNames(recommendedNames);
+        console.log("ddd")
+        setRecommendedNames(prevClickedNames => [...prevClickedNames, recommendedNames]);
     };
-
-    // 버튼은 보통 한번만 처리되기 때문에 조건을 걸 이유가 없음
 
     return (
         <>
             <View>
                 <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames} />
-            {/* 재료박스에 담는 곳 */}
+                {/* 재료박스에 담는 곳 */}
             </View>
             <View>
-                <RecommendFood onButtonClicked={handleRecommendations} />
+                <RecommendFood food={food} onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
             </View>
             <View>

@@ -19,24 +19,42 @@ import FoodItemComponent from '../../../model/api/FoodItemList';
 //     );
 // };
 
-const RecommendFood = () => {
+const RecommendFood = ({onButtonClicked}) => {
+    // const [foodList, setFoodList] = useState([]);
+    
+    // console.log("qwe")
+    // useEffect(
+    //     () => {
+    //         setFoodList(getRecommendMenuList());
+    //         console.log("데이터 뭐 받음 ? : " + getRecommendMenuList())
+    //     },[]
+    // )
+
+    // return(
+    //     <>
+    //         <View>
+    //             {foodList.map( food => <FoodItemComponent key={food.NUM} food={food} />)}
+    //         </View>
+    //     </>
+    // )
     const [foodList, setFoodList] = useState([]);
     
-    console.log("qwe")
-    useEffect(
-        () => {
-            setFoodList(getRecommendMenuList());
-            console.log("데이터 뭐 받음 ? : " + getRecommendMenuList())
-        },[]
-    )
+    useEffect(() => {
+        const data = getRecommendMenuList();
+        setFoodList(data);
+    }, []);
 
-    return(
-        <>
-            <View>
-                {foodList.map( food => <FoodItemComponent key={food.NUM} food={food} />)}
-            </View>
-        </>
-    )
+    return (
+        <View>
+            {foodList.map(food => (
+                <FoodItemComponent 
+                    key={food.NUM} 
+                    food={food} 
+                    onButtonClicked={onButtonClicked} 
+                />
+            ))}
+        </View>
+    );
 }
 
 export default RecommendFood;
