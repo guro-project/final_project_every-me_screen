@@ -46,7 +46,6 @@ const FoodIndexPage = () => {
                 options={{
                     title:"재료 담은 화면"
                 }}
-                listeners={pageHandler}
             />
         </Stack.Navigator>
     )

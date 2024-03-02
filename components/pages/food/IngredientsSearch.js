@@ -72,11 +72,12 @@ const IngredientsSearch = ({ navigation }) => {
     }
     };
 
-    // 버튼 클릭시 재료박스에 담는 곳
-    const handleRecommendations = (recommendedNames) => {
-        console.log("데이터 : " + recommendedNames)
-        console.log("ddd")
-        setRecommendedNames(prevClickedNames => [...prevClickedNames, recommendedNames]);
+    // TouchableOpacity 클릭시 재료박스에 담는 곳
+    const handleRecommendations = (recommendedName) => {
+        console.log("데이터 전송 성공")
+        if (!clickedNames.includes(recommendedName)) {
+            setClickedNames(prevClickedNames => [...prevClickedNames, recommendedName]);
+        }
     };
 
     // 이동
@@ -87,7 +88,7 @@ const IngredientsSearch = ({ navigation }) => {
     return (
         <>
             <View>
-                <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames} />
+                <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames}/>
                 {/* 재료박스에 담는 곳 */}
             </View>
             <View>
