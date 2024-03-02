@@ -1,21 +1,56 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Button, TouchableOpacity } from "react-native";
 import { useRoute } from "@react-navigation/native";
-
 
 const DetailIngredients = () => {
     const route = useRoute();
     const { selectedIngredients } = route.params;
 
-    // DetailIngredients 페이지에서 선택한 재료들을 사용하여 로직 수행
+    // 선택한 재료들의 수량을 관리하는 상태
+    const [ingredientQuantities, setIngredientQuantities] = useState(
+        selectedIngredients.map(ingredient => ({ name: ingredient, quantity: 1 }))
+    );
+
+    // 수량을 조절하는 함수
+    const plus = (index, factor) => {
+        setIngredientQuantities(prevQuantities => {
+            const newQuantities = [...prevQuantities];
+            newQuantities[index].quantity += factor;
+            return newQuantities;
+        });
+    };
+    
+    const minus = (index, factor) => {
+        setIngredientQuantities(prevQuantities => {
+            const newQuantities = [...prevQuantities];
+            newQuantities[index].quantity -= factor;
+            return newQuantities;
+        });
+    };
+
+    // 총 영양성분을 계산하는 함수
+    const calculateTotalNutrients = () => {
+        // 선택한 재료들의 총 영양성분 계산 로직 추가
+    };
 
     return (
         <View>
             <Text>선택한 재료들:</Text>
-            {selectedIngredients.map((ingredient, index) => (
-                <Text key={index}>{ingredient}</Text>
+            {ingredientQuantities.map((ingredient, index) => (
+                <View key={index}>
+                    <Text>{ingredient.name} (수량: {ingredient.quantity})</Text>
+                    <TouchableOpacity onPress={() => plus(index, 0.5)}>
+                        <Text>+0.5</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => minus(index, 0.5)}>
+                        <Text>-0.5</Text>
+                    </TouchableOpacity>
+                    {/* 수량 조절 버튼 */}
+                </View>
             ))}
-            {/* 나머지 UI 및 기능 */}
+            <Text>총 영양성분:</Text>
+            {calculateTotalNutrients()}
+            {/* 총 영양성분 표시 */}
         </View>
     );
 }
