@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import IngredientsSearch from "./IngredientsSearch"
 import FoodFirst from "./FoodFirst";
 import DetailIngredients from "./DetailIngredients";
+import IngredientsBasket from "./IngredientsBasket";
 
 const Stack = createNativeStackNavigator();
 

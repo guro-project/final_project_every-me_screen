@@ -3,15 +3,19 @@ import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } 
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
 import FoodItemComponent from "../../../model/api/FoodItemList";
+import { useNavigation } from "@react-navigation/native";
+
 
 // 검색페이지
-const IngredientsSearch = ({ navigation }) => {
+const IngredientsSearch = () => {
     const [name, setName] = useState('');
     const [groupNames, setGroupNames] = useState([]); //여러 데이터를 담기위해 배열로 만듬
     const [clickedNames, setClickedNames] = useState([]);
     const [onButtonClicked, setOnButtonClicked] = useState();
     const [recommendedNames, setRecommendedNames] = useState([]);
     const [food,setFood] = useState([]);
+    const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const navigation = useNavigation();
 
     const FindGroupName = () => {
         const apiUrl = `http://openapi.foodsafetykorea.go.kr/api/0e28c65abe314f1c9981/I2790/json/1/20/DESC_KOR=${name},`
@@ -80,10 +84,11 @@ const IngredientsSearch = ({ navigation }) => {
         }
     };
 
-    // 이동
-    const page = () => {
-        navigation.navigate("DetailIngredients");
-    } 
+    const handleRegistration = () => {
+        // 등록 버튼을 눌렀을 때 실행되는 로직
+        // 선택한 재료들을 가지고 DetailIngredients 페이지로 이동
+        navigation.navigate("DetailIngredients", { selectedIngredients: clickedNames });
+    };
 
     return (
         <>
@@ -115,7 +120,7 @@ const IngredientsSearch = ({ navigation }) => {
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : null}
-                <TouchableOpacity onPress={page}>
+                <TouchableOpacity onPress={handleRegistration}>
                     <Text>등록</Text>
                 </TouchableOpacity>
             </View>

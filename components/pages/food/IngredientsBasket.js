@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 //재료박스 페이지
 const IngredientsBasket = ({ clickedNames, setClickedNames, recommendedNames, setRecommendedNames }) => {
+    
     // 검색으로 담은 데이터 삭제 이름으로 구별해서 삭제함
     const removeItem = (nameToRemove) => {
         setClickedNames(prevClickedNames => prevClickedNames.filter(name => name !== nameToRemove));
