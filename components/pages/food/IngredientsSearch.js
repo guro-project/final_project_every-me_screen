@@ -27,7 +27,7 @@ const IngredientsSearch = () => {
                 console.log(data)
                 if (data && data.I2790 && data.I2790.row && data.I2790.row.length > 0) { // 검색한 데이터가 존재할시
                     const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length); // 나온 리스트들의 이름을 길이순으로 비교해서 짧은 순부터 나열
-                    const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1}`); // 리스트 뽑는 곳 
+                    const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${"탄수화물 : " + item.NUTR_CONT2} ${"단백질 : " + item.NUTR_CONT3}${"지방 : " + item.NUTR_CONT4}${"나트륨 : " + item.NUTR_CONT6}`); // 리스트 뽑는 곳                     
                     console.log("======================================================================")
                     console.log("순서바뀐 목록");
                     console.log(names)
@@ -49,7 +49,7 @@ const IngredientsSearch = () => {
                                 // console.log(names)
                                 // setGroupNames(names);
                                 const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length);
-                                const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1}`);
+                                const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${"탄수화물 : " + item.NUTR_CONT2} ${"단백질 : " + item.NUTR_CONT3}${"지방 : " + item.NUTR_CONT4}${"나트륨 : " + item.NUTR_CONT6}`);
                                 console.log("======================================================================")
                                 console.log("순서바뀐 목록");
                                 console.log(names)
@@ -114,7 +114,7 @@ const IngredientsSearch = () => {
                         data={groupNames}
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => ListClickHandler(item)}>
-                                <Text>{item}</Text>
+                                <Text>이름 : {item.DESC_KOR} 칼로리 : {item.NUTR_CONT1}</Text>
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item, index) => index.toString()}

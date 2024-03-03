@@ -1,56 +1,71 @@
 import React, { useState } from "react";
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { useRoute } from "@react-navigation/native";
 
-const DetailIngredients = () => {
+const DetailIngredients = ({navigation}) => {
     const route = useRoute();
     const { selectedIngredients } = route.params;
+    const names = selectedIngredients.map(item => {
+        const parts = item.split(","); // 여기서 공백을 제거하여 분리
+        const namePart = parts[1].trim(); // "칼로리" 부분 추출 후 양쪽 공백 제거
+        return namePart.split(": ")[1].trim(); // "칼로리"의 값만 반환 후 양쪽 공백 제거
+    });
+    const initialNumbers = names.map(ingredient => parseFloat(ingredient));
+    const [numbers, setNumbers] = useState(initialNumbers);
+    const [finalKacl,setFinalKal] = useState('');
+    const [dietName,setDietName] = useState('');
 
-    // 선택한 재료들의 수량을 관리하는 상태
-    const [ingredientQuantities, setIngredientQuantities] = useState(
-        selectedIngredients.map(ingredient => ({ name: ingredient, quantity: 1 }))
-    );
+    console.log("가져온건 무슨 값?")
+    console.log(selectedIngredients);
+    console.log("분리한 값?")
+    console.log(names)
+    console.log("상수형")
+    console.log(numbers)
 
-    // 수량을 조절하는 함수
-    const plus = (index, factor) => {
-        setIngredientQuantities(prevQuantities => {
-            const newQuantities = [...prevQuantities];
-            newQuantities[index].quantity += factor;
-            return newQuantities;
-        });
-    };
-    
-    const minus = (index, factor) => {
-        setIngredientQuantities(prevQuantities => {
-            const newQuantities = [...prevQuantities];
-            newQuantities[index].quantity -= factor;
-            return newQuantities;
-        });
-    };
-
-    // 총 영양성분을 계산하는 함수
-    const calculateTotalNutrients = () => {
-        // 선택한 재료들의 총 영양성분 계산 로직 추가
+    // 숫자를 곱하는 함수
+    const multiply = (index, factor) => {
+        const newNumbers = [...numbers];
+        newNumbers[index] *= factor;
+        setNumbers(newNumbers);
     };
 
+    // 숫자를 나누는 함수
+    const divide = (index, divisor) => {
+        const newNumbers = [...numbers];
+        newNumbers[index] /= divisor;
+        setNumbers(newNumbers);
+    };
+
+    // 총합 칼로리 계산
+    const totalCalories = numbers.reduce((acc, curr) => acc + curr, 0);
+
+    const page = () => {
+        navigation.navigate("FoodFirst", { dietName: dietName, finalKacl : totalCalories.toFixed(2)});
+        console.log("돌아갔음?")
+        console.log(totalCalories.toFixed(2))
+        console.log(dietName)
+    }
+
+    // 각 재료의 영양성분 값을 가져와서 출력
     return (
         <View>
-            <Text>선택한 재료들:</Text>
-            {ingredientQuantities.map((ingredient, index) => (
-                <View key={index}>
-                    <Text>{ingredient.name} (수량: {ingredient.quantity})</Text>
-                    <TouchableOpacity onPress={() => plus(index, 0.5)}>
-                        <Text>+0.5</Text>
+            <Text>선택한 재료들의 칼로리:</Text>
+            {numbers.map((ingredient, index) => (
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>칼로리 : {ingredient.toFixed(2)}</Text>
+                    <TouchableOpacity onPress={() => multiply(index, 1.5)}>
+                        <Text style={{ marginLeft: 10 }}>+</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => minus(index, 0.5)}>
-                        <Text>-0.5</Text>
+                    <TouchableOpacity onPress={() => divide(index, 1.5)}>
+                        <Text style={{ marginLeft: 10 }}>-</Text>
                     </TouchableOpacity>
-                    {/* 수량 조절 버튼 */}
                 </View>
             ))}
-            <Text>총 영양성분:</Text>
-            {calculateTotalNutrients()}
-            {/* 총 영양성분 표시 */}
+            <TextInput placeholder="식단 이름을 정해주세요" value={dietName} onChangeText={(text) => setDietName(text)}/>
+            <Text>총합 칼로리 : {totalCalories.toFixed(2)}</Text>
+            <TouchableOpacity onPress={page}>
+                <Text>최종 등록</Text>
+            </TouchableOpacity>
         </View>
     );
 }
