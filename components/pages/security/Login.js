@@ -1,8 +1,9 @@
-import { Button, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Button, Image, ImageBackground, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import SignUp from "./SignUp";
 import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 
 const Login = () => {
@@ -71,41 +72,122 @@ const Login = () => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={screenTouchHandler}>
-            <View style={styles.container}>
-                <Text>Login</Text>
-                <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
-                <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
-                <Button 
-                    title='Login'
-                    onPress={onLoginHandler}
-                />
-                <Button
-                    title='SignUp'
-                    onPress={() => navigation.navigate('SignUp')}
-                />
-            </View>
-        </TouchableWithoutFeedback>
-        
+        <>
+            <TouchableWithoutFeedback onPress={screenTouchHandler}>
+                <View style={styles.mainContainer}>
+                    {/* <ImageBackground
+                        style={styles.backgroundImage}
+                        source={require('../../../images/loginImg.jpg')}
+                        resizeMode='cover'
+                    > */}
+                        <View style={styles.container}>
+                            <Text style={styles.textTitle1}>EVERY</Text>
+                            <Text style={styles.textTitle2}>ME</Text>
+                            <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
+                            <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
+                            <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('TabNavigation')}>
+                                <Text>로그인</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.secContainer}>
+                            <TouchableOpacity style={(styles.signUpBtn)} onPress={() => navigation.navigate('EmailSignUp')}>
+                                
+                                <Text>이메일로 가입하기</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={[styles.signUpBtn, {backgroundColor: '#FEE500'}]} onPress={() => navigation.navigate('KaKaoLogin')}>
+                                {/* <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                <Ionicons name="chatbubble-outline" style={styles.kakaoIcon}/>
+                                <Text>카카오톡으로 가입하기</Text>
+                                </View> */}
+                                <Image
+                                    source={require('../../../images/Kakao.png')}
+                                    style={{width: 270 , height: 30}}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    {/* </ImageBackground> */}
+                        
+                </View>
+            </TouchableWithoutFeedback>
+        </>
     )
 }
 
 export default Login;
 
 const styles = StyleSheet.create({
-    container: {
+    mainContainer: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+    },
+    container: {
+        flex: 3,
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: '5%',
+    },
+    secContainer: {
+        flex: 1,
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bottom: '10%',
+    },
     textBox: {
         width: 300,
         height: 40,
+        backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         padding: 10,
         margin: 10,
+    },
+    textTitle1: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginBottom: -20
+    },
+    textTitle2: {
+        fontSize: 88,
+        fontWeight: 'bold',
+        marginRight: 3
+    },
+    loginBtn: {
+        width: 80,
+        height: 40,
+        marginVertical: 10,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    signUpBtn: {
+        width: 300,
+        height: 40,
+        marginVertical: 10,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    kakaoIcon: {
+        fontSize: 22,
+        position: 'absolute',
+        left: -50,
+        color: '#000000',
     }
 });

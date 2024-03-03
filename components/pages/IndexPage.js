@@ -7,6 +7,7 @@ import KaKaoLogin from "./security/KakaoLogin";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Image, StyleSheet, Text, View } from "react-native";
 import * as Animatable from 'react-native-animatable';
+import TabNavigation from "./TabNavigation";
 
 
 const Stack = createNativeStackNavigator();
@@ -32,7 +33,7 @@ const IndexPage = () => {
                 <Animatable.Image
                     animation="fadeIn"
                     duration={3000} // 애니메이션 지속 시간
-                    source={require('everyme_screen/images/logo.png')}
+                    source={require('../../images/logo.png')}
                     style={{ borderRadius: 100 }}
                 />
             </View>
@@ -47,6 +48,12 @@ const IndexPage = () => {
             <Stack.Screen
                 name='Login'
                 component={Login}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name='TabNavigation'
+                component={TabNavigation}
                 options={{ headerShown: false }}
             />
 
