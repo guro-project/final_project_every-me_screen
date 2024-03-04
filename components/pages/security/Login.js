@@ -54,7 +54,10 @@ const Login = () => {
 
         axios({
             method: 'POST',
-            url: 'http://192.168.0.12:8080/login',
+            // url: 'http://192.168.0.176:8080/login', // 집
+            // url: 'http://172.30.4.51:8080/login', // 스벅
+            url: 'http://172.30.1.49:8080/login', // 투썸
+            // url: 'http://192.168.0.12:8080/login', 학원
             data: loginData,
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +65,7 @@ const Login = () => {
         }).then(response => {
             console.log(response.data);
             if (response.data.userInfo) {
-                navigation.navigate('MainPage');
+                navigation.navigate('TabNavigation');
             } else {
                 alert('아이디와 비밀번호를 확인해주세요');
             }
