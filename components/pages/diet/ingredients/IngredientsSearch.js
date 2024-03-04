@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
-import FoodItemComponent from "../../../model/api/FoodItemList";
+import FoodItemComponent from "../../../../model/api/FoodItemList";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 
@@ -15,8 +15,8 @@ const IngredientsSearch = () => {
     const [recommendedNames, setRecommendedNames] = useState([]);
     const [food,setFood] = useState([]);
     const [selectedIngredients, setSelectedIngredients] = useState([]);
-    const [ingreName,setIngreName] = useState('');
-    const [ingreKcal,setIngreKcal] = useState('');
+    const [customIngreName,setCustomIngreName] = useState('');
+    const [customIngreKcal,setCustomIngreKcal] = useState('');
     const navigation = useNavigation();
 
     const FindGroupName = () => {
@@ -29,7 +29,7 @@ const IngredientsSearch = () => {
                 console.log(data)
                 if (data && data.I2790 && data.I2790.row && data.I2790.row.length > 0) { // 검색한 데이터가 존재할시
                     const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length); // 나온 리스트들의 이름을 길이순으로 비교해서 짧은 순부터 나열
-                    const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${"탄수화물 : " + item.NUTR_CONT2} ${"단백질 : " + item.NUTR_CONT3}${"지방 : " + item.NUTR_CONT4}${"나트륨 : " + item.NUTR_CONT6}`); // 리스트 뽑는 곳                     
+                    const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`); // 리스트 뽑는 곳                     
                     console.log("======================================================================")
                     console.log("순서바뀐 목록");
                     console.log(names)
@@ -51,7 +51,7 @@ const IngredientsSearch = () => {
                                 // console.log(names)
                                 // setGroupNames(names);
                                 const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length);
-                                const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${"탄수화물 : " + item.NUTR_CONT2} ${"단백질 : " + item.NUTR_CONT3}${"지방 : " + item.NUTR_CONT4}${"나트륨 : " + item.NUTR_CONT6}`);
+                                const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`);
                                 console.log("======================================================================")
                                 console.log("순서바뀐 목록");
                                 console.log(names)
@@ -99,7 +99,22 @@ const IngredientsSearch = () => {
     console.log(category);
 
     // 직접입력 칸
+    const handlerCustomIngre = () => {
+        if (customIngreName.trim() !== '' && customIngreKcal.trim() !== '') {
+            const newIngredient = `이름 : ${customIngreName} 칼로리 : ${customIngreKcal}`;
     
+            // 클릭된 재료 목록에 새로운 재료가 포함되어 있는지 확인
+            if (!clickedNames.includes(newIngredient)) {
+                // 포함되어 있지 않다면 새로운 재료를 클릭된 재료 목록에 추가
+                setClickedNames(prevClickedNames => [...prevClickedNames, newIngredient]);
+            }
+    
+            // 입력값 초기화
+            setCustomIngreName('');
+            setCustomIngreKcal('');
+            console.log("직접입력 : " + newIngredient);
+        }
+    }
 
     return (
         <>
@@ -114,8 +129,9 @@ const IngredientsSearch = () => {
             </View>
             <View>
                 <Text>직접 입력</Text>
-                <TextInput placeholder="재료 이름" value={ingreName} onChangeText={(text) => setIngreName(text)}/>
-                <TextInput placeholder="재료 칼로리" value={ingreKcal} onChangeText={(text) => setIngreKcal(text)}/>
+                <TextInput placeholder="재료 이름" value={customIngreName} onChangeText={text => setCustomIngreName(text)}/>
+                <TextInput placeholder="재료 칼로리" value={customIngreKcal} onChangeText={text => setCustomIngreKcal(text)}/>
+                <TouchableOpacity onPress={handlerCustomIngre}><Text>커스텀재료 등록</Text></TouchableOpacity>
             </View>
             <View>
                 <Text>재료 검색</Text>
@@ -131,7 +147,7 @@ const IngredientsSearch = () => {
                         data={groupNames}
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => ListClickHandler(item)}>
-                                <Text>이름 : {item.DESC_KOR} 칼로리 : {item.NUTR_CONT1}</Text>
+                                <Text>{item}</Text>
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item, index) => index.toString()}

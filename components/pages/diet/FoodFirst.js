@@ -4,7 +4,7 @@ import { Button, Text, TouchableOpacity, View } from "react-native";
 
 const FoodFirst = ({ navigation  }) => {
     const page = () => {
-        navigation.navigate("IngredientsSearch");
+        navigation.navigate("SelectMethod");
         console.log("클릭시 반응함?")
     }
     const route = useRoute();
@@ -18,25 +18,26 @@ const FoodFirst = ({ navigation  }) => {
     // 해당하는 식사의 카테고리를 눌렀을 때 그에 해당하는 데이터를 담아 보낸다
 
     const morningPage = () => {
-        navigation.navigate("IngredientsSearch", "아침");
+        navigation.navigate("SelectMethod", "아침");
         console.log("클릭시 반응함?")
     }
     
     const lunchPage = () => {
-        navigation.navigate("IngredientsSearch", "점심");
+        navigation.navigate("SelectMethod", "점심");
         console.log("클릭시 반응함?")
     }
     
     const dinnerPage = () => {
-        navigation.navigate("IngredientsSearch", "저녁");
+        navigation.navigate("SelectMethod", "저녁");
         console.log("클릭시 반응함?")
     }
     
     const etcPage = () => {
-        navigation.navigate("IngredientsSearch", "기타");
+        navigation.navigate("SelectMethod", "기타");
         console.log("클릭시 반응함?")
     }
 
+    console.log("시작")
     console.log("카테고리 최종적으로 받았니?")
     console.log(category)
 

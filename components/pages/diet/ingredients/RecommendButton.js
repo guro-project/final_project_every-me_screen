@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Text, TouchableOpacity, View } from 'react-native';
-import { getRecommendMenuList } from '../../../model/api/RecommendApi';
-import FoodItemComponent from '../../../model/api/FoodItemList';
+import { getRecommendMenuList } from '../../../../model/api/RecommendApi';
+import FoodItemComponent from '../../../../model/api/FoodItemList';
 
 const RecommendFood = ({onButtonClicked}) => {
     

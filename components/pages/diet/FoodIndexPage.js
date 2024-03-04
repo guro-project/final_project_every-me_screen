@@ -1,8 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import IngredientsSearch from "./IngredientsSearch"
+import IngredientsSearch from "./ingredients/IngredientsSearch"
 import FoodFirst from "./FoodFirst";
-import DetailIngredients from "./DetailIngredients";
-import IngredientsBasket from "./IngredientsBasket";
+import DetailIngredients from "./ingredients/DetailIngredients";
+import IngredientsBasket from "./ingredients/IngredientsBasket";
+import SelectMethod from "./SelectMethod";
+import DetailFood from "./food/DetailFood";
+import FoodSearch from "./food/FoodSearch";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +33,13 @@ const FoodIndexPage = () => {
             }
         >
             <Stack.Screen
+                name="SelectMethod"
+                component={SelectMethod}
+                options={{
+                    title:"방식 선택 화면"
+                }}
+            />
+            <Stack.Screen
                 name="IngredientsSearch"
                 component={IngredientsSearch}
                 options={{
@@ -48,6 +58,21 @@ const FoodIndexPage = () => {
                     title:"재료 담은 화면"
                 }}
             />
+            <Stack.Screen
+                name="FoodSearch"
+                component={FoodSearch}
+                options={{
+                    title:"음식 검색 화면"
+                }}
+            />
+            <Stack.Screen
+                name="DetailFood"
+                component={DetailFood}
+                options={{
+                    title:"음식 담은 화면"
+                }}
+            />
+            
         </Stack.Navigator>
     )
 }
