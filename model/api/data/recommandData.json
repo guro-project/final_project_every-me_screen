@@ -70,29 +70,5 @@
         "DESC_KOR": "소고기 안심",
         "SAMPLING_REGION_CD": "ZZ",
         "FOOD_CD": "R001682"
-    },
-    {
-        "NUTR_CONT8": "0.76",
-        "NUTR_CONT9": "0.01",
-        "NUTR_CONT4": "2.05",
-        "NUTR_CONT5": "4.74",
-        "NUTR_CONT6": "306",
-        "NUM": "4",
-        "NUTR_CONT7": "0",
-        "NUTR_CONT1": "392",
-        "NUTR_CONT2": "77.04",
-        "SUB_REF_NAME": "농진청('13)",
-        "NUTR_CONT3": "11.95",
-        "RESEARCH_YEAR": "2019",
-        "MAKER_NAME": "",
-        "GROUP_NAME": "곡류 및 그 제품",
-        "SERVING_SIZE": "100",
-        "SERVING_UNIT": "104",
-        "SAMPLING_REGION_NAME": "전국(대표)",
-        "SAMPLING_MONTH_CD": "AVG",
-        "SAMPLING_MONTH_NAME": "평균",
-        "DESC_KOR": "밀, 빵가루",
-        "SAMPLING_REGION_CD": "ZZ",
-        "FOOD_CD": "R000107"
     }
 ]

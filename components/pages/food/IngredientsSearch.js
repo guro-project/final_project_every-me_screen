@@ -3,7 +3,7 @@ import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } 
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
 import FoodItemComponent from "../../../model/api/FoodItemList";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 
 // 검색페이지
@@ -15,6 +15,8 @@ const IngredientsSearch = () => {
     const [recommendedNames, setRecommendedNames] = useState([]);
     const [food,setFood] = useState([]);
     const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [ingreName,setIngreName] = useState('');
+    const [ingreKcal,setIngreKcal] = useState('');
     const navigation = useNavigation();
 
     const FindGroupName = () => {
@@ -87,8 +89,17 @@ const IngredientsSearch = () => {
     const handleRegistration = () => {
         // 등록 버튼을 눌렀을 때 실행되는 로직
         // 선택한 재료들을 가지고 DetailIngredients 페이지로 이동
-        navigation.navigate("DetailIngredients", { selectedIngredients: clickedNames });
+        navigation.navigate("DetailIngredients", { selectedIngredients: clickedNames, category : category });
     };
+
+    // 카테고리 데이터 받아왔나 확인
+    const route = useRoute()
+    const category = route.params
+    console.log("카테고리 받아왔나?")
+    console.log(category);
+
+    // 직접입력 칸
+    
 
     return (
         <>
@@ -97,11 +108,17 @@ const IngredientsSearch = () => {
                 {/* 재료박스에 담는 곳 */}
             </View>
             <View>
+                <Text>추천 재료</Text>
                 <RecommendFood food={food} onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
             </View>
             <View>
-                <Text>식품</Text>
+                <Text>직접 입력</Text>
+                <TextInput placeholder="재료 이름" value={ingreName} onChangeText={(text) => setIngreName(text)}/>
+                <TextInput placeholder="재료 칼로리" value={ingreKcal} onChangeText={(text) => setIngreKcal(text)}/>
+            </View>
+            <View>
+                <Text>재료 검색</Text>
                 <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력"
                     keyboardType="default" value={name} />
                 <TouchableOpacity onPress={FindGroupName}><Text>검색</Text></TouchableOpacity>

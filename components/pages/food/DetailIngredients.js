@@ -4,7 +4,7 @@ import { useRoute } from "@react-navigation/native";
 
 const DetailIngredients = ({navigation}) => {
     const route = useRoute();
-    const { selectedIngredients } = route.params;
+    const { selectedIngredients, category } = route.params;
     const names = selectedIngredients.map(item => {
         const parts = item.split(","); // 여기서 공백을 제거하여 분리
         const namePart = parts[1].trim(); // "칼로리" 부분 추출 후 양쪽 공백 제거
@@ -40,11 +40,15 @@ const DetailIngredients = ({navigation}) => {
     const totalCalories = numbers.reduce((acc, curr) => acc + curr, 0);
 
     const page = () => {
-        navigation.navigate("FoodFirst", { dietName: dietName, finalKacl : totalCalories.toFixed(2)});
+        navigation.navigate("FoodFirst", { dietName: dietName, finalKacl : totalCalories.toFixed(2), category : category});
         console.log("돌아갔음?")
         console.log(totalCalories.toFixed(2))
         console.log(dietName)
+        console.log(category)
     }
+    // 검색에서 받아왔나 확인
+    console.log("검색에서 데이터 넘어왔나?")
+    console.log(category);
 
     // 각 재료의 영양성분 값을 가져와서 출력
     return (
@@ -54,10 +58,10 @@ const DetailIngredients = ({navigation}) => {
                 <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text>칼로리 : {ingredient.toFixed(2)}</Text>
                     <TouchableOpacity onPress={() => multiply(index, 1.5)}>
-                        <Text style={{ marginLeft: 10 }}>+</Text>
+                        <Text style={{ marginLeft: 10 }}>+ 0.5</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => divide(index, 1.5)}>
-                        <Text style={{ marginLeft: 10 }}>-</Text>
+                        <Text style={{ marginLeft: 10 }}>- 0.5</Text>
                     </TouchableOpacity>
                 </View>
             ))}
