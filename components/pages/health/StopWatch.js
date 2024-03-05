@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stopwatch = () => {
     const [isRunning, setIsRunning] = useState(false);
@@ -7,28 +8,39 @@ const Stopwatch = () => {
     const [laps, setLaps] = useState([]);
     const intervalRef = useRef(null);
 
-    const startStopwatch = () => {
+    const startStopwatch = async () => {
         if (isRunning) {
             clearInterval(intervalRef.current);
         } else {
             const startTime = Date.now() - currentTime;
+
             intervalRef.current = setInterval(() => {
-                const now = Date.now();
-                setCurrentTime(now - startTime);
+                setCurrentTime(Date.now() - startTime);
             }, 100);
         }
         setIsRunning(!isRunning);
+
+        // AsyncStorage에 상태 저장
+        await AsyncStorage.setItem('stopwatchTime', currentTime.toString());
+        await AsyncStorage.setItem('isRunning', isRunning.toString());
+        await AsyncStorage.setItem('stopwatchLaps', JSON.stringify(laps));
     };
 
-    const resetStopwatch = () => {
+    const resetStopwatch = async () => {
         clearInterval(intervalRef.current);
         setCurrentTime(0);
         setIsRunning(false);
-        setLaps([]); // Reset laps
+        setLaps([]);
+
+        // AsyncStorage 데이터 제거
+        await AsyncStorage.removeItem('stopwatchTime');
+        await AsyncStorage.removeItem('isRunning');
+        await AsyncStorage.removeItem('stopwatchLaps');
     };
 
-    const addLap = () => {
-        setLaps([...laps, currentTime]); // Save current time to laps array
+    const addLap = async () => {
+        setLaps([...laps, currentTime]);
+        await AsyncStorage.setItem('stopwatchLaps', JSON.stringify(laps));
     };
 
     const formatTime = (time) => {
@@ -37,30 +49,55 @@ const Stopwatch = () => {
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
+    useEffect(() => {
+        const loadStopwatchData = async () => {
+            const savedTime = await AsyncStorage.getItem('stopwatchTime');
+            const savedIsRunning = await AsyncStorage.getItem('isRunning');
+            const savedLaps = await AsyncStorage.getItem('stopwatchLaps');
+
+            if (savedTime) {
+                setCurrentTime(parseInt(savedTime, 10));
+            }
+            if (savedIsRunning) {
+                setIsRunning(savedIsRunning === 'true'); // 문자열 boolean으로 변환
+            }
+            if (savedLaps) {
+                setLaps(JSON.parse(savedLaps));
+            }
+        };
+        loadStopwatchData();
+
+        // 페이지 이동/뒤로가기 시 currentTime 0으로 초기화
+        return () => {
+            setCurrentTime(0);
+        };
+    }, []);
+
     return (
         <View style={styles.container}>
-        <View style={styles.centerContent}>
-            <Text style={styles.time}>{formatTime(currentTime)}</Text>
-            <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.button} onPress={startStopwatch}>
-                    <Text style={styles.buttonText}>{isRunning ? 'Pause' : 'Start'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={addLap}>
-                    <Text style={styles.buttonText}>Lap</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={resetStopwatch}>
-                    <Text style={styles.buttonText}>Reset</Text>
-                </TouchableOpacity>
+            <View style={styles.centerContent}>
+                <Text style={styles.time}>{formatTime(currentTime)}</Text>
+                <View style={styles.buttonsContainer}>
+                    <TouchableOpacity style={styles.button} onPress={startStopwatch}>
+                        <Text style={styles.buttonText}>{isRunning ? 'Pause' : 'Start'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={addLap}>
+                        <Text style={styles.buttonText}>Lap</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={resetStopwatch}>
+                        <Text style={styles.buttonText}>Reset</Text>
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={styles.lapsContainer}>
+                {laps.map((time, index) => (
+                    <Text key={index} style={styles.lap}>{index + 1} Lap {formatTime(time)}</Text>
+                ))}
+                </ScrollView>
             </View>
-        </View>
-        <ScrollView style={styles.lapsContainer}>
-            {laps.map((time, index) => (
-                <Text key={index} style={styles.lap}>{index + 1} Lap {formatTime(time)}</Text>
-            ))}
-        </ScrollView>
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
@@ -74,14 +111,13 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     time: {
-        fontSize: 48,
+        fontSize: 80,
         fontWeight: 'bold',
         color: 'white',
     },
     lapsContainer: {
         width: '100%',
-        maxHeight: 150,
-        marginTop: 10,
+        maxHeight: 300,
         paddingHorizontal: 20,
     },
     lap: {
@@ -93,9 +129,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     button: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 25,
         paddingVertical: 10,
-        marginHorizontal: 10,
+        marginHorizontal: 15,
+        marginVertical: 20,
         backgroundColor: '#03C75A',
         borderRadius: 5,
     },
