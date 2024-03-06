@@ -1,21 +1,17 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from '@expo/vector-icons';
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 
-
-const MainPage = () => {
-
+const Community = () => {
     return (
         <>
             <View style={styles.container}>
-                <Text>Main Page</Text>
+                <Text>Community</Text>
             </View>
         </>
     )
 }
 
-export default MainPage;
+export default Community;
 
 const styles = StyleSheet.create({
     container: {

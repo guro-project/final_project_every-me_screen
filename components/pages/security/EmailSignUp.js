@@ -48,10 +48,14 @@ const EmailSignUp = () => {
             'userId': email,
             'userPass': password
         })
+        console.log(signupData);
 
         axios({
             method: 'POST',
-            url: 'http://192.168.0.12:8080/signup',
+            // url: 'http://192.168.0.176:8080/signup', // 집
+            // url: 'http://172.30.4.51:8080/signup', // 스벅
+            // url: 'http://172.30.1.49:8080/signup', // 투썸
+            url: 'http://192.168.0.12:8080/signup', // 학원
             data: signupData,
             headers: {
                 'Content-Type': 'application/json'
@@ -59,11 +63,12 @@ const EmailSignUp = () => {
         }).then(response => {
             console.log(response.data);
             if (response.status === 200) {
-                navigation.navigate('MainPage');
+                navigation.navigate('Login');
             } else {
                 alert('아이디와 비밀번호를 확인해주세요');
             }
         }).catch(error => {
+            console.log(error);
             alert('아이디가 이미 존재합니다')
         })
         

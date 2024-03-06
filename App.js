@@ -6,6 +6,8 @@ import FoodIndexPage from './components/pages/diet/FoodIndexPage';
 
 const Stack = createNativeStackNavigator();
 
+
+
 export default function App() {
 
 
