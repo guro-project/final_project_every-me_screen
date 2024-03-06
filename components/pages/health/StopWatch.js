@@ -1,4 +1,5 @@
 
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
@@ -7,6 +8,8 @@ const Stopwatch = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const [laps, setLaps] = useState([]);
     const intervalRef = useRef(null);
+
+    const navigation = useNavigation();
 
     const startStopwatch = () => {
         if (isRunning) {
@@ -41,6 +44,12 @@ const Stopwatch = () => {
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity onPress={() => navigation.navigate('StopWatch')}>
+                <Text style={{color: 'white'}}>StopWatch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('HealthHome')}>
+                <Text style={{color: 'white'}}>HealthHome</Text>
+            </TouchableOpacity>
             <View style={styles.centerContent}>
                 <Text style={styles.time}>{formatTime(currentTime)}</Text>
                 <View style={styles.buttonsContainer}>

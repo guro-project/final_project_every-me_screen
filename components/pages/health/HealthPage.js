@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 const HealthPage = () => {
     return (
         <Stack.Navigator
-            initialRouteName='HealthHome'
+            initialRouteName='Stopwatch'
         >
             <Stack.Screen
                 name="HealthHome"
@@ -26,12 +26,3 @@ const HealthPage = () => {
 }
 
 export default HealthPage;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-})
