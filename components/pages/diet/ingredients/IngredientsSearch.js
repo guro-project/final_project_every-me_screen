@@ -150,7 +150,7 @@ const IngredientsSearch = () => {
                     <FlatList
                         data={groupNames}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => ListClickHandler(item.DESC_KOR + item.NUTR_CONT1)}>
+                            <TouchableOpacity onPress={() => ListClickHandler("이름 " + item.DESC_KOR + " 칼로리 : " + item.NUTR_CONT1)}>
                                 <Text>이름 : {item.DESC_KOR} 칼로리 : {item.NUTR_CONT1}</Text>
                             </TouchableOpacity>
                         )}

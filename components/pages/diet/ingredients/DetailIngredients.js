@@ -38,10 +38,11 @@ const DetailIngredients = ({navigation}) => {
     // 총합 칼로리 계산
     const totalCalories = numbers.reduce((acc, curr) => acc + curr, 0);
 
-    const page = () => {
-        navigation.navigate("RegistFood", { finalKacl : totalCalories.toFixed(2)});
+    const page = () => {    
+        navigation.navigate("RegistFood", totalCalories.toFixed(2));
         console.log("돌아갔음?")
         console.log(totalCalories.toFixed(2))
+        console.log(finalKacl)
         // console.log(dietName)
         // console.log(category)
     }
