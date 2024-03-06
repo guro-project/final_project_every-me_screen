@@ -1,10 +1,10 @@
 import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
-import { Button, Text, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const FoodFirst = ({ navigation  }) => {
     const page = () => {
-        navigation.navigate("SelectMethod");
+        navigation.navigate("IngredientsSearch");
         console.log("클릭시 반응함?")
     }
     const route = useRoute();
@@ -43,18 +43,28 @@ const FoodFirst = ({ navigation  }) => {
 
     return(
         <View>
-            <Text>첫 화면</Text>
+            {/* <Text>첫 화면</Text>
             {/* <TouchableOpacity onPress={page}>
                 <Text>재료 등록 페이지 이동</Text>
             </TouchableOpacity> */} 
-            <TouchableOpacity onPress={morningPage}><Text>아침</Text></TouchableOpacity>
+            {/* <TouchableOpacity onPress={morningPage}><Text>아침</Text></TouchableOpacity>
             <TouchableOpacity onPress={lunchPage}><Text>점심</Text></TouchableOpacity>
             <TouchableOpacity onPress={dinnerPage}><Text>저녁</Text></TouchableOpacity>
             <TouchableOpacity onPress={etcPage}><Text>기타</Text></TouchableOpacity>
-            <Text>내 식단</Text>
-            {dietName !== null && finalKacl !== null && category !== null &&<Text>{category} 이름 : {dietName} 총 칼로리 : {finalKacl}</Text>}
+            <Text>내 식단</Text> */}
+            {/* {dietName !== null && finalKacl !== null && category !== null &&<Text>{category} 이름 : {dietName} 총 칼로리 : {finalKacl}</Text>} */}
+            <Text>주간 달력 출력</Text>
+            <Text>하루 총 영양성분 출력</Text>
+            <TouchableOpacity onPress={page} style={sytles.touch}><Text>add</Text></TouchableOpacity>
         </View>
     )
 }
 
 export default FoodFirst;
+
+const sytles = StyleSheet.create({
+    touch : {
+        borderWidth:1
+    }
+})
+    

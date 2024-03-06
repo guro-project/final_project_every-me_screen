@@ -6,6 +6,7 @@ import IngredientsBasket from "./ingredients/IngredientsBasket";
 import SelectMethod from "./SelectMethod";
 import DetailFood from "./food/DetailFood";
 import FoodSearch from "./food/FoodSearch";
+import RegistFood from "./food/RegistFood";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +69,13 @@ const FoodIndexPage = () => {
             <Stack.Screen
                 name="DetailFood"
                 component={DetailFood}
+                options={{
+                    title:"음식 담은 화면"
+                }}
+            />
+            <Stack.Screen
+                name="RegistFood"
+                component={RegistFood}
                 options={{
                     title:"음식 담은 화면"
                 }}
