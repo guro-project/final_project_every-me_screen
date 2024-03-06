@@ -15,8 +15,8 @@ export default function App() {
     <>
       <StatusBar barStyle='default' />
       <NavigationContainer>
-        {/* <IndexPage /> */}
-        <FoodIndexPage/>
+        <IndexPage />
+        {/* <FoodIndexPage/> */}
       </NavigationContainer>
     </>
   );

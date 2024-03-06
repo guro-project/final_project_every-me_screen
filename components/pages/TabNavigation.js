@@ -6,6 +6,7 @@ import AddPage from "./function/AddPage";
 import Community from "./function/Community";
 import Chatbot from "./function/ChatBot";
 import { StatusBar } from "react-native";
+import FoodIndexPage from "./diet/FoodIndexPage";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +20,7 @@ const TabNavigation = () => {
             >
                 <Tab.Screen
                     name="Home"
-                    component={MainPage}
+                    component={FoodIndexPage}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,

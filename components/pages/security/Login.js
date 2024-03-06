@@ -89,7 +89,7 @@ const Login = () => {
                         <Text style={styles.textTitle2}>ME</Text>
                         <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
                         <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
-                        <TouchableOpacity style={styles.loginBtn} onPress={onLoginHandler}>
+                        <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('TabNavigation')}>
                             <Text>로그인</Text>
                         </TouchableOpacity>
                     </View>
