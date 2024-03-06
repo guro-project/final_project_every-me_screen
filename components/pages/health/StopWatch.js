@@ -1,6 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stopwatch = () => {
     const [isRunning, setIsRunning] = useState(false);
@@ -8,39 +8,29 @@ const Stopwatch = () => {
     const [laps, setLaps] = useState([]);
     const intervalRef = useRef(null);
 
-    const startStopwatch = async () => {
+    const startStopwatch = () => {
         if (isRunning) {
             clearInterval(intervalRef.current);
         } else {
             const startTime = Date.now() - currentTime;
 
             intervalRef.current = setInterval(() => {
-                setCurrentTime(Date.now() - startTime);
+                const now = Date.now();
+                setCurrentTime(now - startTime);
             }, 100);
         }
         setIsRunning(!isRunning);
-
-        // AsyncStorage에 상태 저장
-        await AsyncStorage.setItem('stopwatchTime', currentTime.toString());
-        await AsyncStorage.setItem('isRunning', isRunning.toString());
-        await AsyncStorage.setItem('stopwatchLaps', JSON.stringify(laps));
     };
 
-    const resetStopwatch = async () => {
+    const resetStopwatch = () => {
         clearInterval(intervalRef.current);
         setCurrentTime(0);
         setIsRunning(false);
         setLaps([]);
-
-        // AsyncStorage 데이터 제거
-        await AsyncStorage.removeItem('stopwatchTime');
-        await AsyncStorage.removeItem('isRunning');
-        await AsyncStorage.removeItem('stopwatchLaps');
     };
 
-    const addLap = async () => {
+    const addLap = () => {
         setLaps([...laps, currentTime]);
-        await AsyncStorage.setItem('stopwatchLaps', JSON.stringify(laps));
     };
 
     const formatTime = (time) => {
@@ -48,30 +38,6 @@ const Stopwatch = () => {
         const seconds = ((time % 60000) / 1000).toFixed(1);
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
-
-    useEffect(() => {
-        const loadStopwatchData = async () => {
-            const savedTime = await AsyncStorage.getItem('stopwatchTime');
-            const savedIsRunning = await AsyncStorage.getItem('isRunning');
-            const savedLaps = await AsyncStorage.getItem('stopwatchLaps');
-
-            if (savedTime) {
-                setCurrentTime(parseInt(savedTime, 10));
-            }
-            if (savedIsRunning) {
-                setIsRunning(savedIsRunning === 'true'); // 문자열 boolean으로 변환
-            }
-            if (savedLaps) {
-                setLaps(JSON.parse(savedLaps));
-            }
-        };
-        loadStopwatchData();
-
-        // 페이지 이동/뒤로가기 시 currentTime 0으로 초기화
-        return () => {
-            setCurrentTime(0);
-        };
-    }, []);
 
     return (
         <View style={styles.container}>
@@ -88,16 +54,17 @@ const Stopwatch = () => {
                         <Text style={styles.buttonText}>Reset</Text>
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={styles.lapsContainer}>
+            </View>
+            <ScrollView style={styles.lapsContainer}>
                 {laps.map((time, index) => (
                     <Text key={index} style={styles.lap}>{index + 1} Lap {formatTime(time)}</Text>
                 ))}
-                </ScrollView>
-            </View>
+            </ScrollView>
         </View>
     );
 };
 
+export default Stopwatch;
 
 const styles = StyleSheet.create({
     container: {
@@ -142,4 +109,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Stopwatch;
+

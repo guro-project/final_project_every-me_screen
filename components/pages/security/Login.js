@@ -1,9 +1,8 @@
-import { Button, Image, ImageBackground, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import SignUp from "./SignUp";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Login = () => {
@@ -38,7 +37,6 @@ const Login = () => {
     }
 
     const onLoginHandler = async () => {
-        console.log(userId, userPass);
         // 입력값 검증
         if (!userId || !userPass) {
             alert('아이디와 비밀번호를 입력해주세요')
@@ -50,20 +48,27 @@ const Login = () => {
             'pass': userPass
         })
 
-        console.log(loginData);
-
         axios({
             method: 'POST',
             // url: 'http://192.168.0.176:8080/login', // 집
             // url: 'http://172.30.4.51:8080/login', // 스벅
-            url: 'http://172.30.1.49:8080/login', // 투썸
-            // url: 'http://192.168.0.12:8080/login', 학원
+            // url: 'http://172.30.1.49:8080/login', // 투썸
+            url: 'http://192.168.0.12:8080/login', // 학원
             data: loginData,
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data);
+            // AsyncStorage.removeItem('userToken');
+            const userToken = response.data.userInfo.userToken;
+            const setToken = async () => {
+                if (AsyncStorage.getItem('userToken')!= null) {
+                    await AsyncStorage.removeItem('userToken');
+                } 
+                await AsyncStorage.setItem('userToken', userToken);
+            }
+            setToken();
+
             if (response.data.userInfo) {
                 navigation.navigate('TabNavigation');
             } else {
@@ -72,46 +77,40 @@ const Login = () => {
         }).catch(error => {
             console.log(error);
         })
+
     }
 
     return (
         <>
             <TouchableWithoutFeedback onPress={screenTouchHandler}>
                 <View style={styles.mainContainer}>
-                    {/* <ImageBackground
-                        style={styles.backgroundImage}
-                        source={require('../../../images/loginImg.jpg')}
-                        resizeMode='cover'
-                    > */}
-                        <View style={styles.container}>
-                            <Text style={styles.textTitle1}>EVERY</Text>
-                            <Text style={styles.textTitle2}>ME</Text>
-                            <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
-                            <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
-                            <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('TabNavigation')}>
-                                <Text>로그인</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={styles.container}>
+                        <Text style={styles.textTitle1}>EVERY</Text>
+                        <Text style={styles.textTitle2}>ME</Text>
+                        <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
+                        <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
+                        <TouchableOpacity style={styles.loginBtn} onPress={onLoginHandler}>
+                            <Text>로그인</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                        <View style={styles.secContainer}>
-                            <TouchableOpacity style={(styles.signUpBtn)} onPress={() => navigation.navigate('EmailSignUp')}>
-                                
-                                <Text>이메일로 가입하기</Text>
-                            </TouchableOpacity>
+                    <View style={styles.secContainer}>
+                        <TouchableOpacity style={(styles.signUpBtn)} onPress={() => navigation.navigate('EmailSignUp')}>
+                            
+                            <Text>이메일로 가입하기</Text>
+                        </TouchableOpacity>
 
-                            <TouchableOpacity style={[styles.signUpBtn, {backgroundColor: '#FEE500'}]} onPress={() => navigation.navigate('KaKaoLogin')}>
-                                {/* <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                                <Ionicons name="chatbubble-outline" style={styles.kakaoIcon}/>
-                                <Text>카카오톡으로 가입하기</Text>
-                                </View> */}
-                                <Image
-                                    source={require('../../../images/Kakao.png')}
-                                    style={{width: 270 , height: 30}}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    {/* </ImageBackground> */}
-                        
+                        <TouchableOpacity style={[styles.signUpBtn, {backgroundColor: '#FEE500'}]} onPress={() => navigation.navigate('KaKaoLogin')}>
+                            {/* <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                            <Ionicons name="chatbubble-outline" style={styles.kakaoIcon}/>
+                            <Text>카카오톡으로 가입하기</Text>
+                            </View> */}
+                            <Image
+                                source={require('../../../images/Kakao.png')}
+                                style={{width: 270 , height: 30}}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </TouchableWithoutFeedback>
         </>

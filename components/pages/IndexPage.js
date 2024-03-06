@@ -8,15 +8,17 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, Image, StyleSheet, Text, View } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import TabNavigation from "./TabNavigation";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 
 const Stack = createNativeStackNavigator();
 
 const IndexPage = () => {
 
-    const [loaded, setloaded] = useState(false);
+    const navigation = useNavigation();
 
-    const fadeInOut = useRef(new Animated.Value(1)).current;
+    const [loaded, setloaded] = useState(false);
 
     useEffect(() => {
         const loadingInterval = setInterval(() => {
@@ -39,6 +41,15 @@ const IndexPage = () => {
             </View>
         )
     }
+    const checkLogin = async () => {
+        const token = await AsyncStorage.getItem('userToken');
+        console.log(token);
+        if (token) {
+            navigation.navigate('TabNavigation');
+        }
+    }
+    
+    checkLogin();
 
     return (
         <Stack.Navigator

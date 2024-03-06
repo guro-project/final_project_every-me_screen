@@ -15,6 +15,7 @@ const TabNavigation = () => {
             <StatusBar barStyle="light-content"/>
             <Tab.Navigator
                 screenOptions={{tabBarStyle: {backgroundColor:'black', borderTopWidth: 0.2}}}
+                initialRouteName='Home'
             >
                 <Tab.Screen
                     name="Home"
