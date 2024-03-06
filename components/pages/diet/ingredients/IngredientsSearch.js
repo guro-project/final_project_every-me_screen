@@ -119,6 +119,12 @@ const IngredientsSearch = () => {
             console.log("직접입력 : " + newIngredient);
         }
     }
+    
+    // 스킵버튼
+    const skipIngre = () => {
+        navigation.navigate("RegistFood")
+        console.log("잘 갔나?")
+    }
 
     return (
         <>
@@ -159,6 +165,9 @@ const IngredientsSearch = () => {
                 ) : null}
                 <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
                     <Text>다음</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
+                    <Text>스킵</Text>
                 </TouchableOpacity>
             </View>
         </>
