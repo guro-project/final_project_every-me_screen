@@ -63,7 +63,7 @@ const Login = () => {
             const userToken = response.data.userInfo.userToken;
             const setToken = async () => {
                 if (AsyncStorage.getItem('userToken')!= null) {
-                    await AsyncStorage.removeItem('userToken');
+                    AsyncStorage.clear;
                 } 
                 await AsyncStorage.setItem('userToken', userToken);
             }

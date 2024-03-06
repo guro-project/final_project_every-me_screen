@@ -24,6 +24,15 @@ const IndexPage = () => {
         const loadingInterval = setInterval(() => {
             setloaded(true);
             clearInterval(loadingInterval);
+
+const checkLogin = async () => {
+        const token = await AsyncStorage.getItem('userToken');
+        console.log(token);
+        if (token) {
+            navigation.navigate('TabNavigation');
+        }
+    }
+    checkLogin();
         }, 3000)
 
         return () => clearInterval(loadingInterval);
@@ -41,15 +50,7 @@ const IndexPage = () => {
             </View>
         )
     }
-    const checkLogin = async () => {
-        const token = await AsyncStorage.getItem('userToken');
-        console.log(token);
-        if (token) {
-            navigation.navigate('TabNavigation');
-        }
-    }
     
-    checkLogin();
 
     return (
         <Stack.Navigator
