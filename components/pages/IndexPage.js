@@ -49,12 +49,16 @@ const IndexPage = () => {
     if (loggedIn) {
         return (
             <Stack.Navigator initialRouteName='TabNavigation'>
-                <Stack.Screen name='TabNavigation' component={TabNavigation} options={{ headerShown: false }} />
-                {/* <Stack.Screen
-                name='Login'
-                component={Login}
-                options={{ headerShown: false }}
-            /> */}
+                <Stack.Screen
+                    name='TabNavigation'
+                    component={TabNavigation}
+                    options={{ headerShown: false, gestureEnabled: false }}
+                />
+                <Stack.Screen
+                    name='Login'
+                    component={Login}
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         );
     }
@@ -74,7 +78,7 @@ const IndexPage = () => {
             <Stack.Screen
                 name='TabNavigation'
                 component={TabNavigation}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
