@@ -59,17 +59,21 @@ const Login = () => {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            // AsyncStorage.removeItem('userToken');
             const userToken = response.data.userInfo.userToken;
-            const setToken = async () => {
-                if (AsyncStorage.getItem('userToken')!= null) {
-                    AsyncStorage.clear;
-                } 
-                await AsyncStorage.setItem('userToken', userToken);
+            const setToken = () => {
+                // if (AsyncStorage.getItem('userToken')) {
+                //     AsyncStorage.clear;
+                // } else {
+                    AsyncStorage.setItem('userToken', userToken);
+                // }
             }
             setToken();
 
-            if (response.data.userInfo) {
+            console.log(response.data.userInfo.firstLogin);
+            
+            if (response.data.userInfo.firstLogin == 'Y') {
+                navigation.navigate('TabNavigation');
+            } else if (response.data.userInfo.firstLogin != 'Y') {
                 navigation.navigate('TabNavigation');
             } else {
                 alert('아이디와 비밀번호를 확인해주세요');
@@ -77,7 +81,6 @@ const Login = () => {
         }).catch(error => {
             console.log(error);
         })
-
     }
 
     return (
@@ -89,7 +92,7 @@ const Login = () => {
                         <Text style={styles.textTitle2}>ME</Text>
                         <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
                         <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
-                        <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('TabNavigation')}>
+                        <TouchableOpacity style={styles.loginBtn} onPress={onLoginHandler}>{/*() => navigation.navigate('FirstLogin')*/}
                             <Text>로그인</Text>
                         </TouchableOpacity>
                     </View>
