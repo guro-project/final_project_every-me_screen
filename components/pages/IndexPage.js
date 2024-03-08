@@ -59,6 +59,22 @@ const IndexPage = () => {
                     component={Login}
                     options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                name='EmailSignUp'
+                component={EmailSignUp}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='MainPage'
+                component={MainPage}
+                options={{ headerShown: false}}
+            />
+
+            <Stack.Screen
+                name='FirstLogin'
+                component={FirstLogin}
+                options={{ headerShown: false }}
+            />
             </Stack.Navigator>
         );
     }

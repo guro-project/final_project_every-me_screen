@@ -64,36 +64,47 @@ const IngredientsSearch = () => {
             });
     }
 
-    console.log("@@@@@@@@@@@@@@@@@@@")
-    console.log(groupNames)
+    // console.log("@@@@@@@@@@@@@@@@@@@")
+    // console.log(groupNames)
     // 요청 보내는 곳
     const OnChangeHandler = (text) => {
         setName(text);
     };
 
     // 리스트 클릭시 재료박스에 담는 곳
-    const ListClickHandler = (clickedName) => {
+    // const ListClickHandler = (clickedName) => {
+    //     console.log("전달 한 값 확인")
+    //     console.log(clickedName);
+    //     if (!clickedNames.includes(clickedName)) {
+    //         // includes : 중복체크
+    //         // 만약 클릭한 clikedName이 존재하지 않으면 재료박스에 넣어주고 존재하면 넣지 않아서 같은 데이터가 중복으로 들어가는걸 막아줌
+    //         setClickedNames(prevClickedNames =>[...prevClickedNames, clickedName]);
+    //     }
+    // };
+    
+    const ListClickHandler = (clickedItem) => {
         console.log("전달 한 값 확인")
-        console.log(clickedName);
-        if (!clickedNames.includes(clickedName)) {
-            // includes : 중복체크
-            // 만약 클릭한 clikedName이 존재하지 않으면 재료박스에 넣어주고 존재하면 넣지 않아서 같은 데이터가 중복으로 들어가는걸 막아줌
-            setClickedNames(prevClickedNames => [...prevClickedNames, clickedName]);
+        console.log(clickedItem);
+    
+        if (!clickedNames.some(item => item.DESC_KOR === clickedItem.DESC_KOR)) {
+            // 중복된 항목이 없을 때만 추가
+            setClickedNames(prevClickedNames => [...prevClickedNames, clickedItem]);
         }
     };
 
+
     // TouchableOpacity 클릭시 재료박스에 담는 곳
     const handleRecommendations = (recommendedName) => {
-        console.log("데이터 전송 성공")
+        console.log("버튼 전달 값")
         if (!clickedNames.includes(recommendedName)) {
             setClickedNames(prevClickedNames => [...prevClickedNames, recommendedName]);
+            console.log(recommendedName)
         }
     };
 
     const handleRegistration = () => {
-        // 등록 버튼을 눌렀을 때 실행되는 로직
-        // 선택한 재료들을 가지고 DetailIngredients 페이지로 이동
-        navigation.navigate("DetailIngredients", { selectedIngredients: clickedNames});
+        navigation.navigate("RegistFood", { selectedIngredients: clickedNames});
+        console.log("clickedNames : ", clickedNames);
     };
 
     // 카테고리 데이터 받아왔나 확인
@@ -103,52 +114,56 @@ const IngredientsSearch = () => {
     // console.log(category);
 
     // 직접입력 칸
-    const handlerCustomIngre = () => {
-        if (customIngreName.trim() !== '' && customIngreKcal.trim() !== '') {
-            const newIngredient = `이름 : ${customIngreName} 칼로리 : ${customIngreKcal}`;
+    // const handlerCustomIngre = () => {
+    //     if (customIngreName.trim() !== '' && customIngreKcal.trim() !== '') {
+    //         const newIngredient = `이름 : ${customIngreName} 칼로리 : ${customIngreKcal}`;
 
-            // 클릭된 재료 목록에 새로운 재료가 포함되어 있는지 확인
-            if (!clickedNames.includes(newIngredient)) {
-                // 포함되어 있지 않다면 새로운 재료를 클릭된 재료 목록에 추가
-                setClickedNames(prevClickedNames => [...prevClickedNames, newIngredient]);
-            }
+    //         // 클릭된 재료 목록에 새로운 재료가 포함되어 있는지 확인
+    //         if (!clickedNames.includes(newIngredient)) {
+    //             // 포함되어 있지 않다면 새로운 재료를 클릭된 재료 목록에 추가
+    //             setClickedNames(prevClickedNames => [...prevClickedNames, newIngredient]);
+    //         }
 
-            // 입력값 초기화
-            setCustomIngreName('');
-            setCustomIngreKcal('');
-            console.log("직접입력 : " + newIngredient);
-        }
-    }
+    //         // 입력값 초기화
+    //         setCustomIngreName('');
+    //         setCustomIngreKcal('');
+    //         console.log("직접입력 : " + newIngredient);
+    //     }
+    // }
     
     // 스킵버튼
     const skipIngre = () => {
         navigation.navigate("RegistFood")
-        console.log("잘 갔나?")
     }
+
+    // 검색 시 리스트가 출력되고 리스트 된 것들을 누르면 바구니에 담긴다
+    // 바구니에 담긴 데이터를 수량 조절 페이지로 보냄
+    // 이때 전달되는 데이터는 ("이름 " + item.DESC_KOR + " 칼로리 : " + item.NUTR_CONT1)의 문자열인 배열형태
+    // 이렇게 전달되면 문제점 : 원하는것을 꺼낼려면 문자열을 잘라서 써야되는데 변수가 많이생김
+    // 화면상의 출력은 이름과 칼로리만 출력하되 출력하는건 모든 데이터가 다 담긴 객체형태로 보내기
 
     return (
         <>
-            <View>
+            <View style={{borderBottomWidth:2, borderBlockColor:"blue"}}>
                 <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames} />
                 {/* 재료박스에 담는 곳 */}
             </View>
-            <View>
+            <View style={{borderBottomWidth:2, borderBlockColor:"blue"}}>
                 <Text>추천 재료</Text>
                 <RecommendFood food={food} onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
             </View>
-            <View>
+            {/* <View>
                 <Text>직접 입력</Text>
                 <TextInput placeholder="재료 이름" value={customIngreName} onChangeText={text => setCustomIngreName(text)} />
                 <TextInput placeholder="재료 칼로리" value={customIngreKcal} onChangeText={text => setCustomIngreKcal(text)} />
                 <TouchableOpacity onPress={handlerCustomIngre} style={sytles.TouchableBorder}><Text>커스텀재료 등록</Text></TouchableOpacity>
-            </View>
-            <View>
-                <Text>재료 검색</Text>
+            </View> */}
+            <View >
                 <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력"
                     keyboardType="default" value={name} />
                 <TouchableOpacity onPress={FindGroupName} style={sytles.TouchableBorder}><Text>검색</Text></TouchableOpacity>
-                <Text>{name}</Text>
+                {/* <Text>{name}</Text> */}
                 {/* groupNames의 길이가 0보다 클때 실행
                     keyExtractor : 각각의 키를 만들어줘서 react-natvie가 FlatList를 관리하기 쉽게 해줌
                 */}
@@ -156,19 +171,21 @@ const IngredientsSearch = () => {
                     <FlatList
                         data={groupNames}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => ListClickHandler("이름 " + item.DESC_KOR + " 칼로리 : " + item.NUTR_CONT1)}>
-                                <Text>이름 : {item.DESC_KOR} 칼로리 : {item.NUTR_CONT1}</Text>
+                            <TouchableOpacity onPress={() => ListClickHandler(item)}>
+                                <Text style={sytles.listMargin}>{item.DESC_KOR} {item.NUTR_CONT1}Kcal</Text>
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : null}
+                <View style={{borderTopWidth:2, borderBlockColor:"blue"}}>
                 <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
                     <Text>다음</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
                     <Text>스킵</Text>
                 </TouchableOpacity>
+                </View>
             </View>
         </>
     )
@@ -178,6 +195,13 @@ export default IngredientsSearch;
 
 const sytles = StyleSheet.create({
     TouchableBorder: {
-        borderWidth: 1
+        borderWidth: 1,
+        marginBottom:5,
+        marginTop: 5,
+        width: 30
+    },
+    listMargin : {
+        marginTop:2,
+        marginBottom:2
     }
 })

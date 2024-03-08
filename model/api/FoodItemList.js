@@ -1,21 +1,32 @@
-import { Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
 const FoodItemComponent = ({ food, onButtonClicked }) => {
     const ClickButtonHandler = () => {
-        console.log("클릭시 이벤트 발생");
-        const names = `이름: ${food.DESC_KOR}, 칼로리: ${food.NUTR_CONT1}, ${"탄수화물 : " + food.NUTR_CONT2}, ${"단백질 : " + food.NUTR_CONT3}, ${"지방 : " + food.NUTR_CONT4}, ${"나트륨 : " + food.NUTR_CONT6}`;
+        // console.log("클릭시 이벤트 발생");
+        // const names = `${food.DESC_KOR} ${food.NUTR_CONT1}Kcal`;
         if (onButtonClicked) {
-            onButtonClicked(names);
+            onButtonClicked(food);
         }
-        console.log(names);
+        // console.log(food);
+        // console.log(names);
     };
 
     return (
-        <TouchableOpacity onPress={ClickButtonHandler}>
-            <Text>이름 : {food.DESC_KOR} 칼로리 : {food.NUTR_CONT1}</Text>
+        <TouchableOpacity onPress={ClickButtonHandler} style={sytles.TouchableBorder}>
+            <Text>{food.DESC_KOR}</Text>
+            <Text>{food.NUTR_CONT1}Kcal</Text>
         </TouchableOpacity>
     );
 }
 
 export default FoodItemComponent;
+
+const sytles = StyleSheet.create({
+    TouchableBorder: {
+        borderWidth: 1,
+        marginBottom: 5,
+        marginTop: 5,
+        width:100
+    }
+})
