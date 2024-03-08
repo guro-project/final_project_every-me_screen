@@ -1,4 +1,5 @@
 import { useRoute } from "@react-navigation/native";
+import axios from "axios";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -30,14 +31,9 @@ const FoodFirst = ({ navigation }) => {
 
     // 등록된 식단 클릭시 페이지가 나와서 영양상세정보가 나옴 가능하면 재료명도
 
+
     return (
         <View>
-
-            {/* <TouchableOpacity onPress={morningPage}><Text>아침</Text></TouchableOpacity>
-            <TouchableOpacity onPress={lunchPage}><Text>점심</Text></TouchableOpacity>
-            <TouchableOpacity onPress={dinnerPage}><Text>저녁</Text></TouchableOpacity>
-            <TouchableOpacity onPress={etcPage}><Text>기타</Text></TouchableOpacity>
-            <Text>내 식단</Text> */}
             <Text>주간 달력 출력</Text>
             <Text>하루 총 영양성분 출력</Text>
             <TouchableOpacity onPress={page} style={sytles.touch}><Text>add</Text></TouchableOpacity>

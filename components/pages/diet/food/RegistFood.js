@@ -1,4 +1,5 @@
 import { useRoute } from "@react-navigation/native";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -58,24 +59,24 @@ const RegistFood = ({ navigation }) => {
     }, 0);
 
     // console.log(totalCalories)
-    
+
     const totalCarbohydrate = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
         const carbohydrate = parseFloat(ingredient.NUTR_CONT2) * quantities[index];
         return total + carbohydrate;
     }, 0);
 
     // console.log(totalCarbohydrate)
-    
+
     const totalProtein = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
         const protein = parseFloat(ingredient.NUTR_CONT3) * quantities[index];
         return total + protein;
     }, 0);
-    
+
     const totalProvince = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
         const province = parseFloat(ingredient.NUTR_CONT4) * quantities[index];
         return total + province;
     }, 0);
-    
+
     const totalSalt = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
         const salt = parseFloat(ingredient.NUTR_CONT6) * quantities[index];
         return total + salt;
@@ -86,8 +87,10 @@ const RegistFood = ({ navigation }) => {
     }
 
     const firstPage = () => {
-        navigation.navigate("FoodFirst", {dietName : dietName, selectedMethod : selectedMethod, totalCalories : totalCalories,
-            totalCarbohydrate : totalCarbohydrate, totalProtein : totalProtein, totalProvince : totalProvince, totalSalt : totalSalt})
+        navigation.navigate("FoodFirst", {
+            dietName: dietName, selectedMethod: selectedMethod, totalCalories: totalCalories,
+            totalCarbohydrate: totalCarbohydrate, totalProtein: totalProtein, totalProvince: totalProvince, totalSalt: totalSalt
+        })
         // console.log("이름 받아가나?")
         // console.log(dietName)
         // console.log("끼니 받아가나?")
@@ -100,6 +103,36 @@ const RegistFood = ({ navigation }) => {
     // + - 를 누르면 수량이랑 칼 탄 단 지 나가 0.5배씩 증가 또는 감소한다
     // 탄 단 지 나는 화면상에는 출력되지 않지만 데이터는 계산되어야한다
     // 밑에는 계산된 최종칼로리가 나옴
+
+    // 식단이름과 칼로리 스테이트
+    const [name, setName] = useState('');
+    const [kcal, setKcal] = useState('');
+    const onDietHandler = async () => {
+        let dietData = JSON.stringify({
+            'dietName': name,
+            'totalKcal': kcal
+        })
+
+        axios({
+            method: 'POST',
+            url: 'http://192.168.0.64:8080/registdiet',
+            data: dietData,
+            headers: {
+                'Content-Type': 'application/json'
+                
+            }
+        }).then(response => {
+            console.log(response.data);
+            if (response.status === 200) {
+                navigation.navigate('FoodFirst');
+            } else {
+                alert('값 확인');
+            }
+        }).catch(error => {
+            console.log(error);
+            alert('에러발생')
+        })
+    }
 
     return (
         <>
@@ -137,7 +170,10 @@ const RegistFood = ({ navigation }) => {
 
                 <Text>이미지 등록</Text>
 
-                <TouchableOpacity onPress={firstPage} style={styles.touch}>
+                <TouchableOpacity onPress={() => {
+                    firstPage(); // 첫 번째 함수 호출
+                    onDietHandler(); // 두 번째 함수 호출
+                }} style={styles.touch}>
                     <Text>식단 업로드</Text>
                 </TouchableOpacity>
                 <Text>=============================</Text>
@@ -150,8 +186,8 @@ const RegistFood = ({ navigation }) => {
                     <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>
                             {`${ingredient.DESC_KOR} ${(parseFloat(ingredient.NUTR_CONT1) * quantities[index]).toFixed(2)}Kcal`}
-                            <Text style={{color:'white', fontSize:4}}>
-                            {`${(parseFloat(ingredient.NUTR_CONT2) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT3) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT4) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT6) * quantities[index]).toFixed(2)}`}</Text>
+                            <Text style={{ color: 'white', fontSize: 4 }}>
+                                {`${(parseFloat(ingredient.NUTR_CONT2) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT3) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT4) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT6) * quantities[index]).toFixed(2)}`}</Text>
                         </Text>
                         <Text style={{ marginLeft: 10, marginRight: 10 }} >{quantities[index]}개</Text>
                         <TouchableOpacity onPress={() => increaseQuantity(index)} style={{ marginLeft: 10, marginRight: 10, borderWidth: 1 }}><Text style={{ fontSize: 20 }}>+</Text></TouchableOpacity>
@@ -159,7 +195,7 @@ const RegistFood = ({ navigation }) => {
                     </View>
                 ))}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
-                <Text style={{color:'white', fontSize:4}}>{totalCarbohydrate.toFixed(2)} {totalProtein.toFixed(2)} {totalProvince.toFixed(2)} {totalSalt.toFixed(2)}</Text>
+                <Text style={{ color: 'white', fontSize: 4 }}>{totalCarbohydrate.toFixed(2)} {totalProtein.toFixed(2)} {totalProvince.toFixed(2)} {totalSalt.toFixed(2)}</Text>
             </View>
         </>
     );
