@@ -1,15 +1,15 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainPage from "./MainPage";
 import Login from "./security/Login";
-import SignUp from "./security/SignUp";
 import EmailSignUp from "./security/EmailSignUp";
 import KaKaoLogin from "./security/KakaoLogin";
-import { useEffect, useRef, useState } from "react";
-import { Animated, Image, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import TabNavigation from "./TabNavigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import FirstLogin from "./firstLogin/FirstLogin";
 
 
 const Stack = createNativeStackNavigator();
@@ -18,25 +18,20 @@ const IndexPage = () => {
 
     const navigation = useNavigation();
 
-    const [loaded, setloaded] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        const loadingInterval = setInterval(() => {
-            setloaded(true);
-            clearInterval(loadingInterval);
-
-const checkLogin = async () => {
-        const token = await AsyncStorage.getItem('userToken');
-        console.log(token);
-        if (token) {
-            navigation.navigate('TabNavigation');
+        const checkLogin = async () => {
+            const token = await AsyncStorage.getItem('userToken');
+            console.log(token);
+            if (token) {
+                setLoggedIn(true);
+            }
+            setLoaded(true);
         }
-    }
-    checkLogin();
-        }, 3000)
-
-        return () => clearInterval(loadingInterval);
-    },[])
+        checkLogin();
+    }, [loggedIn]);
 
     if (!loaded) {
         return (
@@ -48,7 +43,24 @@ const checkLogin = async () => {
                     style={{ borderRadius: 100 }}
                 />
             </View>
-        )
+        );
+    }
+
+    if (loggedIn) {
+        return (
+            <Stack.Navigator initialRouteName='TabNavigation'>
+                <Stack.Screen
+                    name='TabNavigation'
+                    component={TabNavigation}
+                    options={{ headerShown: false, gestureEnabled: false }}
+                />
+                <Stack.Screen
+                    name='Login'
+                    component={Login}
+                    options={{ headerShown: false }}
+                />
+            </Stack.Navigator>
+        );
     }
     
 
@@ -66,7 +78,7 @@ const checkLogin = async () => {
             <Stack.Screen
                 name='TabNavigation'
                 component={TabNavigation}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
@@ -76,8 +88,8 @@ const checkLogin = async () => {
             />
 
             <Stack.Screen
-                name='SignUp'
-                component={SignUp}
+                name='FirstLogin'
+                component={FirstLogin}
                 options={{ headerShown: false }}
             />
 

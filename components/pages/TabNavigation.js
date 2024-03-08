@@ -4,9 +4,9 @@ import MainPage from "./MainPage";
 import HealthPage from "./health/HealthPage";
 import AddPage from "./function/AddPage";
 import Community from "./function/Community";
-import Chatbot from "./function/ChatBot";
 import { StatusBar } from "react-native";
 import FoodIndexPage from "./diet/FoodIndexPage";
+import Chatbot from "./chatBot/ChatBot";
 
 const Tab = createBottomTabNavigator();
 

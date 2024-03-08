@@ -30,10 +30,10 @@ const IngredientsSearch = () => {
                 if (data && data.I2790 && data.I2790.row && data.I2790.row.length > 0) { // 검색한 데이터가 존재할시
                     const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length); // 나온 리스트들의 이름을 길이순으로 비교해서 짧은 순부터 나열
                     const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`); // 리스트 뽑는 곳                     
-                    console.log("======================================================================")
-                    console.log("순서바뀐 목록");
-                    console.log(names)
-                    console.log("======================================================================")
+                    // console.log("======================================================================")
+                    // console.log("순서바뀐 목록");
+                    // console.log(names)
+                    // console.log("======================================================================")
                     setGroupNames(sortedRows);
 
                 } else { // 검색한 data가 존재하지 않을시
@@ -53,10 +53,10 @@ const IngredientsSearch = () => {
                                 // setGroupNames(names);
                                 const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length);
                                 const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`);
-                                console.log("======================================================================")
-                                console.log("순서바뀐 목록");
-                                console.log(names)
-                                console.log("======================================================================")
+                                // console.log("======================================================================")
+                                // console.log("순서바뀐 목록");
+                                // console.log(names)
+                                // console.log("======================================================================")
                                 setGroupNames(sortedRows);
                             }
                         });
