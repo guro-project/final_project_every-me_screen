@@ -6,7 +6,7 @@ import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "reac
 const FoodFirst = ({ navigation }) => {
     const page = () => {
         navigation.navigate("IngredientsSearch");
-        console.log("클릭시 반응함?")
+        // console.log("클릭시 반응함?")
     }
 
     const [modalVisible, setModalVisible] = useState(false);

@@ -11,6 +11,7 @@ const RegistFood = ({ navigation }) => {
     const [ingredients, setIngredients] = useState([]);
     const methods = ["아침", "점심", "저녁", "기타"];
     const [quantities, setQuantities] = useState([]);
+    const [userId,setUserId] = useState('');
 
     const route = useRoute();
     const selectedIngredients = route.params;
@@ -87,16 +88,40 @@ const RegistFood = ({ navigation }) => {
     }
 
     const firstPage = () => {
-        navigation.navigate("FoodFirst", {
-            dietName: dietName, selectedMethod: selectedMethod, totalCalories: totalCalories,
-            totalCarbohydrate: totalCarbohydrate, totalProtein: totalProtein, totalProvince: totalProvince, totalSalt: totalSalt
-        })
-        // console.log("이름 받아가나?")
-        // console.log(dietName)
-        // console.log("끼니 받아가나?")
-        // console.log(selectedMethod)
-        // console.log("총 칼로리 받아가나?")
-        // console.log(totalCalories.toFixed(2))
+        // 식단이름과 칼로리 스테이트
+        let dietData = JSON.stringify({
+            'dietName': dietName,
+            'totalKcal': totalCalories,
+            'userId' : userId
+        });
+
+        console.log("뭐받음?")
+        console.log(dietName)
+        console.log(totalCalories)
+        console.log(userId)
+    
+        axios({
+            method: 'POST',
+            url: 'http://172.30.1.96:8080/registdiet',
+            data: dietData,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer eyJkYXRlIjoxNzA5OTYzODc4NjkyLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAyIiwiZXhwIjoxNzEwMDUwMjc4LCJ1c2VySWQiOiJ1c2VyMUB1c2VyMS5jb20ifQ.7PXDcn43NUP4hqCeLf0Fajx4s2uSAquhSD2hpnGieH0`
+            }
+        }).then(response => {
+            console.log("요청 성공")
+            console.log(response)
+            if (response.status === 200) {
+                navigation.navigate('FoodFirst');
+                console.log(response.data)
+            } else {
+                alert('값 확인');
+            }
+        }).catch(error => {
+            console.log("에러")
+            console.log(error);
+            alert('에러발생')
+        });
     }
 
     // 받아온 데이터에서 이름 분리해서 왼쪽에넣고 오른쪽엔 칼로리와 수량 + - 버튼 출력
@@ -104,35 +129,10 @@ const RegistFood = ({ navigation }) => {
     // 탄 단 지 나는 화면상에는 출력되지 않지만 데이터는 계산되어야한다
     // 밑에는 계산된 최종칼로리가 나옴
 
-    // 식단이름과 칼로리 스테이트
-    const [name, setName] = useState('');
-    const [kcal, setKcal] = useState('');
-    const onDietHandler = async () => {
-        let dietData = JSON.stringify({
-            'dietName': name,
-            'totalKcal': kcal
-        })
+    // 내가 하려는 것
+    // 재료 혹은 음식 검색을 하고 담은 후에
 
-        axios({
-            method: 'POST',
-            url: 'http://172.30.1.19:8080/registdiet',
-            data: dietData,
-            headers: {
-                'Content-Type': 'application/json'
-                
-            }
-        }).then(response => {
-            console.log(response.data);
-            if (response.status === 200) {
-                navigation.navigate('FoodFirst');
-            } else {
-                alert('값 확인');
-            }
-        }).catch(error => {
-            console.log(error);
-            alert('에러발생')
-        })
-    }
+
 
     return (
         <>
@@ -170,10 +170,7 @@ const RegistFood = ({ navigation }) => {
 
                 <Text>이미지 등록</Text>
 
-                <TouchableOpacity onPress={() => {
-                    firstPage(); // 첫 번째 함수 호출
-                    onDietHandler(); // 두 번째 함수 호출
-                }} style={styles.touch}>
+                <TouchableOpacity onPress={firstPage} style={styles.touch}>
                     <Text>식단 업로드</Text>
                 </TouchableOpacity>
                 <Text>=============================</Text>
