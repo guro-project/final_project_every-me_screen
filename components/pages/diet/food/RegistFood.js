@@ -115,7 +115,7 @@ const RegistFood = ({ navigation }) => {
 
         axios({
             method: 'POST',
-            url: 'http://192.168.0.64:8080/registdiet',
+            url: 'http://172.30.1.19:8080/registdiet',
             data: dietData,
             headers: {
                 'Content-Type': 'application/json'

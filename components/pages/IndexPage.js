@@ -10,7 +10,6 @@ import TabNavigation from "./TabNavigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FirstLogin from "./firstLogin/FirstLogin";
-import FoodIndexPage from "./diet/FoodIndexPage";
 
 
 const Stack = createNativeStackNavigator();
@@ -60,10 +59,26 @@ const IndexPage = () => {
                     component={Login}
                     options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                name='EmailSignUp'
+                component={EmailSignUp}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='MainPage'
+                component={MainPage}
+                options={{ headerShown: false}}
+            />
+
+            <Stack.Screen
+                name='FirstLogin'
+                component={FirstLogin}
+                options={{ headerShown: false }}
+            />
             </Stack.Navigator>
         );
     }
-
+    
 
     return (
         <Stack.Navigator
@@ -85,7 +100,7 @@ const IndexPage = () => {
             <Stack.Screen
                 name='MainPage'
                 component={MainPage}
-                options={{ headerShown: false }}
+                options={{ headerShown: false}}
             />
 
             <Stack.Screen
@@ -105,13 +120,7 @@ const IndexPage = () => {
                 component={KaKaoLogin}
                 options={{ headerShown: false }}
             />
-
-            <Stack.Screen
-                name='FoodIndexPage'
-                component={FoodIndexPage}
-                options={{ headerShown: false }}
-            />
-
+            
         </Stack.Navigator>
     )
 }
