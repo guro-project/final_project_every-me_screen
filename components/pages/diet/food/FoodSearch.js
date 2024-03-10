@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-//검색란 검색결과창 선택한음식 다음페이지로전송
+//skip 버튼 누르고 음식검색 누르면 나오는 곳 미완성
 const FoodSearch = ({navigation}) => {
     const [name,setName] = useState('');
     const [foodName,setFoodName] = useState([]);

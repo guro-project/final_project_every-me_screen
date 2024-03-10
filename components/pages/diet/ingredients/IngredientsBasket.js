@@ -19,25 +19,7 @@ const IngredientsBasket = ({ clickedNames, setClickedNames, recommendedNames, se
     return (
         <View>
             <Text>재료 박스 :</Text>
-            {/* 재료박스에 들어간 목록들 중에서 리스트로 들어온건지 버튼으로 들어온건지 구분해서 삭제버튼을 눌렀을 시 해당하는 데이터를 삭제함 */}
-            {/* <FlatList
-                data={allNames}
-                renderItem={({ item }) => (
-                    <View>
-                        <Text>{item}</Text>
-                        <TouchableOpacity onPress={() => {
-                            if (clickedNames.includes(item)) {
-                                removeItem(item);
-                            } else if (recommendedNames.includes(item)) {
-                                removeButton(item);
-                            }
-                        }}>
-                            <Text>삭제</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            /> */}
+            {/* 검색으로 담은건지 버튼으로 담은건지 구별하고 맞는거에 따라 삭제함수 실행함 */}
             {clickedNames.map((item, index) => (
                 <TouchableOpacity key={index} onPress={() => {
                     if (clickedNames.includes(item)) {

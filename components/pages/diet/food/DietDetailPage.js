@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import axios from 'axios';
 import UpdateDiet from './UpdateDiet';
 import DeleteDiet from './DeleteDiet';
-
+// 식단 상세페이지 보는곳
 const DietDetailPage = ({ dietNo }) => {
     const [data, setData] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,6 +19,7 @@ const DietDetailPage = ({ dietNo }) => {
         fetchDetailData();
     }, []);
 
+    // 상세조회
     const fetchDetailData = () => {
         axios({
             method: 'GET',
@@ -38,11 +39,12 @@ const DietDetailPage = ({ dietNo }) => {
                 console.log(dietNo)
             });
     }
-
+    
     return (
         <View>
             {data && (
                 <>
+                    {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
                     <Text>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
                 </>
             )}
@@ -55,6 +57,7 @@ const DietDetailPage = ({ dietNo }) => {
                 }}>
                 <View style={styles.modalView}>
                     <View>
+                        {/* 식단 수정하려면 여기에 먼저 추가해야됨 */}
                         <UpdateDiet
                             dietNo={dietNo}
                             dietName={dietName}
@@ -74,8 +77,10 @@ const DietDetailPage = ({ dietNo }) => {
                 </View>
             </Modal>
             <Pressable onPress={() => setModalVisible(true)}>
+                {/* Pressable은 modal 여는거 */}
                 <Text style={{color:'blue'}}>수정</Text>
             </Pressable>
+            {/* 삭제 */}
             <DeleteDiet
                 dietNo={dietNo}
             />
@@ -90,14 +95,14 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
+        shadowColor: '#000', // 그림자 색깔
+        shadowOffset: { // 그림자 위치
+            width: 0, // 가로 0
+            height: 2, // 세로 2
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
+        shadowOpacity: 0.25, // 그림자 불투명도 클수록 진해짐
+        shadowRadius: 4, // 그림자 반경 클수록 퍼져서 흐릿해짐
+        elevation: 5, // 안드로이드에서만 적용됨 그림자의 높이
         width: '100%',
         height: '90%',
     }

@@ -3,14 +3,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-
+// 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
     const [dietName, setDietName] = useState('');
     const [selectedMethod, setSelectedMethod] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [ingredients, setIngredients] = useState([]);
     const methods = ["아침", "점심", "저녁", "기타"];
-    const [quantities, setQuantities] = useState([]);
+    const [quantities, setQuantities] = useState([]); // 수량
     const [userId, setUserId] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
@@ -25,7 +25,8 @@ const RegistFood = ({ navigation }) => {
     const selectedFood = selectedIngredients.selectedIngredients[0]; // 첫 번째 요소 선택
     const foodName = selectedFood ? selectedFood.DESC_KOR : ''; // 이름 가져오기
 
-    // NUTR_CONT1 값 상수화 및 출력
+    // NUTR_CONT1,2,3,4,6 값 상수화 및 출력
+    // 원래 타입이 String 형식이라서 계산이 불가능해서 실수형으로 바꿔줌
     const parsedNUTR_CONT1 = selectedFood ? parseFloat(selectedFood.NUTR_CONT1) : 0;
     const parsedNUTR_CONT2 = selectedFood ? parseFloat(selectedFood.NUTR_CONT2) : 0;
     const parsedNUTR_CONT3 = selectedFood ? parseFloat(selectedFood.NUTR_CONT3) : 0;
@@ -39,11 +40,15 @@ const RegistFood = ({ navigation }) => {
         }
     }, [selectedIngredients]);
 
+    // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
+
     // + 버튼을 누를 때 수량 증가
     const increaseQuantity = (index) => {
         setQuantities(prevQuantities => {
             const newQuantities = [...prevQuantities];
             newQuantities[index] += 0.5;
+
+            // 실시간 계산인데 값이 이상하게 나와서 주석처리 하고 계산하기 버튼 눌렀을시 계산 되는식으로 일단 바꿨음
 
             // // 총합 칼로리를 갱신하는 데 사용될 임시 변수 초기화
             // let tempTotalCalories = 0;
@@ -58,24 +63,25 @@ const RegistFood = ({ navigation }) => {
             // setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
 
             // 탄수화물, 단백질, 지방, 나트륨 계산
+            // 탄 단 지 나 는 화면에 출력은 안되지만 + -버튼을 누르면 계산해줌
             const ingredient = selectedIngredients.selectedIngredients[index];
             const carbohydrate = parseFloat((ingredient.NUTR_CONT2) * newQuantities[index].toFixed(2));
             const protein = parseFloat((ingredient.NUTR_CONT3) * newQuantities[index].toFixed(2));
             const province = parseFloat((ingredient.NUTR_CONT4) * newQuantities[index].toFixed(2));
             const salt = parseFloat((ingredient.NUTR_CONT6) * newQuantities[index].toFixed(2));
 
-            // 각 상태 변수 업데이트
+            // 각 상태 변수 업데이트 얘도 실시간 계산인데 이상해서 주석처리 해놨음
             // setTotalCarbohydrate(prev => prev + carbohydrate);
             // setTotalProtein(prev => prev + protein);
             // setTotalProvince(prev => prev + province);
             // setTotalSalt(prev => prev + salt);
 
-            console.log("+")
-            console.log(ingredient)
-            console.log(carbohydrate)
-            console.log(protein)
-            console.log(province)
-            console.log(salt)
+            // console.log("+")
+            // console.log(ingredient)
+            // console.log(carbohydrate)
+            // console.log(protein)
+            // console.log(province)
+            // console.log(salt)
 
             return newQuantities;
         });
@@ -109,19 +115,21 @@ const RegistFood = ({ navigation }) => {
                 // setTotalProvince(prev => Math.max(prev - province, 0)); // 음수가 되지 않도록 최소값 0으로 설정
                 // setTotalSalt(prev => Math.max(prev - salt, 0)); // 음수가 되지 않도록 최소값 0으로 설정
 
-                console.log("-")
-                console.log(ingredient)
-                console.log(carbohydrate)
-                console.log(protein)
-                console.log(province)
-                console.log(salt)
+                // console.log("-")
+                // console.log(ingredient)
+                // console.log(carbohydrate)
+                // console.log(protein)
+                // console.log(province)
+                // console.log(salt)
 
                 return newQuantities;
             });
         }
     };
 
+    // 계산기
     const calculateTotals = () => {
+        // 0으로 초기화
         let tempTotalCalories = 0;
         let tempTotalCarbohydrate = 0;
         let tempTotalProtein = 0;
@@ -148,12 +156,12 @@ const RegistFood = ({ navigation }) => {
         setTotalProvince(parseFloat(tempTotalProvince.toFixed(2)));
         setTotalSalt(parseFloat(tempTotalSalt.toFixed(2)));
 
-        console.log("계산")
-        console.log(tempTotalCalories);
-        console.log(tempTotalCarbohydrate)
-        console.log(tempTotalProtein)
-        console.log(tempTotalProvince)
-        console.log(tempTotalSalt)
+        // console.log("계산")
+        // console.log(tempTotalCalories);
+        // console.log(tempTotalCarbohydrate)
+        // console.log(tempTotalProtein)
+        // console.log(tempTotalProvince)
+        // console.log(tempTotalSalt)
     };
 
 
@@ -161,8 +169,9 @@ const RegistFood = ({ navigation }) => {
         navigation.navigate("FoodSearch")
     }
 
+    // 식단 등록
     const firstPage = () => {
-        // 식단이름과 칼로리 스테이트
+        // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
             'totalKcal': totalCalories.toFixed(2),
@@ -189,6 +198,7 @@ const RegistFood = ({ navigation }) => {
             }
         }).then(response => {
             console.log("요청 성공")
+            // 성공시 첫번째 페이지로 돌아감
             // console.log(response)
             if (response.status === 200) {
                 navigation.navigate('FoodFirst');
@@ -202,11 +212,6 @@ const RegistFood = ({ navigation }) => {
             alert('에러발생')
         });
     }
-
-    // 받아온 데이터에서 이름 분리해서 왼쪽에넣고 오른쪽엔 칼로리와 수량 + - 버튼 출력
-    // + - 를 누르면 수량이랑 칼 탄 단 지 나가 0.5배씩 증가 또는 감소한다
-    // 탄 단 지 나는 화면상에는 출력되지 않지만 데이터는 계산되어야한다
-    // 밑에는 계산된 최종칼로리가 나옴
 
     return (
         <>
@@ -242,6 +247,7 @@ const RegistFood = ({ navigation }) => {
                     })}
                 </View>
 
+                {/* 미구현 */}
                 <Text>이미지 등록</Text>
 
                 <TouchableOpacity onPress={firstPage} style={styles.touch}>
@@ -267,6 +273,7 @@ const RegistFood = ({ navigation }) => {
                 <TouchableOpacity onPress={calculateTotals} style={styles.touch}>
                     <Text>계산하기</Text>
                 </TouchableOpacity>
+                {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>

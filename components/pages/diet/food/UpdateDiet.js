@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-
+// 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
     const [dietName, setDietName] = useState('');
     const [selectedMethod, setSelectedMethod] = useState('');
@@ -11,6 +11,7 @@ const UpdateDiet = ({ dietNo }) => {
     const [totalProvince, setTotalProvince] = useState(0);
     const [totalSalt, setTotalSalt] = useState(0);
 
+    // 수정
     const handleUpdate = () => {
         let updateDietData = {
             'dietName': dietName,
@@ -33,7 +34,6 @@ const UpdateDiet = ({ dietNo }) => {
         })
             .then(response => {
                 console.log("수정완료");
-                // 여기에서 필요한 작업 수행
             })
             .catch(error => {
                 console.error('Error:', error);
