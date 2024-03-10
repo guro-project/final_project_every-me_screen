@@ -50,8 +50,8 @@ const FoodFirst = ({ navigation }) => {
         })
             .then(response => {
                 setData(response.data)
-                console.log("qwe")
-                console.log(response.data)
+                // console.log("qwe")
+                // console.log(response.data)
             })
             .catch(error => {
                 console.error('Error data : ' + error);
@@ -63,7 +63,7 @@ const FoodFirst = ({ navigation }) => {
 
         const results = [];
         for (const item of data) {
-            const { dietNo, dietName, totalKcal } = item;
+            const { dietNo, dietName, totalKcal, dietCategory } = item;
 
             results.push(
                 <TouchableOpacity
@@ -73,7 +73,7 @@ const FoodFirst = ({ navigation }) => {
                         setModalVisible(true);
                     }}
                 >
-                    <Text>{dietName} {totalKcal}Kcal{'\n'}</Text>
+                    <Text>{dietCategory} {dietName} {totalKcal}Kcal{'\n'}</Text>
                 </TouchableOpacity>
             );
         }
