@@ -1,3 +1,4 @@
+
 import { Picker } from "@react-native-picker/picker";
 import { useRef } from "react";
 import { useState } from "react";
@@ -16,11 +17,16 @@ const SetUserInfo = () => {
 
     // 키보드 상태 관리를 위한 useRef
     const textInputRef = useRef(null);
+    const textInputRef2 = useRef(null);
 
     // 스크린 터치 이벤트 (키보드 내리기)
     const screenTouchHandler = () => {
         if (textInputRef.current) {
             textInputRef.current.blur();
+        }
+
+        if (textInputRef2.current) {
+            textInputRef2.current.blur();
         }
     }
 
@@ -37,6 +43,10 @@ const SetUserInfo = () => {
         setBirthday(formattedBirthday);
     };
 
+    const handleSelectGender = (gender) => {
+        setGender(gender);
+    };
+
     const prevStep = () => {
         if (step === 1) {
             return;
@@ -44,7 +54,15 @@ const SetUserInfo = () => {
         setStep(step - 1);
     }
     const nextStep = () => {
+        if (step === 4) {
+            checkHandler();
+            return;
+        }
         setStep(step + 1);
+    }
+
+    const checkHandler = () => {
+        console.log(nickName, gender, birthday, height, weight, goalWeight);
     }
 
     return (
@@ -67,7 +85,20 @@ const SetUserInfo = () => {
                     {step === 2 && (
                         <>
                             <Text style={styles.text}>성별을 입력해주세요</Text>
-
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity
+                                    style={[styles.button, gender === '남자' && styles.selectedButton]}
+                                    onPress={() => handleSelectGender('남자')}
+                                >
+                                    <Text style={[styles.buttonText, gender === '남자' && styles.selectedButtonText]}>남자</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.button, gender === '여자' && styles.selectedButton]}
+                                    onPress={() => handleSelectGender('여자')}
+                                >
+                                    <Text style={[styles.buttonText, gender === '여자' && styles.selectedButtonText]}>여자</Text>
+                                </TouchableOpacity>
+                            </View>
                         </>
                     )}
 
@@ -88,18 +119,36 @@ const SetUserInfo = () => {
 
                     {step === 4 && (
                         <>
-                            <Text style={styles.text}>생년월일을 입력해주세요</Text>
+                            <Text style={styles.text}>신체 치수를 입력해주세요</Text>
                             <TextInput
                                 ref={textInputRef}
                                 style={styles.input}
-                                placeholder="YYYY/MM/DD"
+                                placeholder="키"
                                 placeholderTextColor="gray"
-                                value={birthday}
-                                onChangeText={birthDayHandler}
+                                value={height}
+                                onChangeText={height => setHeight(height)}
+                                maxLength={10}
+                            />
+                            <TextInput
+                                ref={textInputRef}
+                                style={styles.input}
+                                placeholder="체중"
+                                placeholderTextColor="gray"
+                                value={weight}
+                                onChangeText={weight => setWeight(weight)}
+                                maxLength={10}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="목표 체중"
+                                placeholderTextColor="gray"
+                                value={goalWeight}
+                                onChangeText={goalWeight => setGoalWeight(goalWeight)}
                                 maxLength={10}
                             />
                         </>
                     )}
+
 
                     <View style={styles.btnContainer}>
                         <TouchableOpacity onPress={prevStep}>
@@ -165,5 +214,24 @@ const styles = StyleSheet.create({
     btnText: {
         color: 'white',
         fontSize: 20
-    }
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+    },
+    button: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        marginHorizontal: 5,
+        borderRadius: 5,
+    },
+    selectedButton: {
+        backgroundColor: 'green',
+    },
+    buttonText: {
+        fontSize: 16,
+        color: 'black',
+    },
+    selectedButtonText: {
+        color: 'white',
+    },
 })
