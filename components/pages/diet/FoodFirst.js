@@ -1,7 +1,8 @@
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import DietDetailPage from "./food/DietDetailPage";
 
 const FoodFirst = ({ navigation }) => {
     const page = () => {
@@ -10,6 +11,9 @@ const FoodFirst = ({ navigation }) => {
     }
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [data, setData] = useState(null);
+    const [dietNo, setDietNo] = useState(null);
+    const [selectedDietNo, setSelectedDietNo] = useState(null);
     const route = useRoute();
     const dietName = route.params ? route.params.dietName : null;
     const selectedMethod = route.params ? route.params.selectedMethod : null;
@@ -31,6 +35,52 @@ const FoodFirst = ({ navigation }) => {
 
     // 등록된 식단 클릭시 페이지가 나와서 영양상세정보가 나옴 가능하면 재료명도
 
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
+        axios({
+            method: 'GET',
+            url: 'http://172.30.1.96:8080/diet',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
+            }
+        })
+            .then(response => {
+                setData(response.data)
+                console.log("qwe")
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.error('Error data : ' + error);
+            });
+    }
+
+    const renderData = () => {
+        if (!data) return;
+
+        const results = [];
+        for (const item of data) {
+            const { dietNo, dietName, totalKcal } = item;
+
+            results.push(
+                <TouchableOpacity
+                    key={dietNo}
+                    onPress={() => {
+                        setSelectedDietNo(dietNo);
+                        setModalVisible(true);
+                    }}
+                >
+                    <Text>{dietName} {totalKcal}Kcal{'\n'}</Text>
+                </TouchableOpacity>
+            );
+        }
+
+        return results;
+    };
+
 
     return (
         <View>
@@ -43,20 +93,21 @@ const FoodFirst = ({ navigation }) => {
                 visible={modalVisible}
                 onRequestClose={() => {
                     setModalVisible(!modalVisible);
-                }}>
+                }}
+            >
                 <View>
                     <View style={sytles.modalView}>
-                        <Text style={{fontSize:20}}>{totalCalories}Kcal {totalCarbohydrate} {totalProtein} {totalProvince} {totalSalt}</Text>
-                        <Pressable
-                            onPress={() => setModalVisible(!modalVisible)}>
+                        <DietDetailPage dietNo={selectedDietNo} />
+                        <Pressable onPress={() => setModalVisible(!modalVisible)}>
                             <Text>닫기</Text>
                         </Pressable>
                     </View>
                 </View>
             </Modal>
             <Pressable onPress={() => setModalVisible(true)}>
-                {dietName !== null && totalCalories !== null && selectedMethod !== null &&
-                    <Text>{selectedMethod} 이름 : {dietName} 총 칼로리 : {totalCalories}Kcal</Text>}
+                {/* {dietName !== null && totalCalories !== null && selectedMethod !== null &&
+                    <Text>{selectedMethod} 이름 : {dietName} 총 칼로리 : {totalCalories}Kcal</Text>} */}
+                {renderData()}
             </Pressable>
         </View>
     )
@@ -75,7 +126,7 @@ const sytles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        marginTop:'30%',
+        marginTop: '30%',
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 10,
@@ -88,8 +139,8 @@ const sytles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width:'100%',
-        height:'90%',
+        width: '100%',
+        height: '90%',
     },
     button: {
         borderRadius: 20,
@@ -105,10 +156,6 @@ const sytles = StyleSheet.create({
     textStyle: {
         color: 'white',
         fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    modalText: {
-        marginBottom: 15,
         textAlign: 'center',
     }
 })

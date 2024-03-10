@@ -92,13 +92,14 @@ const RegistFood = ({ navigation }) => {
         let dietData = JSON.stringify({
             'dietName': dietName,
             'totalKcal': totalCalories,
-            'userId' : userId
+            'userId' : userId,
+            "dietCategory" : selectedMethod
         });
 
-        console.log("뭐받음?")
-        console.log(dietName)
-        console.log(totalCalories)
-        console.log(userId)
+        // console.log("뭐받음?")
+        // console.log(dietName)
+        // console.log(totalCalories)
+        // console.log(userId)
     
         axios({
             method: 'POST',
@@ -106,7 +107,7 @@ const RegistFood = ({ navigation }) => {
             data: dietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzA5OTYzODc4NjkyLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAyIiwiZXhwIjoxNzEwMDUwMjc4LCJ1c2VySWQiOiJ1c2VyMUB1c2VyMS5jb20ifQ.7PXDcn43NUP4hqCeLf0Fajx4s2uSAquhSD2hpnGieH0`
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
             }
         }).then(response => {
             console.log("요청 성공")
@@ -128,11 +129,6 @@ const RegistFood = ({ navigation }) => {
     // + - 를 누르면 수량이랑 칼 탄 단 지 나가 0.5배씩 증가 또는 감소한다
     // 탄 단 지 나는 화면상에는 출력되지 않지만 데이터는 계산되어야한다
     // 밑에는 계산된 최종칼로리가 나옴
-
-    // 내가 하려는 것
-    // 재료 혹은 음식 검색을 하고 담은 후에
-
-
 
     return (
         <>
