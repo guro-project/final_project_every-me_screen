@@ -6,15 +6,11 @@ import AddPage from "./function/AddPage";
 import Community from "./function/Community";
 import { StatusBar } from "react-native";
 import FoodIndexPage from "./diet/FoodIndexPage";
-import MyPage from "./chatBot/MyPage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyPageIndex from "./myPages/MyPageIndex";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
-
-    console.log(AsyncStorage.getItem('userToken'));
-    console.log(AsyncStorage.getItem('userId'));
 
     return (
         <>
@@ -61,7 +57,7 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="MyPage"
-                    component={MyPage}
+                    component={MyPageIndex}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="person-circle-outline" size={30} color='#03C75A'/>) : (<Ionicons name="person-circle-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,

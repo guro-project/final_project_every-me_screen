@@ -76,8 +76,6 @@ const Login = () => {
                 console.log('AsyncStorage 저장 오류:', error);
             }
 
-            console.log(AsyncStorage.getItem('userToken'));
-
             if (loginCounter === 2) {
                 if (response.data.userInfo.firstLogin == 'Y') {
                     navigation.navigate('FirstLogin');

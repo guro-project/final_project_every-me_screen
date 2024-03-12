@@ -74,7 +74,12 @@ const SetUserInfo = () => {
         console.log(userId)
         console.log(role)
         console.log(nickName);
-        AsyncStorage.setItem('userNickname', nickName);
+        await AsyncStorage.setItem('userNickname', nickName);
+        await AsyncStorage.setItem('userGender', gender);
+        await AsyncStorage.setItem('userBirthday', birthday);
+        await AsyncStorage.setItem('userHeight', height);
+        await AsyncStorage.setItem('userWeight', weight);
+        await AsyncStorage.setItem('userGoalWeight', goalWeight);
         
 
         const userInfo = JSON.stringify({
@@ -157,7 +162,7 @@ const SetUserInfo = () => {
                             <TextInput
                                 ref={textInputRef}
                                 style={styles.input}
-                                placeholder="YYYY/MM/DD"
+                                placeholder="YYYY-MM-DD"
                                 placeholderTextColor="gray"
                                 value={birthday}
                                 onChangeText={birthDayHandler}
