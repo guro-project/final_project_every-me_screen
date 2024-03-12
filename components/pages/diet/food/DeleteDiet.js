@@ -9,11 +9,11 @@ const DeleteDiet = ({dietNo}) => {
         
         axios({
             method: 'DELETE',
-            url: `http://172.30.1.96:8080/deletediet/${dietNo}`,
+            url: `http://172.30.1.19:8080/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 // 토큰 유효기간 지나면 적용안됨
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
             }
         })
         .then(response => {

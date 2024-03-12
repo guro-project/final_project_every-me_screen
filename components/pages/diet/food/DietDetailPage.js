@@ -3,7 +3,8 @@ import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'reac
 import axios from 'axios';
 import UpdateDiet from './UpdateDiet';
 import DeleteDiet from './DeleteDiet';
-import IconButton from '../../../UI/IconButton';
+import { Ionicons } from "@expo/vector-icons";
+
 // 식단 상세페이지 보는곳
 const DietDetailPage = ({ dietNo }) => {
     const [data, setData] = useState(null); // 데이터
@@ -26,85 +27,103 @@ const DietDetailPage = ({ dietNo }) => {
     const fetchDetailData = () => {
         axios({
             method: 'GET',
-            url: `http://172.30.1.96:8080/diet/${dietNo}`,
+            url: `http://172.30.1.19:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
             }
         })
             .then(response => {
                 setData(response.data);
-                console.log("asd");
-                console.log(response.data);
+                // console.log("asd");
+                // console.log(response.data);
             })
             .catch(error => {
-                console.error('Error data : ' + error);
-                console.log(dietNo)
+                console.error('상세조회 에러 : ' + error);
+                // console.log(dietNo)
             });
     }
 
     // 북마크 확인
     const checkBookmarkStatus = () => {
+        console.log("확인용")
         // 여기서 책갈피 상태를 API를 통해 확인하고, 이미 책갈피가 되어 있는 경우 setBookmarked(true)로 상태 변경
+        let BookmarkData = JSON.stringify({
+            'dietNo': dietNo
+        })
         axios({
-            method: "GET",
-            url: `http://172.30.1.96:8080/dietbookmark/${dietNo}`,
+            method: 'GET',
+            url: `http://172.30.1.19:8080/dietbm`,
+            data: BookmarkData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
             }
         })
             .then(response => {
                 setBookmarked(response.data.bookmarked);
+                // console.log("response.data 확인")
+                // console.log(response)
+                // console.log(response.data)
+                console.log(response.data.bookmarked)
             })
             .catch(error => {
-                console.error('북마크 조회 에러 :', error);
+                console.error('북마크 조회 에러 : ' + error);
+                console.log(dietNo)
             });
     }
 
-    // 북마크
-    const toggleBookmark = () => {
-        console.log("클릭")
-        if (bookmarked) {
-            // 북마크 삭제
+    const selectBookMark = async () => {
+        console.log("클릭됨")
+        if (!bookmarked) {
+            let BookmarkData = JSON.stringify({
+                'dietNo': dietNo
+            })
             axios({
-                method: "DELETE",
-                url: `http://172.30.1.96:8080/dietbookmark/${dietNo}`,
+                method: 'POST',
+                url: `http://172.30.1.19:8080/registdietbm`,
+                data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
+                    'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
                 }
             })
                 .then(() => {
+                    console.log("북마크 등록 성공")
+                    console.log(dietNo)
+                    console.log("북마크 상태 : " + !bookmarked)
+                    setBookmarked(true);
+                })
+                .catch(error => {
+                    console.log("북마크 추가 에러 : " + error)
+                    console.log(dietNo)
+                })
+        }
+        else {
+            let BookmarkData = JSON.stringify({
+                'dietNo': dietNo
+            })
+            axios({
+                method: 'DELETE',
+                url: `http://172.30.1.19:8080/deletedietbm`,
+                data: BookmarkData,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
+                }
+            })
+                .then(() => {
+                    console.log("북마크 삭제 성공");
+                    console.log("북마크 상태 : " + !bookmarked);
                     setBookmarked(false);
                 })
                 .catch(error => {
-                    console.error('북마크 삭제 에러 :', error);
-                });
-        } else {
-            // 북마크 추가
-            let bookmarkData = JSON.stringify({
-                'dietNo' : dietNo
-            });
-
-            axios({
-                method: "POST",
-                url: `http://172.30.1.96:8080/dietbookmark/${dietNo}`,
-                data : bookmarkData,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwMDUxMjU5NDg1LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAzIiwiZXhwIjoxNzEwMTM3NjU5LCJ1c2VySWQiOiJ1c2VyMkB1c2VyMi5jb20ifQ.V5pbRLREWJLa14_z0HP8jJCvSmNlVLDYOA3IzT8KDEE`
-                }
-            })
-                .then(() => {
-                    setBookmarked(true);
-                    console.log("성공")
-                })
-                .catch(error => {
-                    console.error('북마크 추가 에러:', error);
+                    console.log("북마크 삭제 에러 : " + error);
                 });
         }
-    };
+    }
+
+
 
     return (
         <View>
@@ -114,8 +133,8 @@ const DietDetailPage = ({ dietNo }) => {
                     <Text>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
                 </>
             )}
-            <TouchableOpacity onPress={toggleBookmark}>
-                <Text>북마크</Text>
+            <TouchableOpacity onPress={selectBookMark}>
+                <Ionicons name="bookmark" color={bookmarked ? "yellow" : "blue"} />
             </TouchableOpacity>
             <Modal
                 animationType="slide"
