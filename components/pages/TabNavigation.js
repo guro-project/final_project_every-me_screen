@@ -6,11 +6,16 @@ import AddPage from "./function/AddPage";
 import Community from "./function/Community";
 import { StatusBar } from "react-native";
 import FoodIndexPage from "./diet/FoodIndexPage";
-import Chatbot from "./chatBot/ChatBot";
+import MyPage from "./chatBot/MyPage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+
+    console.log(AsyncStorage.getItem('userToken'));
+    console.log(AsyncStorage.getItem('userId'));
+
     return (
         <>
             <StatusBar barStyle="light-content"/>
@@ -49,16 +54,16 @@ const TabNavigation = () => {
                     name="Community"
                     component={Community}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="people-circle-outline" size={30} color='#03C75A'/>) : (<Ionicons name="people-circle-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="clipboard-outline" size={30} color='#03C75A'/>) : (<Ionicons name="clipboard-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,
                     }}
                 />
 
                 <Tab.Screen
-                    name="ChatBot"
-                    component={Chatbot}
+                    name="MyPage"
+                    component={MyPage}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="chatbubbles-outline" size={30} color='#03C75A'/>) : (<Ionicons name="chatbubbles-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="person-circle-outline" size={30} color='#03C75A'/>) : (<Ionicons name="person-circle-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,
                     }}
                 />

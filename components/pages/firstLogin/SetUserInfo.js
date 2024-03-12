@@ -3,9 +3,14 @@ import { Picker } from "@react-native-picker/picker";
 import { useRef } from "react";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 
 const SetUserInfo = () => {
+
+    const navigation = useNavigation();
 
     const [step, setStep] = useState(1);
     const [nickName, setNickName] = useState("");
@@ -17,16 +22,11 @@ const SetUserInfo = () => {
 
     // 키보드 상태 관리를 위한 useRef
     const textInputRef = useRef(null);
-    const textInputRef2 = useRef(null);
 
     // 스크린 터치 이벤트 (키보드 내리기)
     const screenTouchHandler = () => {
         if (textInputRef.current) {
             textInputRef.current.blur();
-        }
-
-        if (textInputRef2.current) {
-            textInputRef2.current.blur();
         }
     }
 
@@ -35,10 +35,10 @@ const SetUserInfo = () => {
         let formattedBirthday = text.replace(/\D/g, ''); // 숫자 이외의 문자 제거
 
         if (formattedBirthday.length > 4) {
-          formattedBirthday = formattedBirthday.replace(/(\d{4})(\d{0,2})/, '$1/$2'); // YYYY/MM 형식으로 변환
+          formattedBirthday = formattedBirthday.replace(/(\d{4})(\d{0,2})/, '$1-$2'); // YYYY/MM 형식으로 변환
         }
         if (formattedBirthday.length > 7) {
-          formattedBirthday = formattedBirthday.replace(/(\d{4}\/\d{2})(\d{0,2})/, '$1/$2'); // YYYY/MM/DD 형식으로 변환
+          formattedBirthday = formattedBirthday.replace(/(\d{4}\-\d{2})(\d{0,2})/, '$1-$2'); // YYYY/MM/DD 형식으로 변환
         }
         setBirthday(formattedBirthday);
     };
@@ -55,14 +55,63 @@ const SetUserInfo = () => {
     }
     const nextStep = () => {
         if (step === 4) {
-            checkHandler();
+            submitBtnHandler();
             return;
         }
         setStep(step + 1);
     }
 
-    const checkHandler = () => {
-        console.log(nickName, gender, birthday, height, weight, goalWeight);
+    // const checkToken = () => {
+    //     const userToken = AsyncStorage.getItem('userToken');
+    //     console.log(userToken);
+    // }
+
+    const submitBtnHandler = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken');
+        const userId = await AsyncStorage.getItem('userId');
+        const role = await AsyncStorage.getItem('role');
+        console.log(userId)
+        console.log(role)
+        console.log(nickName);
+        AsyncStorage.setItem('userNickname', nickName);
+        
+
+        const userInfo = JSON.stringify({
+            'userId': userId,
+            'userNickname': nickName,
+            'userGender': gender,
+            'userBirth': birthday,
+            'userHeight': height,
+            'userWeight': weight,
+            'userWeightGoal': goalWeight
+        })
+
+        console.log(userInfo);
+
+        axios({
+            method: 'POST',
+            // url: 'http://192.168.0.176:8080/setUserInfo', // 집
+            // url: 'http://192.168.31.92:8080/setUserInfo', // 오릴리
+            // url: 'http://172.30.4.51:8080/setUserInfo', // 스벅
+            // url: 'http://172.30.1.49:8080/setUserInfo', // 투썸
+            url: 'http://192.168.0.12:8080/setUserInfo', // 학원
+            data: userInfo,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        }).then(response => {
+            console.log(response.data);
+            if (response.status === 200) {
+                navigation.navigate('TabNavigation');
+            } else {
+                alert('입력하신 정보를 확인해주세요');
+            }
+        }).catch(error => {
+            console.log(error);
+            alert('에러 : 입력하신 정보를 확인해주세요');
+        })
     }
 
     return (
@@ -77,7 +126,7 @@ const SetUserInfo = () => {
                                 style={styles.input}
                                 placeholder="nickName"
                                 value={nickName}
-                                onChangeText={text => setNickName(text)}
+                                onChangeText={nickName => setNickName(nickName)}
                             />
                         </>
                     )}
@@ -139,6 +188,7 @@ const SetUserInfo = () => {
                                 maxLength={10}
                             />
                             <TextInput
+                                ref={textInputRef}
                                 style={styles.input}
                                 placeholder="목표 체중"
                                 placeholderTextColor="gray"
@@ -191,6 +241,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
+        marginBottom: 10,
         color: 'white',
     },
     btnContainer: {
@@ -201,7 +252,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         position: 'absolute',
-        bottom: '40%',
+        bottom: '35%',
         left: 50,
         transform: [{ translateX: 50 }, { translateY: 50 }]
     },

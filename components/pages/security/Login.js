@@ -36,6 +36,8 @@ const Login = () => {
         setUserPass(text);
     }
 
+    let loginCounter = 0;
+
     const onLoginHandler = async () => {
         // 입력값 검증
         if (!userId || !userPass) {
@@ -43,46 +45,54 @@ const Login = () => {
             return;
         }
 
+        await AsyncStorage.setItem('userId', userId);
+
         let loginData = JSON.stringify({
             'id': userId,
             'pass': userPass
-        })
+        });
 
-        axios({
-            method: 'POST',
-            url: 'http://192.168.0.176:8080/login', // 집
-            // url: 'http://192.168.31.92:8080/login', // 오릴리
-            // url: 'http://172.30.4.51:8080/login', // 스벅
-            // url: 'http://172.30.1.49:8080/login', // 투썸
-            // url: 'http://192.168.0.12:8080/login', // 학원
-            data: loginData,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            const userToken = response.data.userInfo.userToken;
-            const setToken = () => {
-                // if (AsyncStorage.getItem('userToken')) {
-                //     AsyncStorage.clear;
-                // } else {
-                    AsyncStorage.setItem('userToken', userToken);
-                // }
-            }
-            setToken();
+        try {
+            const response = await axios({
+                method: 'POST',
+                // url: 'http://192.168.0.176:8080/login', // 집
+                // url: 'http://192.168.31.92:8080/login', // 오릴리
+                // url: 'http://172.30.4.51:8080/login', // 스벅
+                // url: 'http://172.30.1.49:8080/login', // 투썸
+                url: 'http://192.168.0.12:8080/login', // 학원
+                data: loginData,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-            console.log(response.data.userInfo.firstLogin);
-            
-            if (response.data.userInfo.firstLogin == 'Y') {
-                navigation.navigate('FirstLogin');
-            } else if (response.data.userInfo.firstLogin != 'Y') {
-                navigation.navigate('TabNavigation');
-            } else {
-                alert('아이디와 비밀번호를 확인해주세요');
+            loginCounter++;
+
+            console.log(response.data.userInfo.userToken);
+
+            try {
+                await AsyncStorage.setItem('userToken', response.data.userInfo.userToken);
+            } catch (error) {
+                console.log('AsyncStorage 저장 오류:', error);
             }
-        }).catch(error => {
+
+            console.log(AsyncStorage.getItem('userToken'));
+
+            if (loginCounter === 2) {
+                if (response.data.userInfo.firstLogin == 'Y') {
+                    navigation.navigate('FirstLogin');
+                } else {
+                    navigation.navigate('TabNavigation');
+                }
+                return; // 함수 종료
+            }
+
+            onLoginHandler(); // 재귀 호출
+        } catch (error) {
             console.log(error);
-        })
+        }
     }
+    
 
     return (
         <>
