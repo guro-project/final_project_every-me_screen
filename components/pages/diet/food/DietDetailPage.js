@@ -44,7 +44,7 @@ const DietDetailPage = ({ dietNo }) => {
             });
     }
 
-    // 북마크 확인
+    // 북마크 조회
     const checkBookmarkStatus = () => {
         console.log("확인용")
         // 여기서 책갈피 상태를 API를 통해 확인하고, 이미 책갈피가 되어 있는 경우 setBookmarked(true)로 상태 변경
