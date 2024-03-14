@@ -9,6 +9,7 @@ import FoodIndexPage from "./diet/FoodIndexPage";
 import MyPage from "./chatBot/MyPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
