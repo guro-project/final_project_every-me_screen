@@ -24,7 +24,6 @@ const IndexPage = () => {
     useEffect(() => {
         const checkLogin = async () => {
             const token = await AsyncStorage.getItem('userToken');
-            console.log(token);
             if (token) {
                 setLoggedIn(true);
             }
@@ -63,18 +62,18 @@ const IndexPage = () => {
                 name='EmailSignUp'
                 component={EmailSignUp}
                 options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name='MainPage'
-                component={MainPage}
-                options={{ headerShown: false}}
-            />
+                />
+                <Stack.Screen
+                    name='MainPage'
+                    component={MainPage}
+                    options={{ headerShown: false}}
+                />
 
-            <Stack.Screen
-                name='FirstLogin'
-                component={FirstLogin}
-                options={{ headerShown: false }}
-            />
+                <Stack.Screen
+                    name='FirstLogin'
+                    component={FirstLogin}
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         );
     }

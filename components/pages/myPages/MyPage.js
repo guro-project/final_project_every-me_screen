@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert, Button, Modal } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert, Button, Modal, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -8,15 +8,40 @@ const MyPage = () => {
     const navigation = useNavigation();
     const [userNickname, setUserNickName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    useEffect(() => {
+        const checkNickname = async () => {
+            const nickname = await AsyncStorage.getItem('userNickname');
+            setUserNickName(nickname);
+        };
+    
+        const interval = setInterval(checkNickname, 100);
+    
+        // 컴포넌트가 언마운트 될 때 clearInterval을 호출하여 interval을 정리합니다.
+        return () => clearInterval(interval);
+    }, []);
 
     const confirmLogout = () => {
         setModalVisible(true);
     };
 
-    const logOut = () => {
+    useEffect(() => {
+        const checkImage = async () => {
+            const userProfileImg = await AsyncStorage.getItem('userImage');
+            setSelectedImage(userProfileImg);
+        }
+        const interval = setInterval(checkImage, 100);
+    
+        // 컴포넌트가 언마운트 될 때 clearInterval을 호출하여 interval을 정리합니다.
+        return () => clearInterval(interval);
+    },[])
+
+
+    const logOut = async () => {
         try {
             // AsyncStorage에서 토큰을 지웁니다.
-            AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('userToken');
             console.log('삭제중..')
             // 앱을 완전히 초기화하여 초기화면으로 이동합니다.
             navigation.reset({
@@ -28,16 +53,6 @@ const MyPage = () => {
         }
     }
 
-    useEffect(() => {
-
-        const checkNickname = async () => {
-            const nickname = await AsyncStorage.getItem('userNickname');
-            setUserNickName(nickname);
-        }
-
-        checkNickname();
-    }, [userNickname])
-
     const pressTest = () => {
         console.log('btn')
     }
@@ -46,13 +61,23 @@ const MyPage = () => {
         <View style={styles.container}>
             <View style={styles.myPageContents}>
                 <Text style={styles.titleText}>마이 페이지</Text>
+                {/* 톱니버튼 */}
                 <Ionicons name="settings-outline" style={styles.settingBtn} onPress={logOut}/>
-                <Ionicons name="person-circle-outline" style={styles.profileImg}/>
+                {/* 프로필 이미지 */}
+                <View style={styles.profileBox}>
+                    {selectedImage !== null ? (
+                        <Image source={{ uri: selectedImage }} style={styles.profileImg} />
+                    ) : (
+                        <Ionicons name="person-circle-outline" style={styles.profileIcon} />
+                    )}
+                </View>
+                {/* 닉네임 */}
                 <Text style={styles.nickNameText}>{userNickname} 님</Text>
+                {/* 구분선 */}
                 <View style={styles.oneBorderLine}></View>
 
                 <View style={styles.myPageBtns}>
-                    <TouchableOpacity onPress={pressTest}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('AccountSettings')}>
                         <View style={styles.btnBox}>
                             <Ionicons name="document-text-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>계정 설정</Text>
@@ -96,10 +121,15 @@ const MyPage = () => {
                         >
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
-                                    <Text style={{fontSize: 20, marginBottom: 10}}>로그아웃 하시겠습니까?</Text>
-
-                                    <Button title="확인" onPress={() => { setModalVisible(false); logOut(); }} />
-                                    <Button title="취소" onPress={() => setModalVisible(false)} />
+                                    <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>로그아웃 하시겠습니까?</Text>
+                                    <View style={styles.modalBox}>
+                                        <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
+                                            <Text style={styles.modalText}>확인</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => { setModalVisible(false); }}>
+                                            <Text style={styles.modalText}>취소</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
                         </Modal>
@@ -150,17 +180,24 @@ const styles = StyleSheet.create({
     settingBtn: {
         position: 'absolute',
         top: '3%',
-        right: '1%',
+        right: '2%',
         fontSize: 30,
         fontWeight: 'bold',
         color: 'white'
     },
-    profileImg: {
-        color: 'white',
-        opacity: 0.7,
-        fontSize: 150,
+    profileBox: {
         position: 'absolute',
         top: '10%'
+    },
+    profileImg: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+    },
+    profileIcon: {
+        color: 'white',
+        opacity: 0.7,
+        fontSize: 150
     },
     nickNameText: {
         color: 'white',
@@ -187,12 +224,24 @@ const styles = StyleSheet.create({
     },
     btnText: {
         color: 'white',
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: 'bold'
     },
     btnContents: {
         color: 'white',
         fontSize: 30,
         fontWeight: 'bold'
+    },
+    modalBox: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalText: {
+        color: 'black',
+        fontSize: 22,
+        padding: 10,
+        marginHorizontal: 10
     }
 });
