@@ -45,6 +45,7 @@ const IndexPage = () => {
         );
     }
 
+
     if (loggedIn) {
         return (
             <Stack.Navigator initialRouteName='TabNavigation'>
@@ -59,14 +60,14 @@ const IndexPage = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                name='EmailSignUp'
-                component={EmailSignUp}
-                options={{ headerShown: false }}
+                    name='EmailSignUp'
+                    component={EmailSignUp}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name='MainPage'
                     component={MainPage}
-                    options={{ headerShown: false}}
+                    options={{ headerShown: false }}
                 />
 
                 <Stack.Screen
@@ -77,7 +78,7 @@ const IndexPage = () => {
             </Stack.Navigator>
         );
     }
-    
+
 
     return (
         <Stack.Navigator
@@ -99,7 +100,7 @@ const IndexPage = () => {
             <Stack.Screen
                 name='MainPage'
                 component={MainPage}
-                options={{ headerShown: false}}
+                options={{ headerShown: false }}
             />
 
             <Stack.Screen
@@ -119,7 +120,7 @@ const IndexPage = () => {
                 component={KaKaoLogin}
                 options={{ headerShown: false }}
             />
-            
+
         </Stack.Navigator>
     )
 }

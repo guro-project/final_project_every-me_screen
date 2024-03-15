@@ -195,6 +195,7 @@ const RegistFood = ({ navigation }) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+
             }
         }).then(response => {
             console.log("요청 성공")

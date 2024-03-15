@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {

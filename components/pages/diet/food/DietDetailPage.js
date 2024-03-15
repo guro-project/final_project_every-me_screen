@@ -4,6 +4,7 @@ import axios from 'axios';
 import UpdateDiet from './UpdateDiet';
 import DeleteDiet from './DeleteDiet';
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 식단 상세페이지 보는곳
 const DietDetailPage = ({ dietNo }) => {
@@ -24,13 +25,17 @@ const DietDetailPage = ({ dietNo }) => {
     }, []);
 
     // 상세조회
-    const fetchDetailData = () => {
+    const fetchDetailData = async() => {
+
+        const userToken = await AsyncStorage.getItem('userToken');
+        console.log(userToken)
+
         axios({
             method: 'GET',
             url: `http://192.168.0.64:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
             .then(response => {
@@ -98,6 +103,7 @@ const DietDetailPage = ({ dietNo }) => {
                     console.log(dietNo)
                 })
         }
+
         // 삭제
         else {
             let BookmarkData = JSON.stringify({
@@ -136,6 +142,7 @@ const DietDetailPage = ({ dietNo }) => {
             <TouchableOpacity onPress={selectBookMark}>
                 <Text>{bookmarked}</Text>
                 <Ionicons name="bookmark" color={bookmarked ? "yellow" : "black"} />
+
             </TouchableOpacity>
             <Modal
                 animationType="slide"
