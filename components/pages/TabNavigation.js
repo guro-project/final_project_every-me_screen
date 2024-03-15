@@ -53,44 +53,53 @@ const TabNavigation = () => {
             alert('에러 : 입력하신 정보를 확인해주세요.');
         }
         console.log('이미지 요청...')
-        try {
-                
-
-            const response = await axios({
-                method: 'GET',
-                // url: 'http://192.168.0.176:8080/getProfileImg', // 집
-                // url: 'http://192.168.31.92:8080/getProfileImg', // 오릴리
-                // url: 'http://172.30.4.51:8080/getProfileImg', // 스벅
-                // url: 'http://172.30.1.49:8080/getProfileImg', // 투썸
-                url: `http://192.168.0.12:8080/getProfileImg`, // 학원
-                params: {userId},
-                responseType: 'arraybuffer',
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
-                }
+        // try {
+            fetch(`http://192.168.0.12:8080/getProfileImg?userId=${userId}`)
+            .then(response => response.blob())
+            .then(async blob => {
+                console.log(URL.createObjectURL(blob));
+                await AsyncStorage.setItem('userProfileImg', URL.createObjectURL(blob));
+            })
+            .catch(error => {
+                console.log(error);
+                alert('에러 : 입력하신 정보를 확인해주세요.');
             })
 
-            try {
-                if (response.status === 200) {
-                    console.log(response);
-                    console.log(response.data);
-                    const imageBlob = new Blob([response.data], {type: 'image/jpeg'});
-                    console.log(imageBlob)
-                    const imageUrl = URL.createObjectURL(imageBlob);
-                    console.log(imageUrl);
-                    // const blob = await response.data;
-                    // const imageUrl = URL.createObjectURL(blob);
-                    // console.log(imageUrl);
-                    // await AsyncStorage.setItem('userProfileImg', imageUrl);
-                    // console.log(await AsyncStorage.getItem('userProfileImg'));
-                }
-            } catch (error) {
-                alert('입력하신 정보를 확인해주세요.');
-            }
-        } catch(error) {
-            console.log(error);
-            alert('에러2 : 입력하신 정보를 확인해주세요.');
-        }
+        //     const response = await axios({
+        //         method: 'GET',
+        //         // url: 'http://192.168.0.176:8080/getProfileImg', // 집
+        //         // url: 'http://192.168.31.92:8080/getProfileImg', // 오릴리
+        //         // url: 'http://172.30.4.51:8080/getProfileImg', // 스벅
+        //         // url: 'http://172.30.1.49:8080/getProfileImg', // 투썸
+        //         url: `http://192.168.0.12:8080/getProfileImg`, // 학원
+        //         params: {userId},
+        //         responseType: 'arraybuffer',
+        //         headers: {
+        //             'Authorization': `Bearer ${userToken}`
+        //         }
+        //     })
+
+        //     try {
+        //         if (response.status === 200) {
+        //             console.log(response);
+        //             console.log(response.data);
+        //             const imageBlob = new Blob([response.data], {type: 'image/jpeg'});
+        //             console.log(imageBlob)
+        //             const imageUrl = URL.createObjectURL(imageBlob);
+        //             console.log(imageUrl);
+        //             // const blob = await response.data;
+        //             // const imageUrl = URL.createObjectURL(blob);
+        //             // console.log(imageUrl);
+        //             // await AsyncStorage.setItem('userProfileImg', imageUrl);
+        //             // console.log(await AsyncStorage.getItem('userProfileImg'));
+        //         }
+        //     } catch (error) {
+        //         alert('입력하신 정보를 확인해주세요.');
+        //     }
+        // } catch(error) {
+        //     console.log(error);
+        //     alert('에러2 : 입력하신 정보를 확인해주세요.');
+        // }
     }
     useEffect(() => {
         loadUserInfo();
