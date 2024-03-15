@@ -5,75 +5,26 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 
 import * as ImagePicker from 'expo-image-picker';
-
-// import * as MediaLibrary from "expo-media-library";
-// import {launchCameraAsync, useCameraPermissions, PermissionStatus} from 'expo-image-picker';
-// import { Camera } from "expo-camera";
+import axios from "axios";
 
 
 const AccountSettings = () => {
 
     const navigation = useNavigation();
     const [userNickname, setUserNickName] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [loadImg, setLoadImg] = useState(null);
 
-    // const [pickedImage, setPickedImage] = useState(null);
-
-    // const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
-
-    // const verifyPermissions = async() => {
-    //     if(cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-    //         const permissionResponse = await requestPermission();
-    //         return permissionResponse.granted;
-    //     }
-
-    //     if(cameraPermissionInformation.status === PermissionStatus.DENIED) {
-    //         Alert.alert('주의', '앱을 사용하기 위해 권한이 필요합니다.');
-    //         return false;
-    //     }
-
-    //     return true;
-    // }
-
-    // const takeImageHandler = async () => {
-    //     const hasPermission = await verifyPermissions();
-
-    //     if (!hasPermission) {
-    //         return;
-    //     }
-
-    //     const image = await launchCameraAsync( // 찍고 나서 확정까지 기다려주는 라이브러리
-    //         {
-    //             allowsEditing: true,
-    //             aspect: [16,9],
-    //             quality: 0.5
-    //         }
-    //     );
-
-    //     if(!image.canceled) {
-    //         try {
-    //             if(Platform.OS === 'ios') {
-    //                 await MediaLibrary.saveToLibraryAsync(image.uri);
-    //             } else {
-    //                 const {status} = await MediaLibrary.requestPermissionsAsync();
-    //                 if (status === 'granted') {
-    //                     await MediaLibrary.saveToLibraryAsync(image.uri);
-    //                 }
-    //             }
-    //             setPickedImage(image.uri);
-    //             Alert.alert('성공', '갤러리에 이미지가 저장되었습니다')
-    //         } catch (error) {
-    //             console.error('Failed to save picture : ', error);
-    //             Alert.alert('실패', '사진을 저장하는 과정에서 오류가 발생했습니다')
-    //         }
-    //     }
-    // }
-
-    // let imagePreview = <Text>이미지가 없습니다</Text>
-
-    // if(pickedImage) {
-    //     imagePreview = <Image source={{uri: pickedImage}} style={styles.image}/>
-    // }
-    const [selectedImage, setSelectedImage] = useState(null);
+    useEffect(()=> {
+        const loadUserInfo = async () => {
+            const profileImg = await AsyncStorage.getItem('userProfileImg');
+            const userNickName = await AsyncStorage.getItem('userNickName');
+            setLoadImg(profileImg);
+            setUserNickName(userNickName);
+        };
+        loadUserInfo();
+    },[]);
+    
 
     useEffect(() => {
         (async () => {
@@ -86,37 +37,175 @@ const AccountSettings = () => {
         })();
     },[]);
 
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [16, 9],
+            quality: 0.5,
+        })    
+
+        if(!result.canceled) {
+
+            const updatedImg = result.assets[0].uri;
+            await AsyncStorage.setItem('profileUri', updatedImg);
+
+            const userToken = await AsyncStorage.getItem('userToken');
+            const userId = await AsyncStorage.getItem('userId');
+
+
+            // const userInfo = JSON.stringify({
+            //     'userId': userId,
+            //     'profileUri': updatedImg
+            // })
+
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('profileUri', {
+                name: 'userProfileImg.jpg',
+                type: 'image/jpeg',
+                uri: updatedImg
+            });
+
+            axios({
+                method: 'POST',
+                // url: 'http://192.168.0.176:8080/editProfileImg', // 집
+                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+                url: 'http://192.168.0.12:8080/editProfileImg', // 학원
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userToken}`
+                }
+            }).then(async response => {
+                if(response.status === 200) {
+                    setModalVisible(true)
+                } else {
+                    alert('입력하신 정보를 확인해주세요.');
+                }
+            }).catch(error => {
+                console.log(error);
+                alert('에러 : 입력하신 정보를 확인해주세요.');
+            })
+        }
+    
+    }
+
+    const pickImage2 = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
             quality: 1,
+        })    
+        console.log(result)
+
+        const userToken = await AsyncStorage.getItem('userToken');
+        const userId = await AsyncStorage.getItem('userId');
+
+        const imageUri = result.assets[0].uri;
+
+        const formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('imageFile', {
+            uri: imageUri,
+            type: 'image/jpeg',
+            name: `${userId}_profileImg.jpg`
+        });
+
+        console.log(formData);
+
+        await axios({
+            method: 'POST',
+                // url: 'http://192.168.0.176:8080/editProfileImg', // 집
+                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+                url: 'http://192.168.0.12:8080/editProfileImg2', // 학원
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userToken}`
+                }
+        }).then(async response => {
+            if(response.status === 200) {
+                console.log(response.data);
+            } else {
+                alert('입력하신 정보를 확인해주세요.');
+            }
+        }).catch(error => {
+            console.log(error);
+            alert('에러 : 입력하신 정보를 확인해주세요.');
         })
 
-        if(!result.cancelled) {
-            setSelectedImage(result.assets[0].uri);
-        }
-        
-        await AsyncStorage.setItem('userImage', result.assets[0].uri);
+        // if(!result.canceled) {
+        //     const updatedImg = result.assets[0].uri;
+        //     // await AsyncStorage.setItem('profileUri', updatedImg);
+
+        //     console.log(updatedImg)
+
+        //     const userToken = await AsyncStorage.getItem('userToken');
+        //     const userId = await AsyncStorage.getItem('userId');
+
+        //     const formData = new FormData();
+        //     formData.append('userId', userId);
+        //     const dietImgJson = JSON.stringify({
+        //         profileUri: updatedImg,
+        //     })
+        //     formData.append('dietImg', dietImgJson)
+
+        //     console.log(formData);
+        //     console.log(formData._parts);
+
+        //     // const userInfo = JSON.stringify({
+        //     //     'userId': userId,
+        //     //     'profileUri': updatedImg
+        //     // })
+
+        //     axios({
+        //         method: 'POST',
+        //         // url: 'http://192.168.0.176:8080/editProfileImg', // 집
+        //         // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+        //         // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+        //         // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+        //         url: 'http://192.168.0.12:8080/editProfileImg2', // 학원
+        //         data: formData,
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //             'Authorization': `Bearer ${userToken}`
+        //         }
+        //     }).then(async response => {
+        //         if(response.status === 200) {
+        //             console.log(response.data);
+        //             setModalVisible(true)
+        //         } else {
+        //             alert('입력하신 정보를 확인해주세요.');
+        //         }
+        //     }).catch(error => {
+        //         console.log(error);
+        //         alert('에러 : 입력하신 정보를 확인해주세요.');
+        //     })
+        // }
+    
     }
-    useEffect(() => {
-        const checkImage = async () => {
-            const userProfileImg = await AsyncStorage.getItem('userImage');
-            setSelectedImage(userProfileImg);
+
+    const logOut = async () => {
+        try {
+            // AsyncStorage에서 토큰을 지웁니다.
+            await AsyncStorage.clear();
+            console.log('삭제중..')
+            // 앱을 완전히 초기화하여 초기화면으로 이동합니다.
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
+        } catch (error) {
+            console.log('로그아웃 중 오류가 발생했습니다.', error);
         }
-        checkImage();
-    },[])
-
-
-
-    useEffect(() => {
-        const checkNickname = async () => {
-            const nickname = await AsyncStorage.getItem('userNickname');
-            setUserNickName(nickname);
-        }
-        checkNickname();
-    }, [])
+    }
 
     const pressTest = () => {
         console.log('btn')
@@ -128,12 +217,34 @@ const AccountSettings = () => {
                 <Text style={styles.titleText}>계정 설정</Text>
                 {/* 프로필 이미지 */}
                 <View style={styles.profileBox}>
-                    {selectedImage !== null ? (
-                        <Image source={{ uri: selectedImage }} style={styles.profileImg} />
+                    {loadImg !== null ? (
+                        <Image source={{ uri: loadImg }} style={styles.profileImg} />
                     ) : (
                         <Ionicons name="person-circle-outline" style={styles.profileIcon} />
                     )}
                     <Ionicons name="image-outline" style={styles.profileChange} onPress={pickImage} />
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
+                                <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>변경사항은 로그아웃 이후에 적용됩니다.</Text>
+                                <View style={styles.modalBox}>
+                                    <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
+                                        <Text style={styles.modalText}>로그아웃</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { setModalVisible(false); }}>
+                                        <Text style={styles.modalText}>로그인 유지</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
                 
                 {/* 닉네임 */}
@@ -153,7 +264,7 @@ const AccountSettings = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={pressTest}>
+                    <TouchableOpacity onPress={pickImage2}>
                         <View style={styles.btnBox}>
                             <Ionicons name="body-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>신체정보 변경</Text>
@@ -270,5 +381,16 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 30,
         fontWeight: 'bold'
+    },
+    modalBox: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalText: {
+        color: 'black',
+        fontSize: 20,
+        padding: 10,
+        marginHorizontal: 10
     }
 });

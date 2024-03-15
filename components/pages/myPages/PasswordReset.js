@@ -15,7 +15,7 @@ const PasswordReset = () => {
     const logOut = async () => {
         try {
             // AsyncStorage에서 토큰을 지웁니다.
-            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.clear();
             console.log('삭제중..')
             // 앱을 완전히 초기화하여 초기화면으로 이동합니다.
             navigation.reset({
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     pwdText: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 15,
         marginBottom: 15,
     },
     input: {
