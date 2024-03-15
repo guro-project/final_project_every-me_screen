@@ -61,7 +61,6 @@ const DietDetailPage = ({ dietNo }) => {
             }
         })
             .then(data => {
-                console.log(data.data)
                 setBookmarked(data.data.dietNo)
             })
             .catch(

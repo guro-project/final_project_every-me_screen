@@ -52,7 +52,6 @@ const Login = () => {
             'pass': userPass
         });
 
-<<<<<<< HEAD
         try {
             const response = await axios({
                 method: 'POST',
@@ -66,29 +65,6 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 }
             });
-=======
-        axios({
-            method: 'POST',
-            // url: 'http://192.168.0.176:8080/login', // 집
-            // url: 'http://172.30.4.51:8080/login', // 스벅
-            // url: 'http://172.30.1.49:8080/login', // 투썸
-            // url: 'http://172.30.1.19:8080/login', // 학원
-            url: 'http:/192.168.0.64:8080/login', // 학원
-            data: loginData,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            const userToken = response.data.userInfo.userToken;
-            const setToken = () => {
-                // if (AsyncStorage.getItem('userToken')) {
-                //     AsyncStorage.clear;
-                // } else {
-                    AsyncStorage.setItem('userToken', userToken);
-                // }
-            }
-            setToken();
->>>>>>> 643cf23106a9dd0e70338853565e13ec3d0d63cc
 
             loginCounter++;
 
