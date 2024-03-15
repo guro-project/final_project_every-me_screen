@@ -6,11 +6,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { Agenda } from "react-native-calendars";
 import FoodFirst from "../diet/FoodFirst";
-import FAQScreen from "../faq/faq";
-import FoodRegistered from "./FoodRegistered";
-import FetchTodo from "../Todo/TodoRegistered";
-import TodoRegistered from "../Todo/TodoRegistered";
-import FoodFirstCalendar from "./FoodFirstCalendar";
+// import FAQScreen from "../faq/faq";
+// import FoodRegistered from "./FoodRegistered";
+// import FetchTodo from "../Todo/TodoRegistered";
+// import TodoRegistered from "../Todo/TodoRegistered";
+// import FoodFirstCalendar from "./FoodFirstCalendar";
 
 
 
@@ -44,10 +44,10 @@ const ToggleButton = () => {
             </View>
             <View style={styles.content}>
                 {toggle === '식단' && (
-                    <FoodFirstCalendar />
+                    <FoodFirst />
                 )}
                 {toggle === '계획' && (
-                    <TodoRegistered/>
+                    <Todo/>
                 )}
             </View>
         </View>

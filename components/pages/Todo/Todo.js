@@ -27,7 +27,7 @@ function Todo() {
 
     axios({
       method: 'GET',
-      url: `http://192.168.0.160:8080/api/todos?date=${dateString}`,
+      url: `http://192.168.0.64:8080/api/todos?date=${dateString}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`

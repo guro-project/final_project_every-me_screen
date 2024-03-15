@@ -4,6 +4,7 @@ import HealthPage from "./health/HealthPage";
 import AddPage from "./function/AddPage";
 import { StatusBar } from "react-native";
 import FoodIndexPage from "./diet/FoodIndexPage";
+import CalendarView from "./calendar/Calendar";
 import MyPageIndex from "./myPages/MyPageIndex";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
@@ -114,8 +115,8 @@ const TabNavigation = () => {
                 initialRouteName='Home'
             >
                 <Tab.Screen
-                    name="Home"
-                    component={FoodIndexPage}
+                    name="Calendar"
+                    component={CalendarView}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,
