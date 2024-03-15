@@ -25,11 +25,11 @@ const UpdateDiet = ({ dietNo }) => {
 
         axios({
             method: 'PUT',
-            url: `http://172.30.1.19:8080/updatediet/${dietNo}`,
+            url: `http://192.168.0.160:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwMjU1NjIwOTg0LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiA1IiwiZXhwIjoxNzEwMzQyMDIwLCJ1c2VySWQiOiJ1c2VyNEB1c2VyNC5jb20ifQ.1PBqnS8iSGS6td2KSuZsZs52YGfAyz_Yi-AkKjQ99aM`
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
             }
         })
             .then(response => {
