@@ -1,15 +1,23 @@
 import { useRoute } from "@react-navigation/native";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-
+// 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
     const [dietName, setDietName] = useState('');
     const [selectedMethod, setSelectedMethod] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [ingredients, setIngredients] = useState([]);
     const methods = ["아침", "점심", "저녁", "기타"];
-    const [quantities, setQuantities] = useState([]);
+    const [quantities, setQuantities] = useState([]); // 수량
+    const [userId, setUserId] = useState('');
+
+    const [totalCalories, setTotalCalories] = useState(0);
+    const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
+    const [totalProtein, setTotalProtein] = useState(0);
+    const [totalProvince, setTotalProvince] = useState(0);
+    const [totalSalt, setTotalSalt] = useState(0);
 
     const route = useRoute();
     const selectedIngredients = route.params;
@@ -17,7 +25,8 @@ const RegistFood = ({ navigation }) => {
     const selectedFood = selectedIngredients.selectedIngredients[0]; // 첫 번째 요소 선택
     const foodName = selectedFood ? selectedFood.DESC_KOR : ''; // 이름 가져오기
 
-    // NUTR_CONT1 값 상수화 및 출력
+    // NUTR_CONT1,2,3,4,6 값 상수화 및 출력
+    // 원래 타입이 String 형식이라서 계산이 불가능해서 실수형으로 바꿔줌
     const parsedNUTR_CONT1 = selectedFood ? parseFloat(selectedFood.NUTR_CONT1) : 0;
     const parsedNUTR_CONT2 = selectedFood ? parseFloat(selectedFood.NUTR_CONT2) : 0;
     const parsedNUTR_CONT3 = selectedFood ? parseFloat(selectedFood.NUTR_CONT3) : 0;
@@ -31,75 +40,178 @@ const RegistFood = ({ navigation }) => {
         }
     }, [selectedIngredients]);
 
+    // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
+
     // + 버튼을 누를 때 수량 증가
     const increaseQuantity = (index) => {
         setQuantities(prevQuantities => {
             const newQuantities = [...prevQuantities];
-            newQuantities[index] += 0.5; // 해당 인덱스의 수량을 0.5 증가
+            newQuantities[index] += 0.5;
+
+            // 실시간 계산인데 값이 이상하게 나와서 주석처리 하고 계산하기 버튼 눌렀을시 계산 되는식으로 일단 바꿨음
+
+            // // 총합 칼로리를 갱신하는 데 사용될 임시 변수 초기화
+            // let tempTotalCalories = 0;
+
+            // // 각 항목의 칼로리 계산 및 총합 칼로리 갱신
+            // selectedIngredients.selectedIngredients.forEach((ingredient, i) => {
+            //     const calorie = parseFloat(ingredient.NUTR_CONT1) * newQuantities[i];
+            //     tempTotalCalories += calorie;
+            // });
+
+            // // 총합 칼로리 업데이트
+            // setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
+
+            // 탄수화물, 단백질, 지방, 나트륨 계산
+            // 탄 단 지 나 는 화면에 출력은 안되지만 + -버튼을 누르면 계산해줌
+            const ingredient = selectedIngredients.selectedIngredients[index];
+            const carbohydrate = parseFloat((ingredient.NUTR_CONT2) * newQuantities[index].toFixed(2));
+            const protein = parseFloat((ingredient.NUTR_CONT3) * newQuantities[index].toFixed(2));
+            const province = parseFloat((ingredient.NUTR_CONT4) * newQuantities[index].toFixed(2));
+            const salt = parseFloat((ingredient.NUTR_CONT6) * newQuantities[index].toFixed(2));
+
+            // 각 상태 변수 업데이트 얘도 실시간 계산인데 이상해서 주석처리 해놨음
+            // setTotalCarbohydrate(prev => prev + carbohydrate);
+            // setTotalProtein(prev => prev + protein);
+            // setTotalProvince(prev => prev + province);
+            // setTotalSalt(prev => prev + salt);
+
+            // console.log("+")
+            // console.log(ingredient)
+            // console.log(carbohydrate)
+            // console.log(protein)
+            // console.log(province)
+            // console.log(salt)
+
             return newQuantities;
         });
     };
 
     // - 버튼을 누를 때 수량 감소 (최소 수량은 0.5)
     const decreaseQuantity = (index) => {
-        if (quantities[index] > 0.5) { // 0.5 이상일 때만 감소하도록 조건 추가
+        if (quantities[index] > 0.5) {
             setQuantities(prevQuantities => {
                 const newQuantities = [...prevQuantities];
-                newQuantities[index] -= 0.5; // 해당 인덱스의 수량을 0.5 감소
+                newQuantities[index] -= 0.5;
+
+                // let tempTotalCalories = 0;
+
+                // selectedIngredients.selectedIngredients.forEach((ingredient, i) => {
+                //     const calorie = parseFloat(ingredient.NUTR_CONT1) * newQuantities[i];
+                //     tempTotalCalories += calorie;
+                // });
+
+                // 해당 재료의 영양소 값을 감소시키는 부분
+                const ingredient = selectedIngredients.selectedIngredients[index];
+                const carbohydrate = parseFloat(ingredient.NUTR_CONT2) * 0.5;
+                const protein = parseFloat(ingredient.NUTR_CONT3) * 0.5;
+                const province = parseFloat(ingredient.NUTR_CONT4) * 0.5;
+                const salt = parseFloat(ingredient.NUTR_CONT6) * 0.5;
+
+                // 각 상태 변수 업데이트
+                // setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)) - parseFloat(ingredient.NUTR_CONT1) * 0.5);
+                // setTotalCarbohydrate(prev => Math.max(prev - carbohydrate, 0)); // 음수가 되지 않도록 최소값 0으로 설정
+                // setTotalProtein(prev => Math.max(prev - protein, 0)); // 음수가 되지 않도록 최소값 0으로 설정
+                // setTotalProvince(prev => Math.max(prev - province, 0)); // 음수가 되지 않도록 최소값 0으로 설정
+                // setTotalSalt(prev => Math.max(prev - salt, 0)); // 음수가 되지 않도록 최소값 0으로 설정
+
+                // console.log("-")
+                // console.log(ingredient)
+                // console.log(carbohydrate)
+                // console.log(protein)
+                // console.log(province)
+                // console.log(salt)
+
                 return newQuantities;
             });
         }
     };
 
-    // 총합 칼로리 계산
-    const totalCalories = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
-        const calorie = parseFloat(ingredient.NUTR_CONT1) * quantities[index];
-        return total + calorie;
-    }, 0);
+    // 계산기
+    const calculateTotals = () => {
+        // 0으로 초기화
+        let tempTotalCalories = 0;
+        let tempTotalCarbohydrate = 0;
+        let tempTotalProtein = 0;
+        let tempTotalProvince = 0;
+        let tempTotalSalt = 0;
 
-    // console.log(totalCalories)
-    
-    const totalCarbohydrate = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
-        const carbohydrate = parseFloat(ingredient.NUTR_CONT2) * quantities[index];
-        return total + carbohydrate;
-    }, 0);
+        selectedIngredients.selectedIngredients.forEach((ingredient, i) => {
+            const calorie = parseFloat(ingredient.NUTR_CONT1) * quantities[i];
+            const carbohydrate = parseFloat(ingredient.NUTR_CONT2) * quantities[i];
+            const protein = parseFloat(ingredient.NUTR_CONT3) * quantities[i];
+            const province = parseFloat(ingredient.NUTR_CONT4) * quantities[i];
+            const salt = parseFloat(ingredient.NUTR_CONT6) * quantities[i];
 
-    // console.log(totalCarbohydrate)
-    
-    const totalProtein = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
-        const protein = parseFloat(ingredient.NUTR_CONT3) * quantities[index];
-        return total + protein;
-    }, 0);
-    
-    const totalProvince = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
-        const province = parseFloat(ingredient.NUTR_CONT4) * quantities[index];
-        return total + province;
-    }, 0);
-    
-    const totalSalt = selectedIngredients.selectedIngredients.reduce((total, ingredient, index) => {
-        const salt = parseFloat(ingredient.NUTR_CONT6) * quantities[index];
-        return total + salt;
-    }, 0);
+            tempTotalCalories += calorie;
+            tempTotalCarbohydrate += carbohydrate;
+            tempTotalProtein += protein;
+            tempTotalProvince += province;
+            tempTotalSalt += salt;
+        });
+
+        setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
+        setTotalCarbohydrate(parseFloat(tempTotalCarbohydrate.toFixed(2)));
+        setTotalProtein(parseFloat(tempTotalProtein.toFixed(2)));
+        setTotalProvince(parseFloat(tempTotalProvince.toFixed(2)));
+        setTotalSalt(parseFloat(tempTotalSalt.toFixed(2)));
+
+        // console.log("계산")
+        // console.log(tempTotalCalories);
+        // console.log(tempTotalCarbohydrate)
+        // console.log(tempTotalProtein)
+        // console.log(tempTotalProvince)
+        // console.log(tempTotalSalt)
+    };
+
 
     const searchPage = () => {
         navigation.navigate("FoodSearch")
     }
 
+    // 식단 등록
     const firstPage = () => {
-        navigation.navigate("FoodFirst", {dietName : dietName, selectedMethod : selectedMethod, totalCalories : totalCalories,
-            totalCarbohydrate : totalCarbohydrate, totalProtein : totalProtein, totalProvince : totalProvince, totalSalt : totalSalt})
-        // console.log("이름 받아가나?")
-        // console.log(dietName)
-        // console.log("끼니 받아가나?")
-        // console.log(selectedMethod)
-        // console.log("총 칼로리 받아가나?")
-        // console.log(totalCalories.toFixed(2))
-    }
+        // 식단 데이터 등록하기위한 json화
+        let dietData = JSON.stringify({
+            'dietName': dietName,
+            'totalKcal': totalCalories.toFixed(2),
+            'userId': userId,
+            "dietCategory": selectedMethod,
+            'totalCarbohydrate': totalCarbohydrate.toFixed(2),
+            'totalProtein': totalProtein.toFixed(2),
+            'totalProvince': totalProvince.toFixed(2),
+            'totalSalt': totalSalt.toFixed(2),
+        });
 
-    // 받아온 데이터에서 이름 분리해서 왼쪽에넣고 오른쪽엔 칼로리와 수량 + - 버튼 출력
-    // + - 를 누르면 수량이랑 칼 탄 단 지 나가 0.5배씩 증가 또는 감소한다
-    // 탄 단 지 나는 화면상에는 출력되지 않지만 데이터는 계산되어야한다
-    // 밑에는 계산된 최종칼로리가 나옴
+        // console.log("뭐받음?")
+        // console.log(dietName)
+        // console.log(totalCalories)
+        // console.log(userId)
+
+        axios({
+            method: 'POST',
+            url: 'http://192.168.0.64:8080/registdiet',
+            data: dietData,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+            }
+        }).then(response => {
+            console.log("요청 성공")
+            // 성공시 첫번째 페이지로 돌아감
+            // console.log(response)
+            if (response.status === 200) {
+                navigation.navigate('FoodFirst');
+                // console.log(response.data)
+            } else {
+                alert('값 확인');
+            }
+        }).catch(error => {
+            console.log("에러")
+            console.log(error);
+            alert('에러발생')
+        });
+    }
 
     return (
         <>
@@ -135,6 +247,7 @@ const RegistFood = ({ navigation }) => {
                     })}
                 </View>
 
+                {/* 미구현 */}
                 <Text>이미지 등록</Text>
 
                 <TouchableOpacity onPress={firstPage} style={styles.touch}>
@@ -146,20 +259,26 @@ const RegistFood = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <Text>=============================</Text>
+
                 {selectedIngredients.selectedIngredients.map((ingredient, index) => (
                     <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>
                             {`${ingredient.DESC_KOR} ${(parseFloat(ingredient.NUTR_CONT1) * quantities[index]).toFixed(2)}Kcal`}
-                            <Text style={{color:'white', fontSize:4}}>
-                            {`${(parseFloat(ingredient.NUTR_CONT2) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT3) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT4) * quantities[index]).toFixed(2)} ${(parseFloat(ingredient.NUTR_CONT6) * quantities[index]).toFixed(2)}`}</Text>
                         </Text>
                         <Text style={{ marginLeft: 10, marginRight: 10 }} >{quantities[index]}개</Text>
                         <TouchableOpacity onPress={() => increaseQuantity(index)} style={{ marginLeft: 10, marginRight: 10, borderWidth: 1 }}><Text style={{ fontSize: 20 }}>+</Text></TouchableOpacity>
                         <TouchableOpacity onPress={() => decreaseQuantity(index)} style={{ marginLeft: 10, marginRight: 10, borderWidth: 1 }}><Text style={{ fontSize: 20 }}>-</Text></TouchableOpacity>
                     </View>
                 ))}
+                <TouchableOpacity onPress={calculateTotals} style={styles.touch}>
+                    <Text>계산하기</Text>
+                </TouchableOpacity>
+                {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
-                <Text style={{color:'white', fontSize:4}}>{totalCarbohydrate.toFixed(2)} {totalProtein.toFixed(2)} {totalProvince.toFixed(2)} {totalSalt.toFixed(2)}</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 지방: {totalProvince.toFixed(2)} g</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 나트륨: {totalSalt.toFixed(2)} mg</Text>
             </View>
         </>
     );

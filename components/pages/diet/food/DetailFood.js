@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
+// 음식 등록하는곳 미완성
 const DetailFood = ({navigation}) => {
 
     //데이터 받아왔나 확인
