@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
     const [dietName, setDietName] = useState('');
@@ -12,7 +13,7 @@ const UpdateDiet = ({ dietNo }) => {
     const [totalSalt, setTotalSalt] = useState(0);
 
     // 수정
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         let updateDietData = {
             'dietName': dietName,
             'dietCategory': selectedMethod, //dietCategory랑 selectedMethod 둘다 끼니
@@ -22,14 +23,14 @@ const UpdateDiet = ({ dietNo }) => {
             'totalProvince': totalProvince,
             'totalSalt': totalSalt
         };
-
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'PUT',
-            url: `http://192.168.0.64:8080/updatediet/${dietNo}`,
+            url: `http://172.30.1.26:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
             .then(response => {

@@ -25,14 +25,14 @@ const DietDetailPage = ({ dietNo }) => {
     }, []);
 
     // 상세조회
-    const fetchDetailData = async() => {
+    const fetchDetailData = async () => {
 
         const userToken = await AsyncStorage.getItem('userToken');
-        console.log(userToken)
+        // console.log(userToken)
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/diet/${dietNo}`,
+            url: `http://172.30.1.26:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -50,34 +50,34 @@ const DietDetailPage = ({ dietNo }) => {
     }
 
     // 북마크 조회
-    const checkBookmarkStatus = async() => {
-        console.log("확인용")
-        console.log(dietNo)
-        // 여기서 책갈피 상태를 API를 통해 확인하고, 이미 책갈피가 되어 있는 경우 setBookmarked(true)로 상태 변경
-
-        // const dietNo = dietNo;
-        await axios({
+    const checkBookmarkStatus = async () => {
+        console.log("확인용", dietNo);
+        const userToken = await AsyncStorage.getItem('userToken');
+        axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/dietbm?dietNo=${dietNo}`,
-            // params: {dietNo},
+            url: `http://172.30.1.26:8080/dietbm?dietNo=${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
-            .then(data => {
-                setBookmarked(data.data.dietNo)
+            .then(response => {
+                setBookmarked(true);
             })
-            .catch(
-                error => {
-                console.error('북마크 조회 에러 : ' + error);
-                console.log(dietNo)
+            .catch(error => {
+                // 404 에러가 발생하면 북마크가 없는 것으로 간주
+                if (error.response.status === 404) {
+                    console.log('북마크가 존재하지 않음');
+                    setBookmarked(false);
+                } else {
+                    console.error('북마크 조회 에러:', error);
+                }
             });
-            
     }
 
     //추가
     const selectBookMark = async () => {
+        const userToken = await AsyncStorage.getItem('userToken');
         console.log("클릭됨")
         if (!bookmarked) {
             let BookmarkData = JSON.stringify({
@@ -85,11 +85,11 @@ const DietDetailPage = ({ dietNo }) => {
             })
             axios({
                 method: 'POST',
-                url: `http://192.168.0.64:8080/registdietbm`,
+                url: `http://172.30.1.26:8080/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {
@@ -109,13 +109,14 @@ const DietDetailPage = ({ dietNo }) => {
             let BookmarkData = JSON.stringify({
                 'dietNo': dietNo
             })
+            const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
-                url: `http://192.168.0.64:8080/deletedietbm`,
+                url: `http://172.30.1.26:8080/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {
@@ -140,9 +141,7 @@ const DietDetailPage = ({ dietNo }) => {
                 </>
             )}
             <TouchableOpacity onPress={selectBookMark}>
-                <Text>{bookmarked}</Text>
                 <Ionicons name="bookmark" color={bookmarked ? "yellow" : "black"} />
-
             </TouchableOpacity>
             <Modal
                 animationType="slide"

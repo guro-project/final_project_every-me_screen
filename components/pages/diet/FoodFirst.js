@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DietDetailPage from "./food/DietDetailPage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단의 메인화면
 const FoodFirst = ({ navigation }) => {
     const page = () => {
@@ -42,13 +43,15 @@ const FoodFirst = ({ navigation }) => {
     }, []);
 
     // 전체조회
-    const fetchData = () => {
+    const fetchData =  async () => {
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
-            url: 'http://192.168.0.64:8080/diet',
+            // url: 'http://192.168.0.64:8080/diet',
+            url : 'http://172.30.1.26:8080/diet',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
             .then(response => {

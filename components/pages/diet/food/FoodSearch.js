@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 //skip 버튼 누르고 음식검색 누르면 나오는 곳 미완성
-const FoodSearch = ({navigation}) => {
+const FoodSearch = async({navigation}) => {
     const [name,setName] = useState('');
     const [foodName,setFoodName] = useState([]);
     const [clickedNames,setClickedNames] = useState([]);
@@ -30,6 +30,9 @@ const FoodSearch = ({navigation}) => {
                 console.log(listNames)
         })
     }
+    // const userNo = await AsyncStorage.getItem('userNo')
+    // console.log(userNo)
+    // console.log("qwe")
 
     // 요청 보내기
     const onChangeHandler = (text) => {

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -39,6 +40,20 @@ const RegistFood = ({ navigation }) => {
             setQuantities(selectedIngredients.selectedIngredients.map(() => 1));
         }
     }, [selectedIngredients]);
+
+    useEffect(() => {
+        const fetchUserNo = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                setUserId(userNo); // 가져온 userNo를 상태 변수에 저장
+                console.log(userNo);
+            } catch (error) {
+                console.log("Error fetching userNo:", error);
+            }
+        };
+    
+        fetchUserNo(); // 비동기 함수 호출
+    }, []);
 
     // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
 
@@ -169,8 +184,25 @@ const RegistFood = ({ navigation }) => {
         navigation.navigate("FoodSearch")
     }
 
+    const fetchUserNo = async () => {
+        try {
+            const userNo = await AsyncStorage.getItem('userNo');
+            console.log(userNo);
+        } catch (error) {
+            console.log("Error fetching userNo:", error);
+        }
+    };
+    
+    fetchUserNo();
+
+    AsyncStorage.getItem('userNo').then(userNo => {
+        console.log(userNo);
+    }).catch(error => {
+        console.log("Error fetching userNo:", error);
+    });
+
     // 식단 등록
-    const firstPage = () => {
+    const firstPage = async () => {
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
@@ -181,20 +213,21 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
+            'userNo' : userNo
         });
 
         // console.log("뭐받음?")
         // console.log(dietName)
         // console.log(totalCalories)
         // console.log(userId)
-
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.64:8080/registdiet',
+            url: 'http://172.30.1.26:8080/registdiet',
             data: dietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
 
             }
         }).then(response => {

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
@@ -5,15 +6,15 @@ import { Text, TouchableOpacity } from "react-native";
 const DeleteDiet = ({dietNo}) => {
 
     // 삭제
-    const handleDelete = () => {
-        
+    const handleDelete = async() => {
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'DELETE',
-            url: `http://192.168.0.64:8080/deletediet/${dietNo}`,
+            url: `http://172.30.1.26:8080/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 // 토큰 유효기간 지나면 적용안됨
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
         .then(response => {

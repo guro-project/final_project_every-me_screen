@@ -27,7 +27,7 @@ const TabNavigation = () => {
                 // url: 'http://192.168.31.92:8080/loadUserInfo', // 오릴리
                 // url: 'http://172.30.4.51:8080/loadUserInfo', // 스벅
                 // url: 'http://172.30.1.49:8080/loadUserInfo', // 투썸
-                url: 'http://192.168.0.12:8080/loadUserInfo', // 학원
+                url: 'http://192.168.0.64:8080/loadUserInfo', // 학원
                 params: {userId},
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -39,12 +39,14 @@ const TabNavigation = () => {
 
             try {
                 if (response.status === 200) {
+                    await AsyncStorage.setItem('userNo', JSON.stringify(response.data.userNo));
                     await AsyncStorage.setItem('userNickName', response.data.userNickname);
                     await AsyncStorage.setItem('userGender', response.data.userGender);
                     await AsyncStorage.setItem('userBirthday', formattedDate);
                     await AsyncStorage.setItem('userHeight', JSON.stringify(response.data.userHeight));
                     await AsyncStorage.setItem('userWeight', JSON.stringify(response.data.userWeight));
                     await AsyncStorage.setItem('userWeightGoal', JSON.stringify(response.data.userWeightGoal));
+                    console.log(await AsyncStorage.getItem('userNo'))
                 }
             } catch (error) {
                 console.log(response);
@@ -53,19 +55,20 @@ const TabNavigation = () => {
         } catch(error) {
             console.log(error);
             alert('에러 : 입력하신 정보를 확인해주세요.');
+            console.log(userNo)
         }
         console.log('이미지 요청...')
         // try {
-            fetch(`http://192.168.0.12:8080/getProfileImg?userId=${userId}`)
-            .then(response => response.blob())
-            .then(async blob => {
-                console.log(URL.createObjectURL(blob));
-                await AsyncStorage.setItem('userProfileImg', URL.createObjectURL(blob));
-            })
-            .catch(error => {
-                console.log(error);
-                alert('에러 : 입력하신 정보를 확인해주세요.');
-            })
+            // fetch(`http://192.168.0.12:8080/getProfileImg?userId=${userId}`)
+            // .then(response => response.blob())
+            // .then(async blob => {
+            //     console.log(URL.createObjectURL(blob));
+            //     await AsyncStorage.setItem('userProfileImg', URL.createObjectURL(blob));
+            // })
+            // .catch(error => {
+            //     console.log(error);
+            //     alert('에러 : 입력하신 정보를 확인해주세요.');
+            // })
 
         //     const response = await axios({
         //         method: 'GET',
@@ -116,7 +119,7 @@ const TabNavigation = () => {
             >
                 <Tab.Screen
                     name="Calendar"
-                    component={CalendarView}
+                    component={FoodIndexPage}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,
