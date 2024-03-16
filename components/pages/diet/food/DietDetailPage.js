@@ -18,10 +18,26 @@ const DietDetailPage = ({ dietNo }) => {
     const [totalProvince, setTotalProvince] = useState(0); // 지방
     const [totalSalt, setTotalSalt] = useState(0); // 나트륨
     const [bookmarked, setBookmarked] = useState(false); // 북마크
+    const [userNo, setUserNo] = useState('');
 
     useEffect(() => {
         fetchDetailData();
         checkBookmarkStatus();
+    }, []);
+
+    useEffect(() => {
+        const fetchUserNo = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null) {
+                    setUserNo(userNo);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    
+        fetchUserNo();
     }, []);
 
     // 상세조회
@@ -51,7 +67,7 @@ const DietDetailPage = ({ dietNo }) => {
 
     // 북마크 조회
     const checkBookmarkStatus = async () => {
-        console.log("확인용", dietNo);
+        console.log("확인용", dietNo, userNo);
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
@@ -79,9 +95,11 @@ const DietDetailPage = ({ dietNo }) => {
     const selectBookMark = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
         console.log("클릭됨")
+        console.log(userNo)
         if (!bookmarked) {
             let BookmarkData = JSON.stringify({
-                'dietNo': dietNo
+                'dietNo': dietNo,
+                'userNo': userNo
             })
             axios({
                 method: 'POST',

@@ -13,7 +13,6 @@ const DeleteDiet = ({dietNo}) => {
             url: `http://172.30.1.26:8080/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
-                // 토큰 유효기간 지나면 적용안됨
                 'Authorization': `Bearer ${userToken}`
             }
         })

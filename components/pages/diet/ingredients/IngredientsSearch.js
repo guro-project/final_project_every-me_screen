@@ -89,9 +89,9 @@ const IngredientsSearch = () => {
     // console.log(category);
     
     // 스킵버튼
-    const skipIngre = () => {
-        navigation.navigate("RegistFood")
-    }
+    // const skipIngre = () => {
+    //     navigation.navigate("RegistFood")
+    // }
 
     // 검색 시 리스트가 출력되고 리스트 된 것들을 누르면 바구니에 담긴다
     // 바구니에 담긴 데이터를 수량 조절 페이지로 보냄
@@ -133,9 +133,9 @@ const IngredientsSearch = () => {
                 <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
                     <Text>다음</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
+                {/* <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
                     <Text>스킵</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 </View>
             </View>
         </>

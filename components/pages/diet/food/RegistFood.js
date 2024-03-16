@@ -12,7 +12,7 @@ const RegistFood = ({ navigation }) => {
     const [ingredients, setIngredients] = useState([]);
     const methods = ["아침", "점심", "저녁", "기타"];
     const [quantities, setQuantities] = useState([]); // 수량
-    const [userId, setUserId] = useState('');
+    const [userNo, setUserNo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -45,14 +45,15 @@ const RegistFood = ({ navigation }) => {
         const fetchUserNo = async () => {
             try {
                 const userNo = await AsyncStorage.getItem('userNo');
-                setUserId(userNo); // 가져온 userNo를 상태 변수에 저장
-                console.log(userNo);
+                if (userNo !== null) {
+                    setUserNo(userNo);
+                }
             } catch (error) {
-                console.log("Error fetching userNo:", error);
+                console.log(error);
             }
         };
     
-        fetchUserNo(); // 비동기 함수 호출
+        fetchUserNo();
     }, []);
 
     // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
@@ -184,22 +185,8 @@ const RegistFood = ({ navigation }) => {
         navigation.navigate("FoodSearch")
     }
 
-    const fetchUserNo = async () => {
-        try {
-            const userNo = await AsyncStorage.getItem('userNo');
-            console.log(userNo);
-        } catch (error) {
-            console.log("Error fetching userNo:", error);
-        }
-    };
-    
-    fetchUserNo();
-
-    AsyncStorage.getItem('userNo').then(userNo => {
-        console.log(userNo);
-    }).catch(error => {
-        console.log("Error fetching userNo:", error);
-    });
+    // const userNo = await AsyncStorage.getItem('userNo')
+    // console.log(userNo)
 
     // 식단 등록
     const firstPage = async () => {
@@ -207,13 +194,12 @@ const RegistFood = ({ navigation }) => {
         let dietData = JSON.stringify({
             'dietName': dietName,
             'totalKcal': totalCalories.toFixed(2),
-            'userId': userId,
+            'userNo': userNo,
             "dietCategory": selectedMethod,
             'totalCarbohydrate': totalCarbohydrate.toFixed(2),
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
-            'totalSalt': totalSalt.toFixed(2),
-            'userNo' : userNo
+            'totalSalt': totalSalt.toFixed(2)
         });
 
         // console.log("뭐받음?")

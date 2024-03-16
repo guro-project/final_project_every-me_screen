@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
+import RegistFood from "./diet/food/RegistFood";
 
 
 const Tab = createBottomTabNavigator();
@@ -27,8 +28,8 @@ const TabNavigation = () => {
                 // url: 'http://192.168.31.92:8080/loadUserInfo', // 오릴리
                 // url: 'http://172.30.4.51:8080/loadUserInfo', // 스벅
                 // url: 'http://172.30.1.49:8080/loadUserInfo', // 투썸
-                url: 'http://192.168.0.64:8080/loadUserInfo', // 학원
-                params: {userId},
+                url: 'http://172.30.1.26:8080/loadUserInfo', // 학원
+                params: { userId },
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -46,29 +47,30 @@ const TabNavigation = () => {
                     await AsyncStorage.setItem('userHeight', JSON.stringify(response.data.userHeight));
                     await AsyncStorage.setItem('userWeight', JSON.stringify(response.data.userWeight));
                     await AsyncStorage.setItem('userWeightGoal', JSON.stringify(response.data.userWeightGoal));
+                    console.log("userNo")
                     console.log(await AsyncStorage.getItem('userNo'))
                 }
             } catch (error) {
                 console.log(response);
                 alert('입력하신 정보를 확인해주세요.');
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error);
             alert('에러 : 입력하신 정보를 확인해주세요.');
             console.log(userNo)
         }
         console.log('이미지 요청...')
         // try {
-            // fetch(`http://192.168.0.12:8080/getProfileImg?userId=${userId}`)
-            // .then(response => response.blob())
-            // .then(async blob => {
-            //     console.log(URL.createObjectURL(blob));
-            //     await AsyncStorage.setItem('userProfileImg', URL.createObjectURL(blob));
-            // })
-            // .catch(error => {
-            //     console.log(error);
-            //     alert('에러 : 입력하신 정보를 확인해주세요.');
-            // })
+        // fetch(`http://192.168.0.12:8080/getProfileImg?userId=${userId}`)
+        // .then(response => response.blob())
+        // .then(async blob => {
+        //     console.log(URL.createObjectURL(blob));
+        //     await AsyncStorage.setItem('userProfileImg', URL.createObjectURL(blob));
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        //     alert('에러 : 입력하신 정보를 확인해주세요.');
+        // })
 
         //     const response = await axios({
         //         method: 'GET',
@@ -112,16 +114,16 @@ const TabNavigation = () => {
 
     return (
         <>
-            <StatusBar barStyle="light-content"/>
+            <StatusBar barStyle="light-content" />
             <Tab.Navigator
-                screenOptions={{tabBarStyle: {backgroundColor:'black', borderTopWidth: 0.2}}}
+                screenOptions={{ tabBarStyle: { backgroundColor: 'black', borderTopWidth: 0.2 } }}
                 initialRouteName='Home'
             >
                 <Tab.Screen
                     name="Calendar"
                     component={FoodIndexPage}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A' />) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />
@@ -130,7 +132,7 @@ const TabNavigation = () => {
                     name="Health"
                     component={HealthPage}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="barbell-outline" size={30} color='#03C75A'/>) : (<Ionicons name="barbell-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="barbell-outline" size={30} color='#03C75A' />) : (<Ionicons name="barbell-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />
@@ -139,7 +141,7 @@ const TabNavigation = () => {
                     name="Add"
                     component={AddPage}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="add-outline" size={30} color='#03C75A'/>) : (<Ionicons name="add-outline" style={{}} size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="add-outline" size={30} color='#03C75A' />) : (<Ionicons name="add-outline" style={{}} size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />
@@ -148,7 +150,7 @@ const TabNavigation = () => {
                     name="Community"
                     component={PeedIndex}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="clipboard-outline" size={30} color='#03C75A'/>) : (<Ionicons name="clipboard-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="clipboard-outline" size={30} color='#03C75A' />) : (<Ionicons name="clipboard-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />
@@ -157,7 +159,7 @@ const TabNavigation = () => {
                     name="MyPage"
                     component={MyPageIndex}
                     options={{
-                        tabBarIcon: ({focused}) => focused ? (<Ionicons name="person-circle-outline" size={30} color='#03C75A'/>) : (<Ionicons name="person-circle-outline" size={30} color='#C1C1C1'/>),
+                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="person-circle-outline" size={30} color='#03C75A' />) : (<Ionicons name="person-circle-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />
