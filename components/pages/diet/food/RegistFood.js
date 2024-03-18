@@ -4,6 +4,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import * as ImagePicker from 'expo-image-picker';
+
 // 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
     const [dietName, setDietName] = useState('');
@@ -13,6 +15,7 @@ const RegistFood = ({ navigation }) => {
     const methods = ["아침", "점심", "저녁", "기타"];
     const [quantities, setQuantities] = useState([]); // 수량
     const [userNo, setUserNo] = useState('');
+    const [dietNo,setDietNo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -300,6 +303,61 @@ const RegistFood = ({ navigation }) => {
         });
     }
 
+    //이미지 등록
+    const pickImage2 = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        })
+
+        if(!result.canceled) {
+
+            const updatedImg = result.assets[0].uri;
+
+            console.log(updatedImg.replace('file://', ''));
+
+            const userToken = await AsyncStorage.getItem('userToken');
+
+            const image = {
+                name: '_DietImg.jpg',
+                type: 'image/jpeg',
+                uri: Platform.OS === 'ios' ? updatedImg.replace('file://', '') : updatedImg
+            }
+
+            const formData = new FormData();
+            formData.append('dietUri', image);
+
+            axios({
+                method: 'POST',
+                // url: `http://192.168.0.176:8080/editProfileImg?userId=${userId}`, // 집
+                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+                url: `http://192.168.0.64:8080/editDietImg`, // 학원
+                data: formData,
+                headers: {
+                    Accept: '*/*',
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                transformRequest: data => data,
+            }).then(response => {
+                console.log(response);
+                if(response.status === 200) {
+                    console.log('Success ', response.data);
+                } else {
+                    alert('입력하신 정보를 확인해주세요.');
+                }
+            }).catch(error => {
+                console.log(error);
+                alert('에러 : 입력하신 정보를 확인해주세요. please');
+            })
+        }
+    
+    }
+
     return (
         <>
             <View style={{paddingTop:20}}>
@@ -335,7 +393,9 @@ const RegistFood = ({ navigation }) => {
                 </View>
 
                 {/* 미구현 */}
-                <Text>이미지 등록</Text>
+                <TouchableOpacity onPress={pickImage2}>
+                    <Text>이미지 업로드</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={firstPage} style={styles.touch}>
                     <Text>식단 업로드</Text>
