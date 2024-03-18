@@ -1,8 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import IngredientsSearch from "./ingredients/IngredientsSearch"
 import FoodFirst from "./FoodFirst";
-import IngredientsBasket from "./ingredients/IngredientsBasket";
-import DetailFood from "./food/DetailFood";
 import FoodSearch from "./food/FoodSearch";
 import RegistFood from "./food/RegistFood";
 
@@ -10,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 const FoodIndexPage = () => {
     const pageHandler = () => {
-        console.log("화면 이동")
+        // console.log("화면 이동")
     }
 
     return(
@@ -51,17 +49,10 @@ const FoodIndexPage = () => {
                 }}
             />
             <Stack.Screen
-                name="DetailFood"
-                component={DetailFood}
-                options={{
-                    title:"음식 담은 화면"
-                }}
-            />
-            <Stack.Screen
                 name="RegistFood"
                 component={RegistFood}
                 options={{
-                    title:"음식 담은 화면"
+                    headerShown : false
                 }}
             />
             

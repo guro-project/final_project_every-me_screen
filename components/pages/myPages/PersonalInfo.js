@@ -27,6 +27,7 @@ const PersonalInfo = () => {
     useEffect(() => {
         const checkCurrentValue = async () => {
             const nickname = await AsyncStorage.getItem('userNickName');
+            // console.log(nickName)
             const gender = await AsyncStorage.getItem('userGender');
             const birthday = await AsyncStorage.getItem('userBirthday');
             const height = await AsyncStorage.getItem('userHeight');
@@ -83,7 +84,7 @@ const PersonalInfo = () => {
             // url: 'http://192.168.31.92:8080/editUserInfo', // 오릴리
             // url: 'http://172.30.4.51:8080/editUserInfo', // 스벅
             // url: 'http://172.30.1.49:8080/editUserInfo', // 투썸
-            url: 'http://172.30.1.26:8080/editUserInfo', // 학원
+            url: 'http://192.168.0.64:8080/editUserInfo', // 학원
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',
@@ -204,6 +205,7 @@ const PersonalInfo = () => {
                     </View>
                     <View style={styles.InfoInput}>
                         <Text style={styles.infoTitle}>신장</Text>
+                        <Text style={{color:"white"}}>{currentHeight}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder={`${currentHeight} cm`}

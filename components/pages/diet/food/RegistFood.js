@@ -19,6 +19,7 @@ const RegistFood = ({ navigation }) => {
     const [totalProtein, setTotalProtein] = useState(0);
     const [totalProvince, setTotalProvince] = useState(0);
     const [totalSalt, setTotalSalt] = useState(0);
+    // const [ingredientName,setIngredientName] = useState([]); // 재료이름들
 
     const route = useRoute();
     const selectedIngredients = route.params;
@@ -52,7 +53,7 @@ const RegistFood = ({ navigation }) => {
                 console.log(error);
             }
         };
-    
+
         fetchUserNo();
     }, []);
 
@@ -99,6 +100,31 @@ const RegistFood = ({ navigation }) => {
             // console.log(province)
             // console.log(salt)
 
+            // `NaN` 체크 및 0으로 변경
+            if (isNaN(carbohydrate)) {
+                setTotalCarbohydrate(prev => prev);
+            } else {
+                setTotalCarbohydrate(prev => prev + carbohydrate);
+            }
+
+            if (isNaN(protein)) {
+                setTotalProtein(prev => prev);
+            } else {
+                setTotalProtein(prev => prev + protein);
+            }
+
+            if (isNaN(province)) {
+                setTotalProvince(prev => prev);
+            } else {
+                setTotalProvince(prev => prev + province);
+            }
+
+            if (isNaN(salt)) {
+                setTotalSalt(prev => prev);
+            } else {
+                setTotalSalt(prev => prev + salt);
+            }
+
             return newQuantities;
         });
     };
@@ -138,6 +164,31 @@ const RegistFood = ({ navigation }) => {
                 // console.log(province)
                 // console.log(salt)
 
+                // `NaN` 체크 및 0으로 변경
+                if (isNaN(carbohydrate)) {
+                    setTotalCarbohydrate(prev => prev);
+                } else {
+                    setTotalCarbohydrate(prev => prev - carbohydrate);
+                }
+
+                if (isNaN(protein)) {
+                    setTotalProtein(prev => prev);
+                } else {
+                    setTotalProtein(prev => prev - protein);
+                }
+
+                if (isNaN(province)) {
+                    setTotalProvince(prev => prev);
+                } else {
+                    setTotalProvince(prev => prev - province);
+                }
+
+                if (isNaN(salt)) {
+                    setTotalSalt(prev => prev);
+                } else {
+                    setTotalSalt(prev => prev - salt);
+                }
+
                 return newQuantities;
             });
         }
@@ -159,11 +210,26 @@ const RegistFood = ({ navigation }) => {
             const province = parseFloat(ingredient.NUTR_CONT4) * quantities[i];
             const salt = parseFloat(ingredient.NUTR_CONT6) * quantities[i];
 
-            tempTotalCalories += calorie;
-            tempTotalCarbohydrate += carbohydrate;
-            tempTotalProtein += protein;
-            tempTotalProvince += province;
-            tempTotalSalt += salt;
+            // `NaN` 체크 및 0으로 변경
+            if (!isNaN(calorie)) {
+                tempTotalCalories += calorie;
+            }
+
+            if (!isNaN(carbohydrate)) {
+                tempTotalCarbohydrate += carbohydrate;
+            }
+
+            if (!isNaN(protein)) {
+                tempTotalProtein += protein;
+            }
+
+            if (!isNaN(province)) {
+                tempTotalProvince += province;
+            }
+
+            if (!isNaN(salt)) {
+                tempTotalSalt += salt;
+            }
         });
 
         setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
@@ -199,7 +265,8 @@ const RegistFood = ({ navigation }) => {
             'totalCarbohydrate': totalCarbohydrate.toFixed(2),
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
-            'totalSalt': totalSalt.toFixed(2)
+            'totalSalt': totalSalt.toFixed(2),
+            // 'ingredientName' : ingredientName
         });
 
         // console.log("뭐받음?")
@@ -209,7 +276,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://172.30.1.26:8080/registdiet',
+            url: 'http:/192.168.0.64:8080/registdiet',
             data: dietData,
             headers: {
                 'Content-Type': 'application/json',
@@ -235,7 +302,7 @@ const RegistFood = ({ navigation }) => {
 
     return (
         <>
-            <View>
+            <View style={{paddingTop:20}}>
                 <TextInput placeholder="식단 이름을 정해주세요" value={dietName} onChangeText={(text) => setDietName(text)} />
                 <View style={styles.receiptMethods}>
                     {methods.map((method, index) => {
@@ -295,10 +362,10 @@ const RegistFood = ({ navigation }) => {
                 </TouchableOpacity>
                 {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
+                {/* <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 지방: {totalProvince.toFixed(2)} g</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 나트륨: {totalSalt.toFixed(2)} mg</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 나트륨: {totalSalt.toFixed(2)} mg</Text> */}
             </View>
         </>
     );

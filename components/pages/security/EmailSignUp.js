@@ -57,7 +57,7 @@ const EmailSignUp = () => {
             // url: 'http://172.30.1.49:8080/signup', // 투썸
             // url: 'http://192.168.0.12:8080/signup', // 학원
             // url : 'http://192.168.0.64:8080/signup', // 학원
-            url : 'http://169.254.75.112:8080/signup', // 집
+            url : 'http://192.168.0.64:8080/signup', // 집
             data: signupData,
             headers: {
                 'Content-Type': 'application/json'

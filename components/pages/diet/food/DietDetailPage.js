@@ -48,7 +48,7 @@ const DietDetailPage = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `http://172.30.1.26:8080/diet/${dietNo}`,
+            url: `http:/192.168.0.64:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -67,11 +67,11 @@ const DietDetailPage = ({ dietNo }) => {
 
     // 북마크 조회
     const checkBookmarkStatus = async () => {
-        console.log("확인용", dietNo, userNo);
+        // console.log("확인용", dietNo, userNo);
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
-            url: `http://172.30.1.26:8080/dietbm?dietNo=${dietNo}`,
+            url: `http://192.168.0.64:8080/dietbm?dietNo=${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -83,7 +83,7 @@ const DietDetailPage = ({ dietNo }) => {
             .catch(error => {
                 // 404 에러가 발생하면 북마크가 없는 것으로 간주
                 if (error.response.status === 404) {
-                    console.log('북마크가 존재하지 않음');
+                    // console.log('북마크가 존재하지 않음');
                     setBookmarked(false);
                 } else {
                     console.error('북마크 조회 에러:', error);
@@ -94,8 +94,8 @@ const DietDetailPage = ({ dietNo }) => {
     //추가
     const selectBookMark = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
-        console.log("클릭됨")
-        console.log(userNo)
+        // console.log("클릭됨")
+        // console.log(userNo)
         if (!bookmarked) {
             let BookmarkData = JSON.stringify({
                 'dietNo': dietNo,
@@ -103,7 +103,7 @@ const DietDetailPage = ({ dietNo }) => {
             })
             axios({
                 method: 'POST',
-                url: `http://172.30.1.26:8080/registdietbm`,
+                url: `http:/192.168.0.64:8080/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,9 +111,9 @@ const DietDetailPage = ({ dietNo }) => {
                 }
             })
                 .then(() => {
-                    console.log("북마크 등록 성공")
-                    console.log(dietNo)
-                    console.log("북마크 상태 : " + !bookmarked)
+                    // console.log("북마크 등록 성공")
+                    // console.log(dietNo)
+                    // console.log("북마크 상태 : " + !bookmarked)
                     setBookmarked(true);
                 })
                 .catch(error => {
@@ -130,7 +130,7 @@ const DietDetailPage = ({ dietNo }) => {
             const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
-                url: `http://172.30.1.26:8080/deletedietbm`,
+                url: `http://192.168.0.64:8080/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,8 +138,8 @@ const DietDetailPage = ({ dietNo }) => {
                 }
             })
                 .then(() => {
-                    console.log("북마크 삭제 성공");
-                    console.log("북마크 상태 : " + !bookmarked);
+                    // console.log("북마크 삭제 성공");
+                    // console.log("북마크 상태 : " + !bookmarked);
                     setBookmarked(false);
                 })
                 .catch(error => {

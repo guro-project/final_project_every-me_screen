@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
 import FoodItemComponent from "../../../../model/api/FoodItemList";
@@ -13,11 +13,18 @@ const IngredientsSearch = () => {
     const [clickedNames, setClickedNames] = useState([]);
     const [recommendedNames, setRecommendedNames] = useState([]);
     const [food, setFood] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [oneLetterModal, setOneLetterModal] = useState(false);
     const navigation = useNavigation();
 
     const FindGroupName = () => {
-        const apiUrl = `http://openapi.foodsafetykorea.go.kr/api/0e28c65abe314f1c9981/I2790/json/1/3/DESC_KOR=${name},`
-        //사용하는 오픈 api가 ,를 붙여야 재료가 그나마 우선순위로 나와서 붙임
+        if (name.trim() === "") {
+            setOneLetterModal(true)
+        }
+        let apiUrl = `http://openapi.foodsafetykorea.go.kr/api/0e28c65abe314f1c9981/I2790/json/1/3/DESC_KOR=${name}`;
+        if (name.trim() !== "") {
+            apiUrl += ",";
+        }
 
         fetch(apiUrl) // api에 요청보냄
             .then(response => response.json())
@@ -41,6 +48,8 @@ const IngredientsSearch = () => {
                                 const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length);
                                 const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`);
                                 setGroupNames(sortedRows);
+                            } else {
+                                setIsModalVisible(true);
                             }
                         });
                 }
@@ -54,12 +63,12 @@ const IngredientsSearch = () => {
     const OnChangeHandler = (text) => {
         setName(text);
     };
-    
+
     // 나온 리스트 클릭시 데이터 재료박스에 전달해줌
     const ListClickHandler = (clickedItem) => {
         console.log("전달 한 값 확인")
         console.log(clickedItem);
-    
+
         if (!clickedNames.some(item => item.DESC_KOR === clickedItem.DESC_KOR)) {
             // 중복된 항목이 없을 때만 추가
             setClickedNames(prevClickedNames => [...prevClickedNames, clickedItem]);
@@ -78,7 +87,7 @@ const IngredientsSearch = () => {
 
     // RegistFood 페이지로 clickedNames 데이터 들고감
     const handleRegistration = () => {
-        navigation.navigate("RegistFood", { selectedIngredients: clickedNames});
+        navigation.navigate("RegistFood", { selectedIngredients: clickedNames });
         // console.log("clickedNames : ", clickedNames);
     };
 
@@ -87,7 +96,7 @@ const IngredientsSearch = () => {
     // const category = route.params
     // console.log("카테고리 받아왔나?")
     // console.log(category);
-    
+
     // 스킵버튼
     // const skipIngre = () => {
     //     navigation.navigate("RegistFood")
@@ -101,11 +110,11 @@ const IngredientsSearch = () => {
 
     return (
         <>
-            <View style={{borderBottomWidth:2, borderBlockColor:"blue"}}>
+            <View style={{ borderBottomWidth: 2, borderBlockColor: "blue" }}>
                 <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames} />
                 {/* 재료박스에 담는 곳 */}
             </View>
-            <View style={{borderBottomWidth:2, borderBlockColor:"blue"}}>
+            <View style={{ borderBottomWidth: 2, borderBlockColor: "blue" }}>
                 <Text>추천 재료</Text>
                 <RecommendFood food={food} onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
@@ -129,14 +138,37 @@ const IngredientsSearch = () => {
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : null}
-                <View style={{borderTopWidth:2, borderBlockColor:"blue"}}>
-                <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
-                    <Text>다음</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
+                <View style={{ borderTopWidth: 2, borderBlockColor: "blue" }}>
+                    <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
+                        <Text>다음</Text>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
                     <Text>스킵</Text>
                 </TouchableOpacity> */}
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalVisible || oneLetterModal}
+                    onRequestClose={() => {
+                        setIsModalVisible(false);
+                        setOneLetterModal(false);
+                    }}>
+                    <View style={sytles.modalView}>
+                        {oneLetterModal ? (
+                            <Text>한글자 이상을 검색해주세요</Text>
+                        ) : (
+                            <Text>검색결과 없음</Text>
+                        )}
+                        <Pressable
+                            onPress={() => {
+                                setIsModalVisible(false);
+                                setOneLetterModal(false);
+                            }}>
+                            <Text>닫기</Text>
+                        </Pressable>
+                    </View>
+                </Modal>
             </View>
         </>
     )
@@ -147,12 +179,29 @@ export default IngredientsSearch;
 const sytles = StyleSheet.create({
     TouchableBorder: {
         borderWidth: 1,
-        marginBottom:5,
+        marginBottom: 5,
         marginTop: 5,
         width: 30
     },
-    listMargin : {
-        marginTop:2,
-        marginBottom:2
+    listMargin: {
+        marginTop: 2,
+        marginBottom: 2
+    },
+    modalView: {
+        marginTop: '30%',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 10,
+        alignItems: 'center',
+        shadowColor: '#000', // 그림자 색깔
+        shadowOffset: { // 그림자 위치
+            width: 0, // 가로 0
+            height: 2, // 세로 2
+        },
+        shadowOpacity: 0.25, // 그림자 불투명도 클수록 진해짐
+        shadowRadius: 4, // 그림자 반경 클수록 퍼져서 흐릿해짐
+        elevation: 5, // 안드로이드에서만 적용됨 그림자의 높이
+        width: '100%',
+        height: '90%',
     }
 })

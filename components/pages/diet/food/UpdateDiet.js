@@ -4,43 +4,54 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
+    const [data, setData] = useState(null);
     const [dietName, setDietName] = useState('');
-    const [currentDietName, setCurrentDietName] = useState('');
     const [dietCategory, setDietCategory] = useState('');
-    const [currentDietCategory, setCurrentDietCategory] = useState('');
     const [totalCalories, setTotalCalories] = useState('');
-    const [currentTotalCalories, setCurrentTotalCalories] = useState('');
     const [totalCarbohydrate, setTotalCarbohydrate] = useState('');
-    const [currentTotalCarbohydrate, setCurrentTotalCarbohydrate] = useState('');
     const [totalProtein, setTotalProtein] = useState('');
-    const [currentTotalProtein, setCurrentTotalProtein] = useState('');
     const [totalProvince, setTotalProvince] = useState('');
-    const [currentTotalProvince, setCurrentTotalProvince] = useState('');
     const [totalSalt, setTotalSalt] = useState('');
-    const [currentTotalSalt, setCurrentTotalSalt] = useState('');
 
-    useEffect(() => {
-        const dietInfo = async () => {
-            const dietName = await AsyncStorage.getItem('dietName');
-            const dietCategory = await AsyncStorage.getItem('dietCategory');
-            const totalCalories = await AsyncStorage.setItem('totalCalories', totalCalories.toString());
-            const totalCarbohydrate = await AsyncStorage.getItem('totalCarbohydrate', totalCarbohydrate.toString());
-            const totalProtein = await AsyncStorage.getItem('totalProtein', totalProtein.toString());
-            const totalProvince = await AsyncStorage.getItem('totalProvince',totalProvince.toString());
-            const totalSalt = await AsyncStorage.getItem('totalSalt', totalSalt.toString());
-            setCurrentDietName(dietName);
-            setCurrentDietCategory(dietCategory);
-            setCurrentTotalCalories(totalCalories);
-            setCurrentTotalCarbohydrate(totalCarbohydrate);
-            setCurrentTotalProtein(totalProtein);
-            setCurrentTotalProvince(totalProvince);
-            setCurrentTotalSalt(totalSalt);
-        }
-        dietInfo();
-    }, [currentDietName, currentDietCategory, currentTotalCalories, currentTotalCarbohydrate, currentTotalProtein, currentTotalProvince, currentTotalSalt])
-
+    // console.log(dietNo)
     // 수정
+
+    // 수정을 눌렀을때 placeholder에 기존데이터가 출력되고 등록을 누르면 그데이터가 그대로들어감
+    // get요청으로 상세정보를 부름
+
+    // console.log("받은거")
+    // console.log(dietName)
+    useEffect(() => {
+        fetchDetailData();
+    }, [])
+
+    const fetchDetailData = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken');
+        // console.log(userToken)
+
+        axios({
+            method: 'GET',
+            url: `http:/192.168.0.64:8080/diet/${dietNo}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        })
+            .then(response => {
+                setData(response.data);
+                // console.log("asd");
+                // console.log(response.data);
+            })
+            .catch(error => {
+                console.error('상세조회 에러 : ' + error);
+                // console.log(dietNo)
+            });
+    }
+
     const handleUpdate = async () => {
+        console.log("zxcv : " + dietNo)
+        const userToken = await AsyncStorage.getItem('userToken');
         let updateDietData = {
             'dietName': dietName,
             'dietCategory': dietCategory,
@@ -50,58 +61,18 @@ const UpdateDiet = ({ dietNo }) => {
             'totalProvince': totalProvince,
             'totalSalt': totalSalt
         };
-        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'PUT',
-            url: `http://172.30.1.26:8080/updatediet/${dietNo}`,
+            url: `http:/192.168.0.64:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
             }
         })
-            .then(async response => {
-                if (response.status === 200) {
-                    if (dietName !== currentDietName && dietName !== '') {
-                        await AsyncStorage.setItem('dietName', dietName);
-                    }
-                }
-                if (response.status === 200) {
-                    if (dietCategory !== currentDietCategory && dietCategory !== '') {
-                        await AsyncStorage.setItem('dietCategory', dietCategory);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalCalories !== currentTotalCalories && totalCalories !== '') {
-                        await AsyncStorage.setItem('totalCalories', totalCalories);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalCalories !== currentTotalCalories && totalCalories !== '') {
-                        await AsyncStorage.setItem('totalCalories', totalCalories);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalCarbohydrate !== currentTotalCarbohydrate && totalCarbohydrate !== '') {
-                        await AsyncStorage.setItem('totalCarbohydrate', totalCarbohydrate);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalProtein !== currentTotalProtein && totalProtein !== '') {
-                        await AsyncStorage.setItem('totalProtein', totalProtein);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalProvince !== currentTotalProvince && totalProvince !== '') {
-                        await AsyncStorage.setItem('totalProvince', totalProvince);
-                    }
-                }
-                if (response.status === 200) {
-                    if (totalSalt !== currentTotalSalt && totalSalt !== '') {
-                        await AsyncStorage.setItem('totalSalt', totalSalt);
-                    }
-                }
+            .then(response => {
                 console.log("수정완료");
+                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -111,51 +82,52 @@ const UpdateDiet = ({ dietNo }) => {
     return (
         <>
             <View>
-                <Text>카테고리</Text>
-                <TextInput
-                    placeholder={currentDietCategory}
-                    value={dietCategory} // 입력값을 상태와 동기화
-                    onChangeText={dietCategory => setDietCategory(dietCategory)} // 끼니 입력값이 변경될 때마다 상태 업데이트
-                />
-                <Text>이름</Text>
-                <TextInput
-                            placeholder={currentDietName}
-                            placeholderTextColor='gray'
-                            value={dietName}
-                            onChangeText={dietName => setDietName(dietName)}
+                {data && (
+                    <>
+                        <Text>끼니</Text>
+                        <TextInput
+                            placeholder={data.dietCategory}
+                            onChangeText={dietCategory => setDietCategory(dietCategory)} // 끼니 입력값이 변경될 때마다 상태 업데이트
+                            value={dietCategory} // 입력값을 상태와 동기화
                         />
-                <Text>칼로리</Text>
-                <TextInput
-                            placeholder={currentTotalCalories}
-                            placeholderTextColor='gray'
-                            value={totalCalories}
-                            onChangeText={totalCalories => setTotalCalories(totalCalories)}
+                        <Text>이름</Text>
+                        <TextInput
+                            placeholder={data.dietName}
+                            onChangeText={dietName => setDietName(dietName)} // 이름 입력값이 변경될 때마다 상태 업데이트
+                            value={dietName} // 입력값을 상태와 동기화
                         />
-                <Text>탄수화물</Text>
-                <TextInput
-                    placeholder="탄수화물"
-                    onChangeText={text => setTotalCarbohydrate(parseFloat(text))} // 실수형으로 변환하여 상태 업데이트
-                    value={totalCarbohydrate.toString()} // 입력값을 문자열로 변환하여 상태와 동기화
-                />
-                <Text>단백질</Text>
-                <TextInput
-                    placeholder="단백질"
-                    onChangeText={text => setTotalProtein(parseFloat(text))} // 실수형으로 변환하여 상태 업데이트
-                    value={totalProtein.toString()} // 입력값을 문자열로 변환하여 상태와 동기화
-                />
-                <Text>지방</Text>
-                <TextInput
-                    placeholder="지방"
-                    onChangeText={text => setTotalProvince(parseFloat(text))} // 실수형으로 변환하여 상태 업데이트
-                    value={totalProvince.toString()} // 입력값을 문자열로 변환하여 상태와 동기화
-                />
-                <Text>나트륨</Text>
-                <TextInput
-                    placeholder="나트륨"
-                    onChangeText={text => setTotalSalt(parseFloat(text))} // 실수형으로 변환하여 상태 업데이트
-                    value={totalSalt.toString()} // 입력값을 문자열로 변환하여 상태와 동기화
-                />
-
+                        <Text>칼로리</Text>
+                        <TextInput
+                            placeholder={`${data.totalKcal}kcal`}
+                            onChangeText={totalCalories => setTotalCalories(totalCalories)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
+                            value={totalCalories} // 입력값을 상태와 동기화
+                        />
+                        <Text>탄수화물</Text>
+                        <TextInput
+                            placeholder={`${data.totalCarbohydrate}g`}
+                            onChangeText={totalCarbohydrate => setTotalCarbohydrate(totalCarbohydrate)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
+                            value={totalCarbohydrate} // 입력값을 상태와 동기화
+                        />
+                        <Text>단백질</Text>
+                        <TextInput
+                            placeholder={`${data.totalProtein}g`}
+                            onChangeText={totalProtein => setTotalProtein(totalProtein)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
+                            value={totalProtein} // 입력값을 상태와 동기화
+                        />
+                        <Text>지방</Text>
+                        <TextInput
+                            placeholder={`${data.totalProvince}g`}
+                            onChangeText={totalProvince => setTotalProvince(totalProvince)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
+                            value={totalProvince} // 입력값을 상태와 동기화
+                        />
+                        <Text>나트륨</Text>
+                        <TextInput
+                            placeholder={`${data.totalSalt}mg`}
+                            onChangeText={totalSalt => setTotalSalt(totalSalt)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
+                            value={totalSalt} // 입력값을 상태와 동기화
+                        />
+                    </>
+                )}
                 <TouchableOpacity onPress={handleUpdate}><Text>등록</Text></TouchableOpacity>
             </View>
         </>
