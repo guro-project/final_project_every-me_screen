@@ -18,6 +18,7 @@ const MyPage = () => {
             const profileImg = await AsyncStorage.getItem('userProfileImg');
             const userNickName = await AsyncStorage.getItem('userNickName');
             setLoadImg(profileImg);
+            console.log(profileImg)
             setUserNickName(userNickName);
         };
         loadUserInfo();
