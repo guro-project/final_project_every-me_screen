@@ -39,6 +39,7 @@ const Login = () => {
     let loginCounter = 0;
 
     const onLoginHandler = async () => {
+        console.log("qwe")
         // 입력값 검증
         if (!userId || !userPass) {
             alert('아이디와 비밀번호를 입력해주세요')

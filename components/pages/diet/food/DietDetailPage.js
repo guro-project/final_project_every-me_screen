@@ -18,21 +18,37 @@ const DietDetailPage = ({ dietNo }) => {
     const [totalProvince, setTotalProvince] = useState(0); // 지방
     const [totalSalt, setTotalSalt] = useState(0); // 나트륨
     const [bookmarked, setBookmarked] = useState(false); // 북마크
+    const [userNo, setUserNo] = useState('');
 
     useEffect(() => {
         fetchDetailData();
         checkBookmarkStatus();
     }, []);
 
+    useEffect(() => {
+        const fetchUserNo = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null) {
+                    setUserNo(userNo);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    
+        fetchUserNo();
+    }, []);
+
     // 상세조회
-    const fetchDetailData = async() => {
+    const fetchDetailData = async () => {
 
         const userToken = await AsyncStorage.getItem('userToken');
-        console.log(userToken)
+        // console.log(userToken)
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/diet/${dietNo}`,
+            url: `http:/192.168.0.64:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -50,52 +66,54 @@ const DietDetailPage = ({ dietNo }) => {
     }
 
     // 북마크 조회
-    const checkBookmarkStatus = async() => {
-        console.log("확인용")
-        console.log(dietNo)
-        // 여기서 책갈피 상태를 API를 통해 확인하고, 이미 책갈피가 되어 있는 경우 setBookmarked(true)로 상태 변경
-
-        // const dietNo = dietNo;
-        await axios({
+    const checkBookmarkStatus = async () => {
+        // console.log("확인용", dietNo, userNo);
+        const userToken = await AsyncStorage.getItem('userToken');
+        axios({
             method: 'GET',
             url: `http://192.168.0.64:8080/dietbm?dietNo=${dietNo}`,
-            // params: {dietNo},
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
             }
         })
-            .then(data => {
-                setBookmarked(data.data.dietNo)
+            .then(response => {
+                setBookmarked(true);
             })
-            .catch(
-                error => {
-                console.error('북마크 조회 에러 : ' + error);
-                console.log(dietNo)
+            .catch(error => {
+                // 404 에러가 발생하면 북마크가 없는 것으로 간주
+                if (error.response.status === 404) {
+                    // console.log('북마크가 존재하지 않음');
+                    setBookmarked(false);
+                } else {
+                    console.error('북마크 조회 에러:', error);
+                }
             });
-            
     }
 
     //추가
     const selectBookMark = async () => {
-        console.log("클릭됨")
+        const userToken = await AsyncStorage.getItem('userToken');
+        // console.log("클릭됨")
+        // console.log(userNo)
         if (!bookmarked) {
             let BookmarkData = JSON.stringify({
-                'dietNo': dietNo
+                'dietNo': dietNo,
+                'userNo': userNo
             })
             axios({
                 method: 'POST',
-                url: `http://192.168.0.64:8080/registdietbm`,
+                url: `http:/192.168.0.64:8080/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {
-                    console.log("북마크 등록 성공")
-                    console.log(dietNo)
-                    console.log("북마크 상태 : " + !bookmarked)
+                    // console.log("북마크 등록 성공")
+                    // console.log(dietNo)
+                    // console.log("북마크 상태 : " + !bookmarked)
                     setBookmarked(true);
                 })
                 .catch(error => {
@@ -109,18 +127,19 @@ const DietDetailPage = ({ dietNo }) => {
             let BookmarkData = JSON.stringify({
                 'dietNo': dietNo
             })
+            const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
                 url: `http://192.168.0.64:8080/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {
-                    console.log("북마크 삭제 성공");
-                    console.log("북마크 상태 : " + !bookmarked);
+                    // console.log("북마크 삭제 성공");
+                    // console.log("북마크 상태 : " + !bookmarked);
                     setBookmarked(false);
                 })
                 .catch(error => {
@@ -140,9 +159,7 @@ const DietDetailPage = ({ dietNo }) => {
                 </>
             )}
             <TouchableOpacity onPress={selectBookMark}>
-                <Text>{bookmarked}</Text>
                 <Ionicons name="bookmark" color={bookmarked ? "yellow" : "black"} />
-
             </TouchableOpacity>
             <Modal
                 animationType="slide"

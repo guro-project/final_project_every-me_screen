@@ -27,6 +27,7 @@ const PersonalInfo = () => {
     useEffect(() => {
         const checkCurrentValue = async () => {
             const nickname = await AsyncStorage.getItem('userNickName');
+            // console.log(nickName)
             const gender = await AsyncStorage.getItem('userGender');
             const birthday = await AsyncStorage.getItem('userBirthday');
             const height = await AsyncStorage.getItem('userHeight');
@@ -65,7 +66,6 @@ const PersonalInfo = () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem('userId');
 
-
         const userInfo = JSON.stringify({
             'userId': userId,
             'userNickname': nickName,
@@ -75,6 +75,8 @@ const PersonalInfo = () => {
             'userWeight': weight,
             'userWeightGoal': goalWeight
         })
+
+        
 
         axios({
             method: 'POST',
@@ -203,6 +205,7 @@ const PersonalInfo = () => {
                     </View>
                     <View style={styles.InfoInput}>
                         <Text style={styles.infoTitle}>신장</Text>
+                        <Text style={{color:"white"}}>{currentHeight}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder={`${currentHeight} cm`}

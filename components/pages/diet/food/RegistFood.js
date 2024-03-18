@@ -1,8 +1,11 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import * as ImagePicker from 'expo-image-picker';
+
 // 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
     const [dietName, setDietName] = useState('');
@@ -11,13 +14,15 @@ const RegistFood = ({ navigation }) => {
     const [ingredients, setIngredients] = useState([]);
     const methods = ["아침", "점심", "저녁", "기타"];
     const [quantities, setQuantities] = useState([]); // 수량
-    const [userId, setUserId] = useState('');
+    const [userNo, setUserNo] = useState('');
+    const [dietNo,setDietNo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
     const [totalProtein, setTotalProtein] = useState(0);
     const [totalProvince, setTotalProvince] = useState(0);
     const [totalSalt, setTotalSalt] = useState(0);
+    // const [ingredientName,setIngredientName] = useState([]); // 재료이름들
 
     const route = useRoute();
     const selectedIngredients = route.params;
@@ -39,6 +44,21 @@ const RegistFood = ({ navigation }) => {
             setQuantities(selectedIngredients.selectedIngredients.map(() => 1));
         }
     }, [selectedIngredients]);
+
+    useEffect(() => {
+        const fetchUserNo = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null) {
+                    setUserNo(userNo);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchUserNo();
+    }, []);
 
     // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
 
@@ -83,6 +103,31 @@ const RegistFood = ({ navigation }) => {
             // console.log(province)
             // console.log(salt)
 
+            // `NaN` 체크 및 0으로 변경
+            if (isNaN(carbohydrate)) {
+                setTotalCarbohydrate(prev => prev);
+            } else {
+                setTotalCarbohydrate(prev => prev + carbohydrate);
+            }
+
+            if (isNaN(protein)) {
+                setTotalProtein(prev => prev);
+            } else {
+                setTotalProtein(prev => prev + protein);
+            }
+
+            if (isNaN(province)) {
+                setTotalProvince(prev => prev);
+            } else {
+                setTotalProvince(prev => prev + province);
+            }
+
+            if (isNaN(salt)) {
+                setTotalSalt(prev => prev);
+            } else {
+                setTotalSalt(prev => prev + salt);
+            }
+
             return newQuantities;
         });
     };
@@ -122,6 +167,31 @@ const RegistFood = ({ navigation }) => {
                 // console.log(province)
                 // console.log(salt)
 
+                // `NaN` 체크 및 0으로 변경
+                if (isNaN(carbohydrate)) {
+                    setTotalCarbohydrate(prev => prev);
+                } else {
+                    setTotalCarbohydrate(prev => prev - carbohydrate);
+                }
+
+                if (isNaN(protein)) {
+                    setTotalProtein(prev => prev);
+                } else {
+                    setTotalProtein(prev => prev - protein);
+                }
+
+                if (isNaN(province)) {
+                    setTotalProvince(prev => prev);
+                } else {
+                    setTotalProvince(prev => prev - province);
+                }
+
+                if (isNaN(salt)) {
+                    setTotalSalt(prev => prev);
+                } else {
+                    setTotalSalt(prev => prev - salt);
+                }
+
                 return newQuantities;
             });
         }
@@ -143,11 +213,26 @@ const RegistFood = ({ navigation }) => {
             const province = parseFloat(ingredient.NUTR_CONT4) * quantities[i];
             const salt = parseFloat(ingredient.NUTR_CONT6) * quantities[i];
 
-            tempTotalCalories += calorie;
-            tempTotalCarbohydrate += carbohydrate;
-            tempTotalProtein += protein;
-            tempTotalProvince += province;
-            tempTotalSalt += salt;
+            // `NaN` 체크 및 0으로 변경
+            if (!isNaN(calorie)) {
+                tempTotalCalories += calorie;
+            }
+
+            if (!isNaN(carbohydrate)) {
+                tempTotalCarbohydrate += carbohydrate;
+            }
+
+            if (!isNaN(protein)) {
+                tempTotalProtein += protein;
+            }
+
+            if (!isNaN(province)) {
+                tempTotalProvince += province;
+            }
+
+            if (!isNaN(salt)) {
+                tempTotalSalt += salt;
+            }
         });
 
         setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
@@ -169,32 +254,36 @@ const RegistFood = ({ navigation }) => {
         navigation.navigate("FoodSearch")
     }
 
+    // const userNo = await AsyncStorage.getItem('userNo')
+    // console.log(userNo)
+
     // 식단 등록
-    const firstPage = () => {
+    const firstPage = async () => {
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
             'totalKcal': totalCalories.toFixed(2),
-            'userId': userId,
+            'userNo': userNo,
             "dietCategory": selectedMethod,
             'totalCarbohydrate': totalCarbohydrate.toFixed(2),
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
+            // 'ingredientName' : ingredientName
         });
 
         // console.log("뭐받음?")
         // console.log(dietName)
         // console.log(totalCalories)
         // console.log(userId)
-
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.64:8080/registdiet',
+            url: 'http:/192.168.0.64:8080/registdiet',
             data: dietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDY0ODc4NDUzLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxNCIsImV4cCI6MTcxMTMyODg3OCwidXNlcklkIjoidXNlcjEzQHVzZXIxMy5jb20ifQ.JYAggxNlmjaxSjiCheKlVQYhkN6K_4TLbWpxVxH9InU`
+                'Authorization': `Bearer ${userToken}`
 
             }
         }).then(response => {
@@ -214,9 +303,64 @@ const RegistFood = ({ navigation }) => {
         });
     }
 
+    //이미지 등록
+    const pickImage2 = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        })
+
+        if(!result.canceled) {
+
+            const updatedImg = result.assets[0].uri;
+
+            console.log(updatedImg.replace('file://', ''));
+
+            const userToken = await AsyncStorage.getItem('userToken');
+
+            const image = {
+                name: '_DietImg.jpg',
+                type: 'image/jpeg',
+                uri: Platform.OS === 'ios' ? updatedImg.replace('file://', '') : updatedImg
+            }
+
+            const formData = new FormData();
+            formData.append('dietUri', image);
+
+            axios({
+                method: 'POST',
+                // url: `http://192.168.0.176:8080/editProfileImg?userId=${userId}`, // 집
+                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+                url: `http://192.168.0.64:8080/editDietImg`, // 학원
+                data: formData,
+                headers: {
+                    Accept: '*/*',
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                transformRequest: data => data,
+            }).then(response => {
+                console.log(response);
+                if(response.status === 200) {
+                    console.log('Success ', response.data);
+                } else {
+                    alert('입력하신 정보를 확인해주세요.');
+                }
+            }).catch(error => {
+                console.log(error);
+                alert('에러 : 입력하신 정보를 확인해주세요. please');
+            })
+        }
+    
+    }
+
     return (
         <>
-            <View>
+            <View style={{paddingTop:20}}>
                 <TextInput placeholder="식단 이름을 정해주세요" value={dietName} onChangeText={(text) => setDietName(text)} />
                 <View style={styles.receiptMethods}>
                     {methods.map((method, index) => {
@@ -249,7 +393,9 @@ const RegistFood = ({ navigation }) => {
                 </View>
 
                 {/* 미구현 */}
-                <Text>이미지 등록</Text>
+                <TouchableOpacity onPress={pickImage2}>
+                    <Text>이미지 업로드</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={firstPage} style={styles.touch}>
                     <Text>식단 업로드</Text>
@@ -276,10 +422,10 @@ const RegistFood = ({ navigation }) => {
                 </TouchableOpacity>
                 {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
+                {/* <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 지방: {totalProvince.toFixed(2)} g</Text>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 나트륨: {totalSalt.toFixed(2)} mg</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 나트륨: {totalSalt.toFixed(2)} mg</Text> */}
             </View>
         </>
     );
