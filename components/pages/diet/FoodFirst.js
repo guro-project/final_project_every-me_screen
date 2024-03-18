@@ -76,7 +76,7 @@ const FoodFirst = ({ navigation }) => {
     
         fetchDataPeriodically();
     
-        const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
+        const intervalId = setInterval(fetchDataPeriodically, 60000); // 5초마다 데이터 폴링 1000당 1초
     
         return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
     }, []); 
