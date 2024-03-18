@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert, Button, Modal, Image } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert, Button, Modal, Image, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -100,46 +100,173 @@ const AccountSettings = () => {
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
-        })    
-        console.log(result)
+        })
 
-        const userToken = await AsyncStorage.getItem('userToken');
-        const userId = await AsyncStorage.getItem('userId');
+        if(!result.canceled) {
 
-        const imageUri = result.assets[0].uri;
+            const updatedImg = result.assets[0].uri;
 
-        const formData = new FormData();
-        formData.append('userId', userId);
-        formData.append('imageFile', {
-            uri: imageUri,
-            type: 'image/jpeg',
-            name: `${userId}_profileImg.jpg`
-        });
+            console.log(updatedImg.replace('file://', ''));
 
-        console.log(formData);
+            const userToken = await AsyncStorage.getItem('userToken');
+            const userId = await AsyncStorage.getItem('userId');
 
-        await axios({
-            method: 'POST',
-                // url: 'http://192.168.0.176:8080/editProfileImg', // 집
+            const image = {
+                name: '_userProfileImg.jpg',
+                type: 'image/jpeg',
+                uri: Platform.OS === 'ios' ? updatedImg.replace('file://', '') : updatedImg
+            }
+
+            const formData = new FormData();
+            formData.append('profileUri', image);
+
+            axios({
+                method: 'POST',
+                // url: `http://192.168.0.176:8080/editProfileImg?userId=${userId}`, // 집
                 // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
                 // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
                 // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
-                url: 'http://192.168.0.12:8080/editProfileImg2', // 학원
+                url: `http://192.168.0.12:8080/editProfileImg?userId=${userId}`, // 학원
                 data: formData,
                 headers: {
+                    Accept: '*/*',
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${userToken}`
+                },
+                transformRequest: data => data,
+            }).then(response => {
+                console.log(response);
+                if(response.status === 200) {
+                    console.log('Success ', response.data);
+                } else {
+                    alert('입력하신 정보를 확인해주세요.');
                 }
-        }).then(async response => {
-            if(response.status === 200) {
-                console.log(response.data);
-            } else {
-                alert('입력하신 정보를 확인해주세요.');
-            }
-        }).catch(error => {
-            console.log(error);
-            alert('에러 : 입력하신 정보를 확인해주세요.');
-        })
+            }).catch(error => {
+                console.log(error);
+                alert('에러 : 입력하신 정보를 확인해주세요. please');
+            })
+        }
+    
+    }
+
+    const pickImage3 = async () => {
+
+        // const userId = await AsyncStorage.getItem('userId');
+
+        // const options = {
+        //     mediaType: ImagePicker.MediaTypeOptions.All,
+        //     quality: 1,
+        //     aspect: [1, 1]
+        // };
+
+        // ImagePicker.launchImageLibraryAsync(options, async (response) => {
+        //     if (response.didCancel) {
+        //         console.log('User cancelled image picker');
+        //     } else if (response.error) {
+        //         console.log('ImagePicker Error: ', response.error);
+        //     } else {
+        //         const imgUri = { uri: response.uri };
+        //         console.log(imgUri);
+        //         // 선택된 이미지의 URI를 사용해 서버에 업로드
+        //         const formData = new FormData();
+        //         formData.append('imageFile', {
+        //             uri: imgUri,
+        //             type: 'image/jpeg',
+        //             name: 'userProfileImg.jpg',
+        //         });
+
+        //         try {
+        //             const response = await axios.post(`http://192.168.0.176:8080/editProfileImg?userId=${userId}`, formData, {
+        //                 headers: {
+        //                     'Content-Type':'multipart/form-data',
+        //                     'Authorization': `Bearer ${userToken}`
+        //                 }
+        //             })
+        //             console.log('Success ', response.data);
+        //         } catch (error) {
+        //             console.log(error);
+        //         }
+        //     }
+        // });
+
+        // ImagePicker.launchImageLibraryAsync({}, async (response) => {
+        //     const formData = new FormData();
+        //     const file = {
+        //         name: response?.assets?.[0]?.fileName,
+        //         type: response?.assets?.[0]?.type,
+        //         uri: response?.assets?.[0]?.uri,
+        //     }
+
+        //     formData.append('imageFile', file);
+        //     formData.append('service', 'profile');
+        //     formData.append('serviceId', data.id);
+        //     const userToken = await AsyncStorage.getItem('userToken');
+
+        //     await axios({
+        //         method: 'POST',
+        //         url: 'http://192.168.0.176:8080/editProfileImg', // 집
+        //         // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+        //         // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+        //         // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+        //         // url: 'http://192.168.0.12:8080/editProfileImg2', // 학원
+        //         data: formData,
+        //         headers: {
+        //             'Content-Type':'multipart/form-data',
+        //             'Authorization': `Bearer ${userToken}`
+        //         },
+        //         transformRequestData: (data, headers) => {
+        //             return data;
+        //         },
+        //     }).then((response) => {
+        //         setData
+        //     })
+        // })
+
+        // let result = await ImagePicker.launchImageLibraryAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+        //     allowsEditing: true,
+        //     aspect: [1, 1],
+        //     quality: 1,
+        // })    
+        // console.log(result.assets[0].uri)
+
+        // const userToken = await AsyncStorage.getItem('userToken');
+        // const userId = await AsyncStorage.getItem('userId');
+
+        // const imageUri = result.assets[0].uri;
+
+        // const formData = new FormData();
+        // formData.append('userId', userId);
+        // formData.append('imageFile', {
+        //     uri: imageUri,
+        //     type: 'image/jpeg',
+        //     name: `${userId}_profileImg.jpg`
+        // });
+
+        // console.log(formData);
+
+        // await axios({
+        //     method: 'POST',
+        //         url: 'http://192.168.0.176:8080/editProfileImg', // 집
+        //         // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
+        //         // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
+        //         // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
+        //         // url: 'http://192.168.0.12:8080/editProfileImg2', // 학원
+        //         data: formData,
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //             'Authorization': `Bearer ${userToken}`
+        //         }
+        // }).then(async response => {
+        //     if(response.status === 200) {
+        //         console.log(response.data);
+        //     } else {
+        //         alert('입력하신 정보를 확인해주세요.');
+        //     }
+        // }).catch(error => {
+        //     console.log(error);
+        //     alert('에러 : 입력하신 정보를 확인해주세요.');
+        // })
 
         // if(!result.canceled) {
         //     const updatedImg = result.assets[0].uri;

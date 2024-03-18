@@ -59,7 +59,7 @@ const Login = () => {
                 // url: 'http://192.168.31.92:8080/login', // 오릴리
                 // url: 'http://172.30.4.51:8080/login', // 스벅
                 // url: 'http://172.30.1.49:8080/login', // 투썸
-                url: 'http://192.168.0.160:8080/login', // 학원
+                url: 'http://192.168.0.12:8080/login', // 학원
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/json'
