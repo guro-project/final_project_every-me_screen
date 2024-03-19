@@ -28,7 +28,7 @@ const TabNavigation = () => {
                 // url: 'http://192.168.31.92:8080/loadUserInfo', // 오릴리
                 // url: 'http://172.30.4.51:8080/loadUserInfo', // 스벅
                 // url: 'http://172.30.1.49:8080/loadUserInfo', // 투썸
-                url: 'http://192.168.0.64:8080/loadUserInfo', // 학원
+                url: 'http://192.168.0.12:8080/loadUserInfo', // 학원
                 params: { userId },
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -118,7 +118,7 @@ const TabNavigation = () => {
                 /> */}
                 <Tab.Screen
                     name="Home"
-                    component={AddPage}
+                    component={FoodIndexPage}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,

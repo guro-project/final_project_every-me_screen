@@ -18,7 +18,7 @@ const MyPage = () => {
             const profileImg = await AsyncStorage.getItem('userProfileImg');
             const userNickName = await AsyncStorage.getItem('userNickName');
             setLoadImg(profileImg);
-            console.log(profileImg)
+            console.log('loadImg  ', loadImg)
             setUserNickName(userNickName);
         };
         loadUserInfo();
@@ -56,7 +56,7 @@ const MyPage = () => {
                 <Ionicons name="settings-outline" style={styles.settingBtn} onPress={logOut}/>
                 {/* 프로필 이미지 */}
                 <View style={styles.profileBox}>
-                    {loadImg !== null ? (
+                    {loadImg !== null && loadImg.length > 22 ? (
                         <Image source={{ uri: loadImg }} style={styles.profileImg} />
                     ) : (
                         <Ionicons name="person-circle-outline" style={styles.profileIcon} />

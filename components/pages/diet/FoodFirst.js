@@ -76,9 +76,9 @@ const FoodFirst = ({ navigation }) => {
     
         fetchDataPeriodically();
     
-        const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
+        // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
     
-        return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
+        // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
     }, []); 
 
 
@@ -90,7 +90,7 @@ const FoodFirst = ({ navigation }) => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `http://192.168.0.64:8080/diet?userNo=${userNo}`,
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -110,7 +110,7 @@ const FoodFirst = ({ navigation }) => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://192.168.0.64:8080/diet?userNo=${userNo}`,
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -119,7 +119,7 @@ const FoodFirst = ({ navigation }) => {
             setData(response.data);
             // console.log(response.data)
         } catch (error) { //해당유저의 db에 값이 없으면 404에러가남
-            console.error('Error data123 : ' + error);
+            console.log(error);
         }
     };
 
