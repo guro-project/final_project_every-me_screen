@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
     const [dietName, setDietName] = useState('');
@@ -12,7 +13,10 @@ const UpdateDiet = ({ dietNo }) => {
     const [totalSalt, setTotalSalt] = useState(0);
 
     // 수정
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken')
+
         let updateDietData = {
             'dietName': dietName,
             'dietCategory': selectedMethod, //dietCategory랑 selectedMethod 둘다 끼니
@@ -29,7 +33,7 @@ const UpdateDiet = ({ dietNo }) => {
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
+                'Authorization': `Bearer ${userToken}`
             }
         })
             .then(response => {

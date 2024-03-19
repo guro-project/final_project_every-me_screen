@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -170,7 +171,10 @@ const RegistFood = ({ navigation }) => {
     }
 
     // 식단 등록
-    const firstPage = () => {
+    const firstPage = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken')
+
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
@@ -194,7 +198,7 @@ const RegistFood = ({ navigation }) => {
             data: dietData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
+                'Authorization': `Bearer ${userToken}`
             }
         }).then(response => {
             console.log("요청 성공")

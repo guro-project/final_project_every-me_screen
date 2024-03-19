@@ -50,7 +50,10 @@ const DietDetailPage = ({ dietNo }) => {
     }
 
     // 북마크 조회
-    const checkBookmarkStatus = () => {
+    const checkBookmarkStatus = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken')
+
         console.log("확인용")
         // 여기서 책갈피 상태를 API를 통해 확인하고, 이미 책갈피가 되어 있는 경우 setBookmarked(true)로 상태 변경
         let BookmarkData = JSON.stringify({
@@ -62,7 +65,7 @@ const DietDetailPage = ({ dietNo }) => {
             data: BookmarkData,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
+                'Authorization': `Bearer ${userToken}`
             }
         })
             .then(response => {
@@ -79,6 +82,9 @@ const DietDetailPage = ({ dietNo }) => {
     }
 
     const selectBookMark = async () => {
+
+        const userToken = await AsyncStorage.getItem('userToken')
+
         console.log("클릭됨")
         if (!bookmarked) {
             let BookmarkData = JSON.stringify({
@@ -90,7 +96,7 @@ const DietDetailPage = ({ dietNo }) => {
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {
@@ -114,7 +120,7 @@ const DietDetailPage = ({ dietNo }) => {
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJkYXRlIjoxNzEwNDAzMzE4NzUwLCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJSb2xlIjoiVVNFUiIsInN1YiI6IkV2ZXJ5TWUgdG9rZW4gOiAxIiwiZXhwIjoxNzEwNDg5NzE4LCJ1c2VySWQiOiJ4eHhAeHh4LmNvbSJ9.89hQ9hdQLo3TMnCwDgE1AywVRopVRhCZZBmInnPGUMg`
+                    'Authorization': `Bearer ${userToken}`
                 }
             })
                 .then(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Agenda, Calendar } from "react-native-calendars";
 import ToggleButton from "./ToggleButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CalendarView = () => {
 
@@ -10,13 +11,22 @@ const CalendarView = () => {
   const [items, setItems] = useState({});
 
   // 날짜를 클릭할 때 호출되는 함수
-  const onDayPress = (day) => {
-    // 클릭된 날짜를 key로 하는 새로운 item 생성
-    const newItem = {
-      [day.dateString]: [{ type: 'toggleButton' }]
-    };
-    // 기존 items와 새로운 item을 병합하여 업데이트
-    setItems((prevItems) => ({ ...prevItems, ...newItem }));
+  const onDayPress = async (day) => {
+    // 클릭된 날짜의 item을 가져옴
+    const currentItem = items[day.dateString];
+    console.log('currentItem : ', currentItem)
+
+    await AsyncStorage.setItem('today', day.dateString);
+    console.log('current today : ', await AsyncStorage.getItem('today'))
+  
+    // 새로운 item 생성
+    const newItem = { [day.dateString]: currentItem ? [...currentItem, { type: 'toggleButton' }] : [{ type: 'toggleButton' }] };
+    // const newItem = { [day.dateString]:  [{ type: 'toggleButton' }]};
+
+    console.log('newItem : ' , newItem)
+  
+ 
+    setItems(newItem);
   };
 
   return (
