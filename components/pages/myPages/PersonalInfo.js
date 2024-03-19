@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,7 +12,7 @@ const PersonalInfo = () => {
 
     const [nickName, setNickName] = useState("");
     const [currentNickName, setCurrentNickName] = useState('');
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState("남자");
     const [birthday, setBirthday] = useState("");
     const [currentBirthday, setCurrentBirthday] = useState('');
     const [height, setHeight] = useState("");
@@ -21,15 +21,18 @@ const PersonalInfo = () => {
     const [currentWeight, setCurrentWeight] = useState('');
     const [goalWeight, setGoalWeight] = useState("");
     const [currentGoalWeight, setCurrentGoalWeight] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+
 
     useEffect(() => {
         const checkCurrentValue = async () => {
-            const nickname = await AsyncStorage.getItem('userNickname');
+            const nickname = await AsyncStorage.getItem('userNickName');
+            // console.log(nickName)
             const gender = await AsyncStorage.getItem('userGender');
             const birthday = await AsyncStorage.getItem('userBirthday');
             const height = await AsyncStorage.getItem('userHeight');
             const weight = await AsyncStorage.getItem('userWeight');
-            const goalWeight = await AsyncStorage.getItem('userGoalWeight');
+            const goalWeight = await AsyncStorage.getItem('userWeightGoal');
             setCurrentNickName(nickname);
             setGender(gender);
             setCurrentBirthday(birthday);
@@ -63,7 +66,6 @@ const PersonalInfo = () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem('userId');
 
-
         const userInfo = JSON.stringify({
             'userId': userId,
             'userNickname': nickName,
@@ -74,13 +76,15 @@ const PersonalInfo = () => {
             'userWeightGoal': goalWeight
         })
 
+        
+
         axios({
             method: 'POST',
             // url: 'http://192.168.0.176:8080/editUserInfo', // 집
             // url: 'http://192.168.31.92:8080/editUserInfo', // 오릴리
             // url: 'http://172.30.4.51:8080/editUserInfo', // 스벅
             // url: 'http://172.30.1.49:8080/editUserInfo', // 투썸
-            url: 'http://192.168.0.160:8080/editUserInfo', // 학원
+            url: 'http://192.168.0.12:8080/editUserInfo', // 학원
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',
@@ -89,7 +93,7 @@ const PersonalInfo = () => {
         }).then(async response => {
             if(response.status === 200) {
                 if(nickName!== currentNickName && nickName!== '') {
-                    await AsyncStorage.setItem('userNickname', nickName);
+                    await AsyncStorage.setItem('userNickName', nickName);
                 }
                 if(gender!== '') {
                     await AsyncStorage.setItem('userGender', gender);
@@ -106,7 +110,7 @@ const PersonalInfo = () => {
                 if(goalWeight!== currentGoalWeight && goalWeight!== '') {
                     await AsyncStorage.setItem('userGoalWeight', goalWeight);
                 }
-                navigation.navigate('MyPages');
+                setModalVisible(true)
             } else {
                 alert('입력하신 정보를 확인해주세요.');
             }
@@ -136,6 +140,21 @@ const PersonalInfo = () => {
             keyboardDidHideListener.remove();
         };
     }, []);
+
+    const logOut = async () => {
+        try {
+            // AsyncStorage에서 토큰을 지웁니다.
+            await AsyncStorage.clear();
+            console.log('삭제중..')
+            // 앱을 완전히 초기화하여 초기화면으로 이동합니다.
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
+        } catch (error) {
+            console.log('로그아웃 중 오류가 발생했습니다.', error);
+        }
+    }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -186,6 +205,7 @@ const PersonalInfo = () => {
                     </View>
                     <View style={styles.InfoInput}>
                         <Text style={styles.infoTitle}>신장</Text>
+                        <Text style={{color:"white"}}>{currentHeight}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder={`${currentHeight} cm`}
@@ -223,6 +243,28 @@ const PersonalInfo = () => {
                         
                     </View>
                 </View>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
+                            <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>변경사항은 로그아웃 이후에 적용됩니다.</Text>
+                            <View style={styles.modalBox}>
+                                <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
+                                    <Text style={styles.modalText}>로그아웃</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => { setModalVisible(false); navigation.navigate('MyPages') }}>
+                                    <Text style={styles.modalText}>로그인 유지</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
 
                 {!isKeyboardActive && (
                     <View style={styles.submitBtnContainer}>
@@ -358,5 +400,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 50,
         paddingVertical: 15,
         borderRadius: 5,
+    },
+    modalBox: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalText: {
+        color: 'black',
+        fontSize: 20,
+        padding: 10,
+        marginHorizontal: 10
     }
 })

@@ -3,45 +3,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MyPage = () => {
     const navigation = useNavigation();
+
     const [userNickname, setUserNickName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [loadImg, setLoadImg] = useState(null);
 
-    useEffect(() => {
-        const checkNickname = async () => {
-            const nickname = await AsyncStorage.getItem('userNickname');
-            setUserNickName(nickname);
+
+    useEffect(()=> {
+        const loadUserInfo = async () => {
+            const profileImg = await AsyncStorage.getItem('userProfileImg');
+            const userNickName = await AsyncStorage.getItem('userNickName');
+            setLoadImg(profileImg);
+            console.log('loadImg  ', loadImg)
+            setUserNickName(userNickName);
         };
-    
-        const interval = setInterval(checkNickname, 100);
-    
-        // 컴포넌트가 언마운트 될 때 clearInterval을 호출하여 interval을 정리합니다.
-        return () => clearInterval(interval);
-    }, []);
+        loadUserInfo();
+    },[]);
 
     const confirmLogout = () => {
         setModalVisible(true);
     };
 
-    useEffect(() => {
-        const checkImage = async () => {
-            const userProfileImg = await AsyncStorage.getItem('userImage');
-            setSelectedImage(userProfileImg);
-        }
-        const interval = setInterval(checkImage, 100);
-    
-        // 컴포넌트가 언마운트 될 때 clearInterval을 호출하여 interval을 정리합니다.
-        return () => clearInterval(interval);
-    },[])
-
 
     const logOut = async () => {
         try {
             // AsyncStorage에서 토큰을 지웁니다.
-            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.clear();
             console.log('삭제중..')
             // 앱을 완전히 초기화하여 초기화면으로 이동합니다.
             navigation.reset({
@@ -65,8 +56,8 @@ const MyPage = () => {
                 <Ionicons name="settings-outline" style={styles.settingBtn} onPress={logOut}/>
                 {/* 프로필 이미지 */}
                 <View style={styles.profileBox}>
-                    {selectedImage !== null ? (
-                        <Image source={{ uri: selectedImage }} style={styles.profileImg} />
+                    {loadImg !== null && loadImg.length > 22 ? (
+                        <Image source={{ uri: loadImg }} style={styles.profileImg} />
                     ) : (
                         <Ionicons name="person-circle-outline" style={styles.profileIcon} />
                     )}

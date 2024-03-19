@@ -6,16 +6,13 @@ import { Text, TouchableOpacity } from "react-native";
 const DeleteDiet = ({dietNo}) => {
 
     // 삭제
-    const handleDelete = async () => {
-    
-        const userToken = await AsyncStorage.getItem('userToken')
-
+    const handleDelete = async() => {
+        const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'DELETE',
-            url: `http://192.168.0.160:8080/deletediet/${dietNo}`,
+            url: `http://192.168.0.12:8080/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
-                // 토큰 유효기간 지나면 적용안됨
                 'Authorization': `Bearer ${userToken}`
             }
         })

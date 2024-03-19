@@ -53,10 +53,9 @@ const EmailSignUp = () => {
         axios({
             method: 'POST',
             // url: 'http://192.168.0.176:8080/signup', // 집
-            // url: 'http://192.168.31.92:8080/signup', // 오릴리
             // url: 'http://172.30.4.51:8080/signup', // 스벅
             // url: 'http://172.30.1.49:8080/signup', // 투썸
-            url: 'http://192.168.0.160:8080/signup', // 학원
+            url: 'http://192.168.0.12:8080/signup', // 학원
             data: signupData,
             headers: {
                 'Content-Type': 'application/json'

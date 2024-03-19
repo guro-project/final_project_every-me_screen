@@ -12,9 +12,10 @@ const FoodFirst = ({ navigation }) => {
     }
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [dietNo, setDietNo] = useState(null);
     const [selectedDietNo, setSelectedDietNo] = useState(null);
+    const [userNo, setUserNo] = useState('');
     const route = useRoute();
 
     // 식단에 등록된 결과가 나오는 부분인데 첫 화면과 같이 있어서 들어갈시 데이터가 없으므로 없을때 조건을 걸어줌
@@ -26,7 +27,7 @@ const FoodFirst = ({ navigation }) => {
     const totalProvince = route.params ? route.params.totalProvince : null;
     const totalProtein = route.params ? route.params.totalProtein : null;
     const totalSalt = route.params ? route.params.totalSalt : null;
-    
+
 
     // console.log("시작")
     // console.log("식단이름 최종적으로 받았나?")
@@ -42,28 +43,85 @@ const FoodFirst = ({ navigation }) => {
         fetchData();
     }, []);
 
-    // 전체조회
-    const fetchData = async () => {
-
-        const userToken = await AsyncStorage.getItem('userToken')
-
-        axios({
-            method: 'GET',
-            url: 'http://192.168.0.160:8080/diet',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${userToken}`
+    useEffect(() => {
+        const fetchUserNo = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null && userNo !== undefined) {
+                    setUserNo(userNo);
+                    if (data === null) {
+                        fetchData(userNo);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
             }
-        })
-            .then(response => {
-                setData(response.data)
-                // console.log("qwe")
-                // console.log(response.data)
+        };
+
+        fetchUserNo();
+    }, []); // data state 변화 감지
+
+    useEffect(() => {
+        const fetchDataPeriodically = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null && userNo !== undefined) {
+                    setUserNo(userNo);
+                    getDietList(userNo);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    
+        fetchDataPeriodically();
+    
+        // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
+    
+        // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
+    }, []); 
+
+
+    // 전체조회
+    const fetchData = async (userNo) => {
+        const userToken = await AsyncStorage.getItem('userToken');
+        console.log("유저번호");
+        console.log(userNo);
+        if (userNo !== undefined) {
+            axios({
+                method: 'GET',
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                }
             })
-            .catch(error => {
-                console.error('Error data : ' + error);
+                .then(response => {
+                    setData(response.data);
+                })
+                .catch(error => {
+                    console.error('Error data456 : ' + error);
+                });
+        }
+    };
+
+    const getDietList = async (userNo) => {
+        const userToken = await AsyncStorage.getItem('userToken');
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                }
             });
-    }
+            setData(response.data);
+            // console.log(response.data)
+        } catch (error) { //해당유저의 db에 값이 없으면 404에러가남
+            console.log(error);
+        }
+    };
 
     // 데이터가 객체로 되있어서 출력도 객체형식으로 나와서 데이터형식을 바꾼것
     const renderData = () => {
