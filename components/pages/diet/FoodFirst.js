@@ -1,15 +1,19 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DietDetailPage from "./food/DietDetailPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단의 메인화면
-const FoodFirst = ({ navigation }) => {
+const FoodFirst = () => {
+    
+    const navigation = useNavigation();
+
     const page = () => {
         navigation.navigate("IngredientsSearch");
         // console.log("클릭시 반응함?")
     }
+
 
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
@@ -75,6 +79,7 @@ const FoodFirst = ({ navigation }) => {
         };
     
         fetchDataPeriodically();
+        console.log('userNo 4343: ' , userNo)
     
         // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
     
@@ -85,12 +90,14 @@ const FoodFirst = ({ navigation }) => {
     // 전체조회
     const fetchData = async (userNo) => {
         const userToken = await AsyncStorage.getItem('userToken');
+        const today = await AsyncStorage.getItem('today');
+        console.log("today : " , today)
         console.log("유저번호");
-        console.log(userNo);
+        console.log("userNo : " , userNo);
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
+                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -100,17 +107,19 @@ const FoodFirst = ({ navigation }) => {
                     setData(response.data);
                 })
                 .catch(error => {
-                    console.error('Error data456 : ' + error);
+                    console.error('전체조회에러 : ' + error);
                 });
         }
     };
 
     const getDietList = async (userNo) => {
         const userToken = await AsyncStorage.getItem('userToken');
+        const today = await AsyncStorage.getItem('today');
+        console.log("today123 : " , today)
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://192.168.0.12:8080/diet?userNo=${userNo}`,
+                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -119,7 +128,7 @@ const FoodFirst = ({ navigation }) => {
             setData(response.data);
             // console.log(response.data)
         } catch (error) { //해당유저의 db에 값이 없으면 404에러가남
-            console.log(error);
+            console.log("조회에러 : " , error);
         }
     };
 

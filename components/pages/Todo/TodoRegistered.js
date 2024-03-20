@@ -3,31 +3,50 @@ import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, Fla
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function Todo() {
+function TodoRegistered() {
   const [todos, setTodos] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [todoContent, setTodoContent] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [userNo, setUserNo] = useState('');
 
   useEffect(() => {
     loadTodos();
   }, []);
 
+  useEffect(() => {
+    if (userNo) {
+      loadTodos();
+    }
+  }, [userNo]);
+
+
+    
+
+
+  
+
+
+
   const loadTodos = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     const today = await AsyncStorage.getItem('today');
     console.log('ioioioioioioioio : ', today)
+    const userNo = await AsyncStorage.getItem('userNo');
+    setUserNo(userNo);
+    console.log("userNo : " , userNo);
+
 
     axios({
       method: 'GET',
-      url: `http://192.168.0.160:8080/api/todos?date=${today}`,
+      url: `http://192.168.0.160:8080/api/todos?date=${today}&userNo=${userNo}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`
       }
     })
       .then(response => {
-        console.log(response.data)
+        console.log("데이터" , response.data)
         setTodos(response.data);
       })
       .catch(error => {
@@ -45,11 +64,11 @@ function Todo() {
     const today = await AsyncStorage.getItem('today');
     console.log('totototo : ', today)
 
-    const newTodo = {
-      contents: todoContent,
-      registDate: today,
-      isCompleted: false
-    };
+    let newTodo = JSON.stringify({
+      'userNo': userNo,
+      'contents': todoContent,
+      'registDate': today
+    });
 
     axios({
       method: 'POST',
@@ -64,13 +83,13 @@ function Todo() {
         console.log('Todo added:', response.data);
         setShowAddForm(false);
         setTodoContent('');
-        loadTodos();
+        loadTodos(today);
       })
       .catch(error => {
         console.error('Error adding todo:', error);
       });
-      await AsyncStorage.removeItem('today')
-      console.log('removed? : ', await AsyncStorage.getItem('today'))
+    await AsyncStorage.removeItem('today')
+    console.log('removed? : ', await AsyncStorage.getItem('today'))
   };
 
   const renderItem = ({ item }) => (
@@ -99,14 +118,14 @@ function Todo() {
       <FlatList
         data={todos}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={<Text>No todos available</Text>}
       />
     </View>
   );
 }
 
-export default Todo;
+export default TodoRegistered;
 
 const styles = StyleSheet.create({
   addButtonContainer: {

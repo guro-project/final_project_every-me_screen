@@ -260,6 +260,10 @@ const RegistFood = ({ navigation }) => {
 
     // 식단 등록
     const firstPage = async () => {
+
+        const today = await AsyncStorage.getItem('today')
+        console.log('today : ' , today)
+
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
@@ -270,10 +274,11 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
+            'dietCalendarDate' : today
             // 'ingredientName' : ingredientName
         });
 
-        console.log(image)
+        console.log('image : ' , image)
 
         const formData = new FormData();
         formData.append('dietData', dietData);
@@ -289,7 +294,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.12:8080/registdiet',
+            url: 'http://192.168.0.160:8080/registdiet',
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

@@ -32,7 +32,7 @@ const UpdateDiet = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.12:8080/diet/${dietNo}`,
+            url: `http://192.168.0.160:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -63,7 +63,7 @@ const UpdateDiet = ({ dietNo }) => {
         };
         axios({
             method: 'PUT',
-            url: `http://192.168.0.12:8080/updatediet/${dietNo}`,
+            url: `http://192.168.0.160:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',

@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CalendarView = () => {
 
+  
+
 
   // 초기 날짜 상태 설정
   const [items, setItems] = useState({});
@@ -36,6 +38,7 @@ const CalendarView = () => {
           if (item.type === 'toggleButton') {
             return (
               <View style={{ marginTop: 20, marginLeft: 10 }}>
+                
                 <ToggleButton/>
               </View>
             );

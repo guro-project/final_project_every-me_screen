@@ -1,11 +1,10 @@
 import { useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import FoodIndexPage from "../diet/FoodIndexPage";
-import Todo from "../Todo/Todo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import FoodFirst from "../diet/FoodFirst";
 import TodoRegistered from "../Todo/TodoRegistered";
+import FoodIndexPage from "../diet/FoodIndexPage";
+import FoodFirst from "../diet/FoodFirst";
 
 
 
