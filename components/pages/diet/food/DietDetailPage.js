@@ -48,7 +48,7 @@ const DietDetailPage = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `http:/192.168.0.64:8080/diet/${dietNo}`,
+            url: `http://192.168.0.160:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -71,7 +71,7 @@ const DietDetailPage = ({ dietNo }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/dietbm?dietNo=${dietNo}`,
+            url: `http://192.168.0.160:8080/dietbm?dietNo=${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -103,7 +103,7 @@ const DietDetailPage = ({ dietNo }) => {
             })
             axios({
                 method: 'POST',
-                url: `http:/192.168.0.64:8080/registdietbm`,
+                url: `http://192.168.0.160:8080/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ const DietDetailPage = ({ dietNo }) => {
             const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
-                url: `http://192.168.0.64:8080/deletedietbm`,
+                url: `http://192.168.0.160:8080/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',

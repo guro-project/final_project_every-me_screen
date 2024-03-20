@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -16,6 +16,7 @@ const RegistFood = ({ navigation }) => {
     const [quantities, setQuantities] = useState([]); // 수량
     const [userNo, setUserNo] = useState('');
     const [dietNo,setDietNo] = useState('');
+    const [image, setImage] = useState(null);
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -58,7 +59,7 @@ const RegistFood = ({ navigation }) => {
         };
 
         fetchUserNo();
-    }, []);
+    }, [image]);
 
     // +를 누르면 기본값의 0.5배의 값이 증가하고 -를 누르면 기본값의 0.5 배의 값이 감소한다
 
@@ -259,6 +260,10 @@ const RegistFood = ({ navigation }) => {
 
     // 식단 등록
     const firstPage = async () => {
+
+        const today = await AsyncStorage.getItem('today')
+        console.log('today : ' , today)
+
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
@@ -269,30 +274,38 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
+            'dietCalendarDate' : today
             // 'ingredientName' : ingredientName
         });
 
-        // console.log("뭐받음?")
-        // console.log(dietName)
-        // console.log(totalCalories)
-        // console.log(userId)
+        console.log('image : ' , image)
+
+        const formData = new FormData();
+        formData.append('dietData', dietData);
+        if (image) {
+            const imageform = {
+                name: '_DietImg.jpg',
+                type: 'image/jpeg',
+                uri: Platform.OS === 'ios' ? image.replace('file://', '') : image
+            };
+            formData.append('dietUri', imageform);
+        }
+
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http:/192.168.0.64:8080/registdiet',
-            data: dietData,
+            url: 'http://192.168.0.160:8080/registdiet',
+            data: formData,
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${userToken}`
-
-            }
+            },
+            transformRequest: data => data,
         }).then(response => {
             console.log("요청 성공")
             // 성공시 첫번째 페이지로 돌아감
-            // console.log(response)
             if (response.status === 200) {
                 navigation.navigate('FoodFirst');
-                // console.log(response.data)
             } else {
                 alert('값 확인');
             }
@@ -303,64 +316,58 @@ const RegistFood = ({ navigation }) => {
         });
     }
 
-    //이미지 등록
-    const pickImage2 = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+    const openCamera = () => {
+        Alert.alert(
+            '사진 선택',
+            '사진을 어디서 가져오시겠습니까?',
+            [
+                {
+                text: '카메라로 사진 찍기',
+                onPress: () => takePicture()
+                },
+                {
+                text: '앨범에서 선택',
+                onPress: () => pickImageFromGallery()
+                },
+                {
+                text: '취소',
+                style: 'cancel'
+                }
+            ]
+        );
+    };
+
+    const takePicture = async () => {
+        let result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
+            quality: 0.2,
         })
 
         if(!result.canceled) {
-
-            const updatedImg = result.assets[0].uri;
-
-            console.log(updatedImg.replace('file://', ''));
-
-            const userToken = await AsyncStorage.getItem('userToken');
-
-            const image = {
-                name: '_DietImg.jpg',
-                type: 'image/jpeg',
-                uri: Platform.OS === 'ios' ? updatedImg.replace('file://', '') : updatedImg
-            }
-
-            const formData = new FormData();
-            formData.append('dietUri', image);
-
-            axios({
-                method: 'POST',
-                // url: `http://192.168.0.176:8080/editProfileImg?userId=${userId}`, // 집
-                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
-                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
-                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
-                url: `http://192.168.0.64:8080/editDietImg`, // 학원
-                data: formData,
-                headers: {
-                    Accept: '*/*',
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${userToken}`
-                },
-                transformRequest: data => data,
-            }).then(response => {
-                console.log(response);
-                if(response.status === 200) {
-                    console.log('Success ', response.data);
-                } else {
-                    alert('입력하신 정보를 확인해주세요.');
-                }
-            }).catch(error => {
-                console.log(error);
-                alert('에러 : 입력하신 정보를 확인해주세요. please');
-            })
+            setImage(result.assets[0].uri);
         }
     
     }
 
+    //이미지 등록
+    const pickImageFromGallery = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.2,
+        })
+
+        if(!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+
+    }
+
     return (
         <>
-            <View style={{paddingTop:20}}>
+            <View style={{paddingTop:60}}>
                 <TextInput placeholder="식단 이름을 정해주세요" value={dietName} onChangeText={(text) => setDietName(text)} />
                 <View style={styles.receiptMethods}>
                     {methods.map((method, index) => {
@@ -393,7 +400,7 @@ const RegistFood = ({ navigation }) => {
                 </View>
 
                 {/* 미구현 */}
-                <TouchableOpacity onPress={pickImage2}>
+                <TouchableOpacity onPress={openCamera}>
                     <Text>이미지 업로드</Text>
                 </TouchableOpacity>
 
@@ -422,6 +429,15 @@ const RegistFood = ({ navigation }) => {
                 </TouchableOpacity>
                 {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
+                
+                <View>
+                    {image !== null ? (
+                        <Image source={{ uri: image }} style={{width: 100, height: 100}} />
+                    ) : (
+                        <Text>NO IMAGE</Text>
+                    )}
+                </View>
+
                 {/* <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 지방: {totalProvince.toFixed(2)} g</Text>
