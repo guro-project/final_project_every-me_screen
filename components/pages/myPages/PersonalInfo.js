@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { AXIOS_URL } from "@env";
 
 
 const PersonalInfo = () => {
@@ -80,11 +81,7 @@ const PersonalInfo = () => {
 
         axios({
             method: 'POST',
-            // url: 'http://192.168.0.176:8080/editUserInfo', // 집
-            // url: 'http://192.168.31.92:8080/editUserInfo', // 오릴리
-            // url: 'http://172.30.4.51:8080/editUserInfo', // 스벅
-            // url: 'http://172.30.1.49:8080/editUserInfo', // 투썸
-            url: 'http://192.168.0.12:8080/editUserInfo', // 학원
+            url: `${AXIOS_URL}/editUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',
@@ -205,7 +202,6 @@ const PersonalInfo = () => {
                     </View>
                     <View style={styles.InfoInput}>
                         <Text style={styles.infoTitle}>신장</Text>
-                        <Text style={{color:"white"}}>{currentHeight}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder={`${currentHeight} cm`}
@@ -398,7 +394,7 @@ const styles = StyleSheet.create({
     submitBtn: {
         backgroundColor: '#03C75A',
         paddingHorizontal: 50,
-        paddingVertical: 15,
+        paddingVertical: 12,
         borderRadius: 5,
     },
     modalBox: {

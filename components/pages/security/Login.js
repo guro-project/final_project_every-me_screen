@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AXIOS_URL } from "@env";
 
 
 const Login = () => {
@@ -56,11 +57,7 @@ const Login = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                // url: 'http://192.168.0.176:8080/login', // 집
-                // url: 'http://192.168.31.92:8080/login', // 오릴리
-                // url: 'http://172.30.4.51:8080/login', // 스벅
-                // url: 'http://172.30.1.49:8080/login', // 투썸
-                url: 'http://192.168.0.12:8080/login', // 학원
+                url: `${AXIOS_URL}/login`,
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/json'

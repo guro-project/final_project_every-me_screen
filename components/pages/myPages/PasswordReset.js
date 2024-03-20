@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { AXIOS_URL } from "@env";
 
 const PasswordReset = () => {
     const navigation = useNavigation();
@@ -39,11 +40,7 @@ const PasswordReset = () => {
 
         axios({
             method: 'POST',
-            // url: 'http://192.168.0.176:8080/changePassword', // 집
-            // url: 'http://192.168.31.92:8080/changePassword', // 오릴리
-            // url: 'http://172.30.4.51:8080/changePassword', // 스벅
-            // url: 'http://172.30.1.49:8080/changePassword', // 투썸
-            url: 'http://192.168.0.160:8080/changePassword', // 학원
+            url: `${AXIOS_URL}/changePassword`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

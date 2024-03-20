@@ -5,6 +5,7 @@ import UpdateDiet from './UpdateDiet';
 import DeleteDiet from './DeleteDiet';
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AXIOS_URL } from "@env";
 
 // 식단 상세페이지 보는곳
 const DietDetailPage = ({ dietNo }) => {
@@ -48,7 +49,7 @@ const DietDetailPage = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.12:8080/diet/${dietNo}`,
+            url: `${AXIOS_URL}/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -71,7 +72,7 @@ const DietDetailPage = ({ dietNo }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
-            url: `http://192.168.0.12:8080/dietbm?dietNo=${dietNo}`,
+            url: `${AXIOS_URL}/dietbm?dietNo=${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -103,7 +104,7 @@ const DietDetailPage = ({ dietNo }) => {
             })
             axios({
                 method: 'POST',
-                url: `http://192.168.0.12:8080/registdietbm`,
+                url: `${AXIOS_URL}/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +131,7 @@ const DietDetailPage = ({ dietNo }) => {
             const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
-                url: `http://192.168.0.12:8080/deletedietbm`,
+                url: `${AXIOS_URL}/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',

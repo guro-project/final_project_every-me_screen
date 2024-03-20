@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
+import { AXIOS_URL } from "@env";
 
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
@@ -42,62 +43,6 @@ const AccountSettings = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [16, 9],
-            quality: 0.5,
-        })    
-
-        if(!result.canceled) {
-
-            const updatedImg = result.assets[0].uri;
-            await AsyncStorage.setItem('profileUri', updatedImg);
-
-            const userToken = await AsyncStorage.getItem('userToken');
-            const userId = await AsyncStorage.getItem('userId');
-
-
-            // const userInfo = JSON.stringify({
-            //     'userId': userId,
-            //     'profileUri': updatedImg
-            // })
-
-            const formData = new FormData();
-            formData.append('userId', userId);
-            formData.append('profileUri', {
-                name: 'userProfileImg.jpg',
-                type: 'image/jpeg',
-                uri: updatedImg
-            });
-
-            axios({
-                method: 'POST',
-                // url: 'http://192.168.0.176:8080/editProfileImg', // 집
-                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
-                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
-                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
-                url: 'http://192.168.0.64:8080/editProfileImg', // 학원
-                data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${userToken}`
-                }
-            }).then(async response => {
-                if(response.status === 200) {
-                    setModalVisible(true)
-                } else {
-                    alert('입력하신 정보를 확인해주세요.');
-                }
-            }).catch(error => {
-                console.log(error);
-                alert('에러 : 입력하신 정보를 확인해주세요.');
-            })
-        }
-    
-    }
-
-    const pickImage2 = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         })
@@ -122,11 +67,7 @@ const AccountSettings = () => {
 
             axios({
                 method: 'POST',
-                // url: `http://192.168.0.176:8080/editProfileImg?userId=${userId}`, // 집
-                // url: 'http://192.168.31.92:8080/editProfileImg', // 오릴리
-                // url: 'http://172.30.4.51:8080/editProfileImg', // 스벅
-                // url: 'http://172.30.1.49:8080/editProfileImg', // 투썸
-                url: `http://192.168.0.12:8080/editProfileImg?userId=${userId}`, // 학원
+                url: `${AXIOS_URL}/editProfileImg?userId=${userId}`,
                 data: formData,
                 headers: {
                     Accept: '*/*',
@@ -222,7 +163,7 @@ const AccountSettings = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={pickImage2}>
+                    <TouchableOpacity onPress={pickImage}>
                         <View style={styles.btnBox}>
                             <Ionicons name="body-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>신체정보 변경</Text>

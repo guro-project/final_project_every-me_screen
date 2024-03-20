@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 import RegistFood from "./diet/food/RegistFood";
+import { AXIOS_URL } from "@env";
 
 
 const Tab = createBottomTabNavigator();
@@ -24,11 +25,7 @@ const TabNavigation = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                // url: 'http://192.168.0.176:8080/loadUserInfo', // 집
-                // url: 'http://192.168.31.92:8080/loadUserInfo', // 오릴리
-                // url: 'http://172.30.4.51:8080/loadUserInfo', // 스벅
-                // url: 'http://172.30.1.49:8080/loadUserInfo', // 투썸
-                url: 'http://192.168.0.12:8080/loadUserInfo', // 학원
+                url: `${AXIOS_URL}/loadUserInfo`,
                 params: { userId },
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -72,11 +69,7 @@ const TabNavigation = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                // url: 'http://192.168.0.176:8080/getProfileImg', // 집
-                // url: 'http://192.168.31.92:8080/getProfileImg', // 오릴리
-                // url: 'http://172.30.4.51:8080/getProfileImg', // 스벅
-                // url: 'http://172.30.1.49:8080/getProfileImg', // 투썸
-                url: 'http://192.168.0.12:8080/getProfileImg', // 학원
+                url: `${AXIOS_URL}/getProfileImg`,
                 params: {userId},
                 headers: {
                     'Authorization': `Bearer ${userToken}`

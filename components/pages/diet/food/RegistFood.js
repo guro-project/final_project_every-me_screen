@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as ImagePicker from 'expo-image-picker';
+import { AXIOS_URL } from "@env";
 
 // 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
@@ -289,7 +290,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.12:8080/registdiet',
+            url: `${AXIOS_URL}/registdiet`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

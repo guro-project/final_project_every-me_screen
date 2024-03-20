@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
+import { AXIOS_URL } from "@env";
 // 식단 번호에 맞게 삭제하는 페이지
 const DeleteDiet = ({dietNo}) => {
 
@@ -10,7 +11,7 @@ const DeleteDiet = ({dietNo}) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'DELETE',
-            url: `http://192.168.0.12:8080/deletediet/${dietNo}`,
+            url: `${AXIOS_URL}/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`

@@ -1,8 +1,9 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Modal, ScrollView } from "react-native"
 import axios from 'axios';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
+import { AXIOS_URL } from "@env";
 
 const PeedBoard = () => {
 
@@ -17,11 +18,7 @@ const PeedBoard = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                // url: 'http://192.168.0.176:8080/dietPeed', // 집
-                // url: 'http://192.168.31.92:8080/dietPeed', // 오릴리
-                // url: 'http://172.30.4.51:8080/dietPeed', // 스벅
-                // url: 'http://172.30.1.49:8080/dietPeed', // 투썸
-                url: 'http://192.168.0.12:8080/dietPeed', // 학원
+                url: `${AXIOS_URL}/dietPeed`,
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -70,7 +67,6 @@ const PeedBoard = () => {
                     style={styles.image}
                     resizeMode="cover" // 이미지를 화면에 맞게 잘라내어 표시
                 />
-                <Text style={{color: 'white'}}>{item.dietNo}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -103,14 +99,20 @@ const PeedBoard = () => {
                                         resizeMode="cover"
                                     />
                                 </View>
-                                <ScrollView style={styles.infoBox}>
+                                <View style={styles.infoBox}>
                                     <Text style={styles.infoTitle}>{selectedItem.dietName}</Text>
                                     <Text style={styles.infoSub}>{selectedItem.dietCategory}</Text>
-                                    <Text style={styles.infoText}>총 칼로리: {selectedItem.totalKcal}</Text>
-                                    <Text style={styles.infoText}>총 단백질: {selectedItem.totalProtein}</Text>
-                                    <Text style={styles.infoText}>총 나트륨: {selectedItem.totalSalt}</Text>
-                                    <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
-                                </ScrollView>
+                                    <ScrollView>
+                                        <Text style={styles.infoText}>총 칼로리: {selectedItem.totalKcal}</Text>
+                                        <Text style={styles.infoText}>총 탄수화물: {selectedItem.totalCarbohydrate}</Text>
+                                        <Text style={styles.infoText}>총 단백질: {selectedItem.totalProtein}</Text>
+                                        <Text style={styles.infoText}>총 나트륨: {selectedItem.totalSalt}</Text>
+                                        <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
+                                        <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
+                                        <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
+                                        <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
+                                    </ScrollView>
+                                </View>
                                 {/* 필요한 다른 정보들도 여기에 추가할 수 있습니다. */}
                                 <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
                                     <Ionicons name="close" size={24} color="black" />
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     imgBox: {
-        flex: 2,
+        flex: 1.5,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
         height: '65%',
     },
     modalImg: {
-        width: '80%',
+        width: '75%',
         height: '90%',
     },
     infoBox: {

@@ -6,6 +6,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { AXIOS_URL } from "@env";
 
 
 const SetUserInfo = () => {
@@ -96,11 +97,7 @@ const SetUserInfo = () => {
 
         axios({
             method: 'POST',
-            // url: 'http://192.168.0.176:8080/setUserInfo', // 집
-            // url: 'http://192.168.31.92:8080/setUserInfo', // 오릴리
-            // url: 'http://172.30.4.51:8080/setUserInfo', // 스벅
-            // url: 'http://172.30.1.49:8080/setUserInfo', // 투썸
-            url: 'http://192.168.0.12:8080/setUserInfo', // 학원
+            url: `${AXIOS_URL}/setUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',
