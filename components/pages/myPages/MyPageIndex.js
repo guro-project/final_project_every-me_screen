@@ -3,6 +3,7 @@ import MyPage from "./MyPage";
 import AccountSettings from "./AccountSettings";
 import PersonalInfo from "./PersonalInfo";
 import PasswordReset from "./PasswordReset";
+import ManageDiet from "./ManageDiet";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,12 @@ const MyPageIndex = () => {
             <Stack.Screen
                 name='AccountSettings'
                 component={AccountSettings}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name='ManageDiet'
+                component={ManageDiet}
                 options={{ headerShown: false }}
             />
 

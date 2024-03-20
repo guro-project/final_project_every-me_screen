@@ -21,18 +21,19 @@ const IndexPage = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
+    
     useEffect(() => {
         const checkLogin = async () => {
             const token = await AsyncStorage.getItem('userToken');
             if (token) {
                 setLoggedIn(true);
             }
-            setLoaded(true);
         }
         checkLogin();
     }, [loggedIn]);
 
     if (!loaded) {
+        setLoaded(true);
         return (
             <View style={styles.container}>
                 <Animatable.Image

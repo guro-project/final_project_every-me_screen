@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DietDetailPage from "./food/DietDetailPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 // 식단의 메인화면
 const FoodFirst = ({ navigation }) => {
     const page = () => {
@@ -91,7 +91,7 @@ const FoodFirst = ({ navigation }) => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `${AXIOS_URL}/diet?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -111,7 +111,7 @@ const FoodFirst = ({ navigation }) => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${AXIOS_URL}/diet?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`

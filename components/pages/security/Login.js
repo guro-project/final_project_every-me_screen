@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 
 const Login = () => {
@@ -40,7 +40,7 @@ const Login = () => {
     let loginCounter = 0;
 
     const onLoginHandler = async () => {
-        console.log("qwe")
+        console.log(`${REACT_NATIVE_AXIOS_URL}`)
         // 입력값 검증
         if (!userId || !userPass) {
             alert('아이디와 비밀번호를 입력해주세요')
@@ -57,7 +57,7 @@ const Login = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${AXIOS_URL}/login`,
+                url: `${REACT_NATIVE_AXIOS_URL}/login`,
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/json'

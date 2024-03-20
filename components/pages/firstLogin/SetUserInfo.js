@@ -6,7 +6,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 
 const SetUserInfo = () => {
@@ -97,7 +97,7 @@ const SetUserInfo = () => {
 
         axios({
             method: 'POST',
-            url: `${AXIOS_URL}/setUserInfo`,
+            url: `${REACT_NATIVE_AXIOS_URL}/setUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

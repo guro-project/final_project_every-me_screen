@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as ImagePicker from 'expo-image-picker';
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 // 식단 등록하는 페이지
 const RegistFood = ({ navigation }) => {
@@ -290,7 +290,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: `${AXIOS_URL}/registdiet`,
+            url: `${REACT_NATIVE_AXIOS_URL}/registdiet`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -337,7 +337,7 @@ const RegistFood = ({ navigation }) => {
         let result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.2,
+            quality: 0.05,
         })
 
         if(!result.canceled) {
@@ -352,7 +352,7 @@ const RegistFood = ({ navigation }) => {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.2,
+            quality: 0.05,
         })
 
         if(!result.canceled) {

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet } fr
 import { Agenda } from 'react-native-calendars';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 function Todo() {
   const [items, setItems] = useState({});
@@ -28,7 +28,7 @@ function Todo() {
 
     axios({
       method: 'GET',
-      url: `${AXIOS_URL}/api/todos?date=${dateString}`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos?date=${dateString}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`
@@ -69,7 +69,7 @@ function Todo() {
     }
     axios({
       method: 'POST',
-      url: `${AXIOS_URL}/api/todos`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos`,
       data: newTodo,
       headers: {
         'Content-Type': 'application/json',

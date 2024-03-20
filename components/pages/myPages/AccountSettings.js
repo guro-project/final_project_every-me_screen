@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
@@ -24,7 +24,7 @@ const AccountSettings = () => {
             setUserNickName(userNickName);
         };
         loadUserInfo();
-    },[]);
+    },[loadImg]);
     
 
     useEffect(() => {
@@ -44,8 +44,12 @@ const AccountSettings = () => {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
+            quality: 0.1,
         })
+
+        if(result.canceled) {
+            return;
+        }
 
         if(!result.canceled) {
 
@@ -67,7 +71,7 @@ const AccountSettings = () => {
 
             axios({
                 method: 'POST',
-                url: `${AXIOS_URL}/editProfileImg?userId=${userId}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/editProfileImg?userId=${userId}`,
                 data: formData,
                 headers: {
                     Accept: '*/*',
@@ -76,7 +80,6 @@ const AccountSettings = () => {
                 },
                 transformRequest: data => data,
             }).then(response => {
-                console.log(response);
                 if(response.status === 200) {
                     console.log('Success ', response.data);
                 } else {
@@ -87,7 +90,7 @@ const AccountSettings = () => {
                 alert('에러 : 입력하신 정보를 확인해주세요. please');
             })
         }
-    
+        setModalVisible(true)
     }
 
 
@@ -104,10 +107,6 @@ const AccountSettings = () => {
         } catch (error) {
             console.log('로그아웃 중 오류가 발생했습니다.', error);
         }
-    }
-
-    const pressTest = () => {
-        console.log('btn')
     }
 
     return (

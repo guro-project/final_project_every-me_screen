@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
-import { AXIOS_URL } from "@env";
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 const PeedBoard = () => {
 
@@ -18,7 +18,7 @@ const PeedBoard = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${AXIOS_URL}/dietPeed`,
+                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed`,
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -26,7 +26,7 @@ const PeedBoard = () => {
 
             try {
                 if (response.status === 200) {
-                    setPeed(response.data); // 받은 데이터 출력 또는 활용 dietImg, dietName, ingredientName, totalKcal
+                    setPeed(response.data);
                 }
             } catch (error) {
                 console.log(response);

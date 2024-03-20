@@ -18,11 +18,10 @@ const MyPage = () => {
             const profileImg = await AsyncStorage.getItem('userProfileImg');
             const userNickName = await AsyncStorage.getItem('userNickName');
             setLoadImg(profileImg);
-            console.log('loadImg  ', loadImg)
             setUserNickName(userNickName);
         };
         loadUserInfo();
-    },[]);
+    },[loadImg]);
 
     const confirmLogout = () => {
         setModalVisible(true);
@@ -76,7 +75,7 @@ const MyPage = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={pressTest}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('ManageDiet')}>
                         <View style={styles.btnBox}>
                             <Ionicons name="fast-food-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>식단 관리</Text>
