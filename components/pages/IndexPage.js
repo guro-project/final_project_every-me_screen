@@ -53,7 +53,7 @@ const IndexPage = () => {
                 <Stack.Screen
                     name='TabNavigation'
                     component={TabNavigation}
-                    options={{ headerShown: false }}
+                    options={{ headerShown: false, gestureEnabled: false }}
                 />
                 <Stack.Screen
                     name='Login'
