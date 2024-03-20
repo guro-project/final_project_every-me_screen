@@ -74,9 +74,9 @@ const FoodFirst = ({ navigation }) => {
             }
         };
     
-        fetchDataPeriodically();
+        // fetchDataPeriodically();
     
-        const intervalId = setInterval(fetchDataPeriodically, 60000); // 5초마다 데이터 폴링 1000당 1초
+        // const intervalId = setInterval(fetchDataPeriodically, 60000); // 5초마다 데이터 폴링 1000당 1초
     
         return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
     }, []); 
@@ -91,6 +91,7 @@ const FoodFirst = ({ navigation }) => {
             axios({
                 method: 'GET',
                 url: `http://192.168.0.64:8080/diet?userNo=${userNo}`,
+                // url: `http:/172.30.1.96:8080/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -111,6 +112,7 @@ const FoodFirst = ({ navigation }) => {
             const response = await axios({
                 method: 'GET',
                 url: `http://192.168.0.64:8080/diet?userNo=${userNo}`,
+                // url: `http:/172.30.1.96:8080/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
