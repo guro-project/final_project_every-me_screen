@@ -26,12 +26,13 @@ const IndexPage = () => {
     useEffect(() => {
         const checkLogin = async () => {
             const token = await AsyncStorage.getItem('userToken');
+            console.log(token)
             if (token) {
                 setLoggedIn(true);
             }
         }
         checkLogin();
-    }, [loggedIn]);
+    }, []);
 
     if (!loaded) {
         setLoaded(true);
@@ -99,11 +100,11 @@ const IndexPage = () => {
                 options={{ headerShown: false }}
             />
 
-            <Stack.Screen
+            {/* <Stack.Screen
                 name='MainPage'
                 component={MainPage}
                 options={{ headerShown: false }}
-            />
+            /> */}
 
             <Stack.Screen
                 name='FirstLogin'

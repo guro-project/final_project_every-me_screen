@@ -67,7 +67,7 @@ const EmailSignUp = () => {
             }
         }).catch(error => {
             console.log(error);
-            alert('아이디가 이미 존재합니다')
+            alert('아이디가 이미 존재합니다!')
         })
         
     }

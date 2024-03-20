@@ -51,9 +51,9 @@ const FoodFirst = () => {
     useEffect(() => {
         const fetchUserNo = async () => {
             try {
-                const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
+                const getUserNo = await AsyncStorage.getItem('userNo');
+                if (getUserNo !== null && getUserNo !== undefined) {
+                    setUserNo(getUserNo);
                     if (data === null) {
                         fetchData(userNo);
                     }
@@ -69,9 +69,9 @@ const FoodFirst = () => {
     useEffect(() => {
         const fetchDataPeriodically = async () => {
             try {
-                const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
+                const getUserNo = await AsyncStorage.getItem('userNo');
+                if (getUserNo !== null && getUserNo !== undefined) {
+                    setUserNo(getUserNo);
                     getDietList(userNo);
                 }
             } catch (error) {

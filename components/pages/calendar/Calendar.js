@@ -6,9 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CalendarView = () => {
 
-  
-
-
   // 초기 날짜 상태 설정
   const [items, setItems] = useState({});
 
@@ -19,7 +16,6 @@ const CalendarView = () => {
     console.log('currentItem : ', currentItem)
 
     await AsyncStorage.setItem('today', day.dateString);
-    console.log('current today : ', await AsyncStorage.getItem('today'))
   
     // 새로운 item 생성
     const newItem = { [day.dateString]: currentItem ? [...currentItem, { type: 'toggleButton' }] : [{ type: 'toggleButton' }] };
@@ -27,7 +23,7 @@ const CalendarView = () => {
 
     console.log('newItem : ' , newItem)
   
- 
+
     setItems(newItem);
   };
 

@@ -71,9 +71,7 @@ const SetUserInfo = () => {
 
         const userToken = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem('userId');
-        const role = await AsyncStorage.getItem('role');
         console.log(userId)
-        console.log(role)
         console.log(nickName);
         await AsyncStorage.setItem('userNickname', nickName);
         await AsyncStorage.setItem('userGender', gender);

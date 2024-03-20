@@ -23,8 +23,9 @@ function Todo() {
 
   const loadItems = async (day) => {
     const dateString = day.dateString;
-
     const userToken = await AsyncStorage.getItem('userToken')
+
+    console.log(dateString, userToken)
 
     axios({
       method: 'GET',
