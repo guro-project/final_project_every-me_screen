@@ -12,6 +12,8 @@ import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 import RegistFood from "./diet/food/RegistFood";
 import { REACT_NATIVE_AXIOS_URL } from "@env";
+import NoticeIndex from "./notices/NoticeIndex";
+import CalendarIndexPage from "./calendar/CalendarIndex";
 
 
 const Tab = createBottomTabNavigator();
@@ -110,7 +112,7 @@ const TabNavigation = () => {
                 /> */}
                 <Tab.Screen
                     name="Home"
-                    component={FoodIndexPage}
+                    component={CalendarIndexPage}
                     options={{
                         tabBarIcon: ({focused}) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A'/>) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1'/>),
                         headerShown: false,
@@ -128,7 +130,7 @@ const TabNavigation = () => {
 
                 {/* <Tab.Screen
                     name="Add"
-                    component={AddPage}
+                    component={NoticeIndex}
                     options={{
                         tabBarIcon: ({ focused }) => focused ? (<Ionicons name="add-outline" size={30} color='#03C75A' />) : (<Ionicons name="add-outline" style={{}} size={30} color='#C1C1C1' />),
                         headerShown: false,

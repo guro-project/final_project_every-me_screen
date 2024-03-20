@@ -1,16 +1,11 @@
 import { useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import FoodIndexPage from "../diet/FoodIndexPage";
-import Todo from "../Todo/Todo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { Agenda } from "react-native-calendars";
+import TodoRegistered from "../Todo/TodoRegistered";
+import FoodIndexPage from "../diet/FoodIndexPage";
 import FoodFirst from "../diet/FoodFirst";
-// import FAQScreen from "../faq/faq";
-// import FoodRegistered from "./FoodRegistered";
-// import FetchTodo from "../Todo/TodoRegistered";
-// import TodoRegistered from "../Todo/TodoRegistered";
-// import FoodFirstCalendar from "./FoodFirstCalendar";
+
 
 
 
@@ -47,7 +42,7 @@ const ToggleButton = () => {
                     <FoodFirst />
                 )}
                 {toggle === '계획' && (
-                    <Todo/>
+                    <TodoRegistered/>
                 )}
             </View>
         </View>

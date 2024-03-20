@@ -10,6 +10,7 @@ import TabNavigation from "./TabNavigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FirstLogin from "./firstLogin/FirstLogin";
+import ViewNotices from "./notices/ViewNotices";
 
 
 const Stack = createNativeStackNavigator();
