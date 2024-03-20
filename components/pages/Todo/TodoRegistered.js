@@ -88,7 +88,7 @@ function TodoRegistered() {
       .catch(error => {
         console.error('Error adding todo:', error);
       });
-    await AsyncStorage.removeItem('today')
+    // await AsyncStorage.removeItem('today')
     console.log('removed? : ', await AsyncStorage.getItem('today'))
   };
 
