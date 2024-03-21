@@ -305,7 +305,7 @@ const RegistFood = ({ navigation }) => {
             console.log("요청 성공")
             // 성공시 첫번째 페이지로 돌아감
             if (response.status === 200) {
-                navigation.navigate('FoodFirst');
+                navigation.navigate('CalendarView');
             } else {
                 alert('값 확인');
             }
