@@ -229,7 +229,7 @@ function TodoRegistered() {
         data={todos}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text>No todos available</Text>}
+        ListEmptyComponent={<Text>등록된 계획이 없습니다</Text>}
       />
     </View>
   );
