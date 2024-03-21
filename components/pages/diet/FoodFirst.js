@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -6,14 +6,13 @@ import DietDetailPage from "./food/DietDetailPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // 식단의 메인화면
 const FoodFirst = () => {
-    
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
 
     const page = () => {
         navigation.navigate("IngredientsSearch");
         // console.log("클릭시 반응함?")
     }
-
 
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
@@ -43,94 +42,132 @@ const FoodFirst = () => {
 
     // 등록된 식단 클릭시 페이지가 나와서 영양상세정보가 나옴 가능하면 재료명도
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     getDietList();
+    // }, []);
+
+    // // useEffect(() => {
+    // //     const fetchUserNo = async () => {
+    // //         try {
+    // //             const userNo = await AsyncStorage.getItem('userNo');
+    // //             if (userNo !== null && userNo !== undefined) {
+    // //                 setUserNo(userNo);
+    // //                 if (data === null) {
+    // //                     fetchData(userNo);
+    // //                 }
+    // //             }
+    // //         } catch (error) {
+    // //             console.log(error);
+    // //         }
+    // //     };
+
+    // //     fetchUserNo();
+    // // }, []); // data state 변화 감지
+
+    // useEffect(() => {
+    //     const fetchDataPeriodically = async () => {
+    //         try {
+    //             const userNo = await AsyncStorage.getItem('userNo');
+    //             if (userNo !== null && userNo !== undefined) {
+    //                 setUserNo(userNo);
+    //                 getDietList(userNo);
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+
+    //     fetchDataPeriodically();
+    //     console.log('userNo 4343: ' , userNo)
+
+    //     // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
+
+    //     // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
+    // }, [isFocused]); 
+
+
+    // // 전체조회
+    // const fetchData = async (userNo) => {
+    //     const userToken = await AsyncStorage.getItem('userToken');
+    //     const today = await AsyncStorage.getItem('today');
+    //     console.log("today : " , today)
+    //     console.log("유저번호");
+    //     console.log("userNo : " , userNo);
+    //     if (userNo !== undefined) {
+    //         axios({
+    //             method: 'GET',
+    //             url: `http://192.168.0.64:8080/diet?userNo=${userNo}&date=${today}`,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${userToken}`
+    //             }
+    //         })
+    //             .then(response => {
+    //                 setData(response.data);
+    //             })
+    //             .catch(error => {
+    //                 console.error('전체조회에러 : ' + error);
+    //             });
+    //     }
+    // };
+
+    // const getDietList = async (userNo) => {
+    //     const userToken = await AsyncStorage.getItem('userToken');
+    //     const today = await AsyncStorage.getItem('today');
+    //     console.log("today123 : " , today)
+    //     console.log("유저넘버 : " + userNo)
+    //     try {
+    //         const response = await axios({
+    //             method: 'GET',
+    //             url: `http://192.168.0.64:8080/diet?userNo=${userNo}&date=${today}`,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${userToken}`
+    //             }
+    //         });
+    //         setData(response.data);
+    //         // console.log(response.data)
+    //     } catch (error) {
+    //         console.log("조회에러 : " , error);
+    //     }
+    // };
 
     useEffect(() => {
-        const fetchUserNo = async () => {
+        const fetchData = async () => {
             try {
                 const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
-                    if (data === null) {
-                        fetchData(userNo);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchUserNo();
-    }, []); // data state 변화 감지
-
-    useEffect(() => {
-        const fetchDataPeriodically = async () => {
-            try {
-                const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
+                if (userNo !== null) {
                     getDietList(userNo);
                 }
             } catch (error) {
                 console.log(error);
             }
         };
-    
-        fetchDataPeriodically();
-        console.log('userNo 4343: ' , userNo)
-    
-        // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
-    
-        // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
-    }, []); 
 
-
-    // 전체조회
-    const fetchData = async (userNo) => {
-        const userToken = await AsyncStorage.getItem('userToken');
-        const today = await AsyncStorage.getItem('today');
-        console.log("today : " , today)
-        console.log("유저번호");
-        console.log("userNo : " , userNo);
-        if (userNo !== undefined) {
-            axios({
-                method: 'GET',
-                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                }
-            })
-                .then(response => {
-                    setData(response.data);
-                })
-                .catch(error => {
-                    console.error('전체조회에러 : ' + error);
-                });
-        }
-    };
+        fetchData();
+    }, [isFocused]);
 
     const getDietList = async (userNo) => {
         const userToken = await AsyncStorage.getItem('userToken');
         const today = await AsyncStorage.getItem('today');
-        console.log("today123 : " , today)
-        try {
-            const response = await axios({
-                method: 'GET',
-                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                }
-            });
-            setData(response.data);
+        // console.log("유저번호 : " + userNo)
+        // console.log("날짜 : " + today)
+
+        axios({
+            method: 'GET',
+            url: `http://192.168.0.64:8080/diet?userNo=${userNo}&date=${today}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        }).then(response => {
+            setData(response.data)
+            // console.log("데이터값")
             // console.log(response.data)
-        } catch (error) { //해당유저의 db에 값이 없으면 404에러가남
-            console.log("조회에러 : " , error);
-        }
-    };
+        }).catch(error => {
+            console.error("조회 에러 : " + error)
+        })
+    }
 
     // 데이터가 객체로 되있어서 출력도 객체형식으로 나와서 데이터형식을 바꾼것
     const renderData = () => {

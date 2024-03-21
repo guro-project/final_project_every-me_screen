@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 // 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
     const [data, setData] = useState(null);
@@ -32,7 +33,7 @@ const UpdateDiet = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.160:8080/diet/${dietNo}`,
+            url: `http://192.168.0.64:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -63,7 +64,7 @@ const UpdateDiet = ({ dietNo }) => {
         };
         axios({
             method: 'PUT',
-            url: `http://192.168.0.160:8080/updatediet/${dietNo}`,
+            url: `http://192.168.0.64:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',

@@ -294,7 +294,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.160:8080/registdiet',
+            url: 'http://192.168.0.64:8080/registdiet',
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

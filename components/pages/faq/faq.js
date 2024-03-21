@@ -8,7 +8,7 @@ const FAQScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const response = await axios.get('http://192.168.0.160:8080/api/faqs');
+        const response = await axios.get('http://192.168.0.64:8080/api/faqs');
         console.log(response.data); // 데이터 확인
         setFaqs(response.data);
       } catch (error) {

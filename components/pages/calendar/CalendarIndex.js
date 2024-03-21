@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 
 const CalendarIndexPage = () => {
   const pageHandler = () => {
-    console.log("화면 이동 ")
+    // console.log("화면 이동 ")
   }
 
   return (
