@@ -97,7 +97,7 @@ const FoodFirst = () => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -119,7 +119,7 @@ const FoodFirst = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://192.168.0.160:8080/diet?userNo=${userNo}&date=${today}`,
+                url: `http://192.168.0.12:8080/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
