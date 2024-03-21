@@ -15,6 +15,7 @@ const FoodFirst = () => {
         // console.log("클릭시 반응함?")
     }
 
+
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
     const [dietNo, setDietNo] = useState(null);
@@ -24,51 +25,68 @@ const FoodFirst = () => {
 
     // 식단에 등록된 결과가 나오는 부분인데 첫 화면과 같이 있어서 들어갈시 데이터가 없으므로 없을때 조건을 걸어줌
     // 조건을 걸지않으면 첫화면부터 없는 데이터가 나와서 에러 발생함
-    // const dietName = route.params ? route.params.dietName : null;
-    // const selectedMethod = route.params ? route.params.selectedMethod : null;
-    // const totalCalories = route.params ? route.params.totalCalories : null;
-    // const totalCarbohydrate = route.params ? route.params.totalCarbohydrate : null;
-    // const totalProvince = route.params ? route.params.totalProvince : null;
-    // const totalProtein = route.params ? route.params.totalProtein : null;
-    // const totalSalt = route.params ? route.params.totalSalt : null;
+    const dietName = route.params ? route.params.dietName : null;
+    const selectedMethod = route.params ? route.params.selectedMethod : null;
+    const totalCalories = route.params ? route.params.totalCalories : null;
+    const totalCarbohydrate = route.params ? route.params.totalCarbohydrate : null;
+    const totalProvince = route.params ? route.params.totalProvince : null;
+    const totalProtein = route.params ? route.params.totalProtein : null;
+    const totalSalt = route.params ? route.params.totalSalt : null;
 
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
+    // console.log("시작")
+    // console.log("식단이름 최종적으로 받았나?")
+    // console.log(dietName)
+    // console.log("끼니 최종적으로 받았나?")
+    // console.log(selectedMethod)
+    // console.log("총 칼로리 최종적으로 받았나?")
+    // console.log(totalCalories)
+
+    // 등록된 식단 클릭시 페이지가 나와서 영양상세정보가 나옴 가능하면 재료명도
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     useEffect(() => {
         const fetchUserNo = async () => {
             try {
-                setUserNo(await AsyncStorage.getItem('userNo'));
-                console.log('1  :  ', userNo)
+                const userNo = await AsyncStorage.getItem('userNo');
                 if (userNo !== null && userNo !== undefined) {
+                    setUserNo(userNo);
                     if (data === null) {
-                        fetchData(userNo); // 여기서 fetchData 호출
+                        fetchData(userNo);
                     }
                 }
             } catch (error) {
-                console.log('userNo Error')
                 console.log(error);
             }
         };
-    
+
         fetchUserNo();
     }, []); // data state 변화 감지
 
     useEffect(() => {
         const fetchDataPeriodically = async () => {
             try {
-                getDietList(userNo);
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null && userNo !== undefined) {
+                    setUserNo(userNo);
+                    getDietList(userNo);
+                }
             } catch (error) {
                 console.log(error);
             }
         };
     
         fetchDataPeriodically();
+        console.log('userNo 4343: ' , userNo)
+    
+        // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
+    
+        // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
     }, []); 
 
-    console.log('test : ', userNo)
 
     // 전체조회
     const fetchData = async (userNo) => {
@@ -80,7 +98,7 @@ const FoodFirst = () => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/diet?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -99,12 +117,10 @@ const FoodFirst = () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const today = await AsyncStorage.getItem('today');
         console.log("today123 : " , today)
-        console.log("today123 : " , userToken)
-        console.log("today123 : " , userNo)
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/diet?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}&date=${today}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`

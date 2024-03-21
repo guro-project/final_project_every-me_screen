@@ -81,8 +81,6 @@ function TodoRegistered() {
       .catch(error => {
         console.error('Error adding todo:', error);
       });
-    // await AsyncStorage.removeItem('today')
-    console.log('removed? : ', await AsyncStorage.getItem('today'))
   };
 
   const renderItem = ({ item }) => (
@@ -109,7 +107,7 @@ function TodoRegistered() {
         </View>
       )}
       <FlatList
-        data={todos}
+        data={todos} 
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={<Text>No todos available</Text>}
