@@ -18,7 +18,7 @@ const PeedBoard = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed`, 
+                url: `${ REACT_NATIVE_AXIOS_URL }/dietPeed`, 
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }

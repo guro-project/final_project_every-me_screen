@@ -56,7 +56,7 @@ const Login = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${REACT_NATIVE_AXIOS_URL}/login`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/login`,
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/json'

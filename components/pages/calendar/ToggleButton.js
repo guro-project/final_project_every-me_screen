@@ -18,7 +18,7 @@ const ToggleButton = () => {
 
     const toggleShowForm = (toggle) => {
         setToggle(toggle)
-        console.log(toggle)
+        console.log('toggle : ', toggle)
     };
 
     return (

@@ -40,7 +40,7 @@ const PasswordReset = () => {
 
         axios({
             method: 'POST',
-            url: `${REACT_NATIVE_AXIOS_URL}/changePassword`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/changePassword`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

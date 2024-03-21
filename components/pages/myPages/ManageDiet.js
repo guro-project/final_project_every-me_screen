@@ -34,7 +34,7 @@ const ManageDiet = () => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/diet?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -87,7 +87,7 @@ const ManageDiet = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed?dietNo=${selectedDiet}`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/dietPeed?dietNo=${selectedDiet}`,
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }

@@ -29,7 +29,7 @@ function Todo() {
 
     axios({
       method: 'GET',
-      url: `${REACT_NATIVE_AXIOS_URL}/api/todos?date=${dateString}`,
+      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos?date=${dateString}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`
@@ -70,7 +70,7 @@ function Todo() {
     }
     axios({
       method: 'POST',
-      url: `${REACT_NATIVE_AXIOS_URL}/api/todos`,
+      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos`,
       data: newTodo,
       headers: {
         'Content-Type': 'application/json',

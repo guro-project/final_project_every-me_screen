@@ -95,7 +95,7 @@ const SetUserInfo = () => {
 
         axios({
             method: 'POST',
-            url: `${REACT_NATIVE_AXIOS_URL}/setUserInfo`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/setUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

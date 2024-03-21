@@ -81,7 +81,7 @@ const PersonalInfo = () => {
 
         axios({
             method: 'POST',
-            url: `${REACT_NATIVE_AXIOS_URL}/editUserInfo`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/editUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

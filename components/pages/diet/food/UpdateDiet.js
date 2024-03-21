@@ -33,7 +33,7 @@ const UpdateDiet = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `${REACT_NATIVE_AXIOS_URL}/diet/${dietNo}`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -64,7 +64,7 @@ const UpdateDiet = ({ dietNo }) => {
         };
         axios({
             method: 'PUT',
-            url: `${REACT_NATIVE_AXIOS_URL}/updatediet/${dietNo}`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',

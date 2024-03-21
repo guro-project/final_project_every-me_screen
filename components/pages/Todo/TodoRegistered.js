@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, FlatList } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { REACT_NATIVE_AXIOS_URL } from "@env";
 
 function TodoRegistered() {
   const [todos, setTodos] = useState([]);
@@ -20,14 +21,6 @@ function TodoRegistered() {
     }
   }, [userNo]);
 
-
-    
-
-
-  
-
-
-
   const loadTodos = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     const today = await AsyncStorage.getItem('today');
@@ -39,7 +32,7 @@ function TodoRegistered() {
 
     axios({
       method: 'GET',
-      url: `http://192.168.0.160:8080/api/todos?date=${today}&userNo=${userNo}`,
+      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos?date=${today}&userNo=${userNo}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`
@@ -72,7 +65,7 @@ function TodoRegistered() {
 
     axios({
       method: 'POST',
-      url: 'http://192.168.0.160:8080/api/todos',
+      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos`,
       data: newTodo,
       headers: {
         'Content-Type': 'application/json',

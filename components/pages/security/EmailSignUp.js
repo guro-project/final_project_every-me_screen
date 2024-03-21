@@ -53,7 +53,7 @@ const EmailSignUp = () => {
 
         axios({
             method: 'POST',
-            url: `${REACT_NATIVE_AXIOS_URL}/signup`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/signup`,
             data: signupData,
             headers: {
                 'Content-Type': 'application/json'

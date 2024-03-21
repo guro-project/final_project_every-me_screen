@@ -70,19 +70,6 @@ const RegistFood = ({ navigation }) => {
             const newQuantities = [...prevQuantities];
             newQuantities[index] += 0.5;
 
-            // 실시간 계산인데 값이 이상하게 나와서 주석처리 하고 계산하기 버튼 눌렀을시 계산 되는식으로 일단 바꿨음
-
-            // // 총합 칼로리를 갱신하는 데 사용될 임시 변수 초기화
-            // let tempTotalCalories = 0;
-
-            // // 각 항목의 칼로리 계산 및 총합 칼로리 갱신
-            // selectedIngredients.selectedIngredients.forEach((ingredient, i) => {
-            //     const calorie = parseFloat(ingredient.NUTR_CONT1) * newQuantities[i];
-            //     tempTotalCalories += calorie;
-            // });
-
-            // // 총합 칼로리 업데이트
-            // setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)));
 
             // 탄수화물, 단백질, 지방, 나트륨 계산
             // 탄 단 지 나 는 화면에 출력은 안되지만 + -버튼을 누르면 계산해줌
@@ -92,18 +79,6 @@ const RegistFood = ({ navigation }) => {
             const province = parseFloat((ingredient.NUTR_CONT4) * newQuantities[index].toFixed(2));
             const salt = parseFloat((ingredient.NUTR_CONT6) * newQuantities[index].toFixed(2));
 
-            // 각 상태 변수 업데이트 얘도 실시간 계산인데 이상해서 주석처리 해놨음
-            // setTotalCarbohydrate(prev => prev + carbohydrate);
-            // setTotalProtein(prev => prev + protein);
-            // setTotalProvince(prev => prev + province);
-            // setTotalSalt(prev => prev + salt);
-
-            // console.log("+")
-            // console.log(ingredient)
-            // console.log(carbohydrate)
-            // console.log(protein)
-            // console.log(province)
-            // console.log(salt)
 
             // `NaN` 체크 및 0으로 변경
             if (isNaN(carbohydrate)) {
@@ -141,12 +116,6 @@ const RegistFood = ({ navigation }) => {
                 const newQuantities = [...prevQuantities];
                 newQuantities[index] -= 0.5;
 
-                // let tempTotalCalories = 0;
-
-                // selectedIngredients.selectedIngredients.forEach((ingredient, i) => {
-                //     const calorie = parseFloat(ingredient.NUTR_CONT1) * newQuantities[i];
-                //     tempTotalCalories += calorie;
-                // });
 
                 // 해당 재료의 영양소 값을 감소시키는 부분
                 const ingredient = selectedIngredients.selectedIngredients[index];
@@ -155,19 +124,6 @@ const RegistFood = ({ navigation }) => {
                 const province = parseFloat(ingredient.NUTR_CONT4) * 0.5;
                 const salt = parseFloat(ingredient.NUTR_CONT6) * 0.5;
 
-                // 각 상태 변수 업데이트
-                // setTotalCalories(parseFloat(tempTotalCalories.toFixed(2)) - parseFloat(ingredient.NUTR_CONT1) * 0.5);
-                // setTotalCarbohydrate(prev => Math.max(prev - carbohydrate, 0)); // 음수가 되지 않도록 최소값 0으로 설정
-                // setTotalProtein(prev => Math.max(prev - protein, 0)); // 음수가 되지 않도록 최소값 0으로 설정
-                // setTotalProvince(prev => Math.max(prev - province, 0)); // 음수가 되지 않도록 최소값 0으로 설정
-                // setTotalSalt(prev => Math.max(prev - salt, 0)); // 음수가 되지 않도록 최소값 0으로 설정
-
-                // console.log("-")
-                // console.log(ingredient)
-                // console.log(carbohydrate)
-                // console.log(protein)
-                // console.log(province)
-                // console.log(salt)
 
                 // `NaN` 체크 및 0으로 변경
                 if (isNaN(carbohydrate)) {
@@ -243,12 +199,6 @@ const RegistFood = ({ navigation }) => {
         setTotalProvince(parseFloat(tempTotalProvince.toFixed(2)));
         setTotalSalt(parseFloat(tempTotalSalt.toFixed(2)));
 
-        // console.log("계산")
-        // console.log(tempTotalCalories);
-        // console.log(tempTotalCarbohydrate)
-        // console.log(tempTotalProtein)
-        // console.log(tempTotalProvince)
-        // console.log(tempTotalSalt)
     };
 
 
@@ -256,14 +206,13 @@ const RegistFood = ({ navigation }) => {
         navigation.navigate("FoodSearch")
     }
 
-    // const userNo = await AsyncStorage.getItem('userNo')
-    // console.log(userNo)
 
     // 식단 등록
     const firstPage = async () => {
 
         const today = await AsyncStorage.getItem('today')
         console.log('today : ' , today)
+        console.log('userNo : ', userNo)
 
         // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
@@ -295,7 +244,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: `${REACT_NATIVE_AXIOS_URL}/registdiet`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/registdiet`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

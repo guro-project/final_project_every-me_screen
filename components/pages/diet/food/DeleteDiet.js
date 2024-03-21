@@ -11,7 +11,7 @@ const DeleteDiet = ({dietNo}) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'DELETE',
-            url: `${REACT_NATIVE_AXIOS_URL}/deletediet/${dietNo}`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`

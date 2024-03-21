@@ -71,7 +71,7 @@ const AccountSettings = () => {
 
             axios({
                 method: 'POST',
-                url: `${REACT_NATIVE_AXIOS_URL}/editProfileImg?userId=${userId}`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/editProfileImg?userId=${userId}`,
                 data: formData,
                 headers: {
                     Accept: '*/*',

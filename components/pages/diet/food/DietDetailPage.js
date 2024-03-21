@@ -49,7 +49,7 @@ const DietDetailPage = ({ dietNo }) => {
 
         axios({
             method: 'GET',
-            url: `${REACT_NATIVE_AXIOS_URL}/diet/${dietNo}`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -72,7 +72,7 @@ const DietDetailPage = ({ dietNo }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'GET',
-            url: `${REACT_NATIVE_AXIOS_URL}/dietbm?dietNo=${dietNo}`,
+            url: `${ REACT_NATIVE_AXIOS_URL }/dietbm?dietNo=${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -104,7 +104,7 @@ const DietDetailPage = ({ dietNo }) => {
             })
             axios({
                 method: 'POST',
-                url: `${REACT_NATIVE_AXIOS_URL}/registdietbm`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/registdietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ const DietDetailPage = ({ dietNo }) => {
             const userToken = await AsyncStorage.getItem('userToken');
             axios({
                 method: 'DELETE',
-                url: `${REACT_NATIVE_AXIOS_URL}/deletedietbm`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/deletedietbm`,
                 data: BookmarkData,
                 headers: {
                     'Content-Type': 'application/json',

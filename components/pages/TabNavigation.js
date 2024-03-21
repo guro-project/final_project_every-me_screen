@@ -10,9 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
-import RegistFood from "./diet/food/RegistFood";
 import { REACT_NATIVE_AXIOS_URL } from "@env";
-import NoticeIndex from "./notices/NoticeIndex";
 import CalendarIndexPage from "./calendar/CalendarIndex";
 
 
@@ -27,7 +25,7 @@ const TabNavigation = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/loadUserInfo`,
+                url: `${ REACT_NATIVE_AXIOS_URL }/loadUserInfo`,
                 params: { userId },
                 headers: {
                     'Authorization': `Bearer ${userToken}`
