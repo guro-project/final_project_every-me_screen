@@ -13,8 +13,9 @@ const UpdateDiet = ({ dietNo, onClose }) => {
     const [totalProtein, setTotalProtein] = useState('');
     const [totalProvince, setTotalProvince] = useState('');
     const [totalSalt, setTotalSalt] = useState('');
+    const [dietMemo, setDietMemo] = useState('');
     const navigation = useNavigation();
-    
+
 
     // 수정을 눌렀을때 placeholder에 기존데이터가 출력되고 등록을 누르면 그데이터가 그대로들어감
     // get요청으로 상세정보를 부름
@@ -56,7 +57,8 @@ const UpdateDiet = ({ dietNo, onClose }) => {
             'totalCarbohydrate': totalCarbohydrate,
             'totalProtein': totalProtein,
             'totalProvince': totalProvince,
-            'totalSalt': totalSalt
+            'totalSalt': totalSalt,
+            'dietMemo': dietMemo
         };
         axios({
             method: 'PUT',
@@ -125,6 +127,12 @@ const UpdateDiet = ({ dietNo, onClose }) => {
                             placeholder={`${data.totalSalt}mg`}
                             onChangeText={totalSalt => setTotalSalt(totalSalt)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalSalt} // 입력값을 상태와 동기화
+                        />
+                        <Text>메모</Text>
+                        <TextInput
+                            placeholder={data.dietMemo}
+                            onChangeText={dietMemo => setDietMemo(dietMemo)} // 이름 입력값이 변경될 때마다 상태 업데이트
+                            value={dietMemo} // 입력값을 상태와 동기화
                         />
                     </>
                 )}

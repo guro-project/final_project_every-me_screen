@@ -17,6 +17,7 @@ const RegistFood = ({ navigation }) => {
     const [userNo, setUserNo] = useState('');
     const [dietNo,setDietNo] = useState('');
     const [image, setImage] = useState(null);
+    const [dietMemo,setDietMemo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -274,8 +275,9 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
-            'dietCalendarDate' : today
+            'dietCalendarDate' : today,
             // 'ingredientName' : ingredientName
+            "dietMemo" : dietMemo
         });
 
         console.log('image : ' , image)
@@ -394,6 +396,7 @@ const RegistFood = ({ navigation }) => {
                                     {method === "저녁" ? "저녁" : null}
                                     {method === "기타" ? "기타" : null}
                                 </Text>
+                                
                             </View>
                         );
                     })}
@@ -437,6 +440,8 @@ const RegistFood = ({ navigation }) => {
                         <Text>NO IMAGE</Text>
                     )}
                 </View>
+                <Text>메모칸</Text>
+                <TextInput placeholder="식단 메모" value={dietMemo} onChangeText={(text) => setDietMemo(text)} />
 
                 {/* <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>

@@ -19,6 +19,7 @@ const DietDetailPage = ({ dietNo }) => {
     const [totalSalt, setTotalSalt] = useState(0); // 나트륨
     const [bookmarked, setBookmarked] = useState(false); // 북마크
     const [userNo, setUserNo] = useState('');
+    const [dietMemo,setDietMemo] = useState('');
 
     useEffect(() => {
         fetchDetailData();
@@ -149,9 +150,13 @@ const DietDetailPage = ({ dietNo }) => {
     }
 
     // 수정 완료시 수정 모달 닫히고 상세페이지 새로고침함
-    const closeModal = () => {
+    const updateCloseModal = () => {
         setModalVisible(false);
         fetchDetailData();
+    }
+
+    const deleteCloseModal = () => {
+        setModalVisible(false);
     }
 
     return (
@@ -160,6 +165,7 @@ const DietDetailPage = ({ dietNo }) => {
                 <>
                     {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
                     <Text>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
+                    <Text>메모 : {data.dietMemo}</Text>
                 </>
             )}
             <TouchableOpacity onPress={selectBookMark}>
@@ -184,7 +190,8 @@ const DietDetailPage = ({ dietNo }) => {
                             totalProtein={totalProtein}
                             totalProvince={totalProvince}
                             totalSalt={totalSalt}
-                            onClose={closeModal}
+                            dietMemo={dietMemo}
+                            onClose={updateCloseModal}
                         />
 
                         <Pressable
@@ -200,7 +207,7 @@ const DietDetailPage = ({ dietNo }) => {
             </Pressable>
             {/* 삭제 */}
             <DeleteDiet
-                dietNo={dietNo}
+                dietNo={dietNo} onClose={deleteCloseModal}
             />
         </View>
     );
