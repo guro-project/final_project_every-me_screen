@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 // 식단 수정페이지
-const UpdateDiet = ({ dietNo }) => {
+const UpdateDiet = ({ dietNo, onClose }) => {
     const [data, setData] = useState(null);
     const [dietName, setDietName] = useState('');
     const [dietCategory, setDietCategory] = useState('');
@@ -13,15 +13,12 @@ const UpdateDiet = ({ dietNo }) => {
     const [totalProtein, setTotalProtein] = useState('');
     const [totalProvince, setTotalProvince] = useState('');
     const [totalSalt, setTotalSalt] = useState('');
-
-    // console.log(dietNo)
-    // 수정
+    const navigation = useNavigation();
+    
 
     // 수정을 눌렀을때 placeholder에 기존데이터가 출력되고 등록을 누르면 그데이터가 그대로들어감
     // get요청으로 상세정보를 부름
 
-    // console.log("받은거")
-    // console.log(dietName)
     useEffect(() => {
         fetchDetailData();
     }, [])
@@ -29,11 +26,10 @@ const UpdateDiet = ({ dietNo }) => {
     const fetchDetailData = async () => {
 
         const userToken = await AsyncStorage.getItem('userToken');
-        // console.log(userToken)
 
         axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/diet/${dietNo}`,
+            url: `http://172.30.1.96:8080/diet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -64,7 +60,7 @@ const UpdateDiet = ({ dietNo }) => {
         };
         axios({
             method: 'PUT',
-            url: `http://192.168.0.64:8080/updatediet/${dietNo}`,
+            url: `http://172.30.1.96:8080/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',
@@ -73,12 +69,15 @@ const UpdateDiet = ({ dietNo }) => {
         })
             .then(response => {
                 console.log("수정완료");
-                console.log(response.data)
+                // console.log(response.data)
+                // setModalVisible(!modalVisible)
+                onClose();
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
+
 
     return (
         <>

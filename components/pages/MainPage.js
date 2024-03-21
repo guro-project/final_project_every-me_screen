@@ -8,7 +8,7 @@ const MainPage = ({navigation}) => {
 
     const firstFoodpage = () => {
         navigation.navigate("FoodIndexPage")
-        console.log("이동됨?")
+        // console.log("이동됨?")
     }
 
     return (

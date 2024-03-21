@@ -22,7 +22,7 @@ const DetailViewNotice = () => {
         // console.log(userToken)
         axios({
             method: 'GET',
-            url: `http://192.168.0.64:8080/readnotice/${noticeNo}`,
+            url: `http://172.30.1.96:8080/readnotice/${noticeNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
