@@ -10,6 +10,10 @@ function TodoRegistered() {
   const [todoContent, setTodoContent] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [userNo, setUserNo] = useState('');
+  const [editTodoId, setEditTodoId] = useState(null);
+  const [editTodoContent, setEditTodoContent] = useState('');
+  const [editTodoRegistDate, setEditTodoRegistDate] = useState(''); // 수정할 todo의 등록일
+  const [editTodoUserNo, setEditTodoUserNo] = useState(''); 
 
   useEffect(() => {
     loadTodos();
@@ -83,9 +87,115 @@ function TodoRegistered() {
       });
   };
 
+
+
+  const handleTodoUpdate = (id, content, registDate, userNo) => {
+    setEditTodoId(id);
+    setEditTodoContent(content);
+    setEditTodoRegistDate(registDate); // 수정할 todo의 등록일 설정
+    setEditTodoUserNo(userNo); // 수정할 todo의 사용자 번호 설정
+    setShowAddForm(true);
+  };
+
+  const updateTodo = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const updatedTodo = {
+      id: editTodoId,
+      contents: todoContent,
+      registDate: editTodoRegistDate, // 수정할 todo의 등록일 사용
+      userNo: editTodoUserNo, // 수정할 todo의 사용자 번호 사용
+    };
+
+    axios({
+      method: 'PUT',
+      url: `http://192.168.0.160:8080/api/todos/${editTodoId}`,
+      data: updatedTodo,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userToken}`
+      }
+    })
+    .then(response => {
+      console.log('Todo updated:', response.data);
+      setShowAddForm(false);
+      setTodoContent('');
+      loadTodos();
+    })
+    .catch(error => {
+      console.error('Error updating todo:', error);
+    });
+  };
+
+
+
+  const deleteTodo = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken')
+
+    axios({
+      method: 'DELETE',
+      url: `http://192.168.0.160:8080/api/todos/${id}`,
+      headers: {
+        'Content-Type' : 'application/json',
+        'Authorization' : `Bearer ${userToken}`
+      }
+    })
+    .then(response =>{
+        console.log('Todo 삭제')
+        loadTodos();
+    })
+    .catch(error => {
+        console.log('Todo 삭제 실패 : ' , error)
+    });
+  };
+
+  // 삭제 버튼 클릭 시 호출되는 함수
+  const handleTodoDelete = async (id) => {
+    await deleteTodo(id)
+  }
+
+  const removeTodo = (id) => {
+
+      // 삭제 확인 모달 등을 표시할 수 있음
+      handleTodoDelete(id);
+  }
+
+
+  const toggleTodoCompletion = async (id, isCompleted) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+
+    axios({
+        method: 'PUT',
+        url: `http://192.168.0.160:8080/api/todos/${id}/complete`,
+        data: !isCompleted, // 반대 값으로 변경
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+        }
+    })
+    .then(response => {
+        console.log('체크리스트 완료:', response.data);
+        loadTodos();
+    })
+    .catch(error => {
+        console.error('체크리스트 실패:', error);
+    });
+};
+
+
+
   const renderItem = ({ item }) => (
     <View style={styles.item}>
-      <Text>{item.contents}</Text>
+      <TouchableOpacity onPress={() => toggleTodoCompletion(item.id, item.isCompleted)}>
+        <Text style={[item.isCompleted && styles.completedText]}>
+          {item.isCompleted ? '✓' : '○'} {item.contents}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleTodoUpdate(item.id, item.contents, item.registDate, item.userNo)}>
+        <Text>수정</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => removeTodo(item.id)}>
+        <Text>삭제</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -103,7 +213,7 @@ function TodoRegistered() {
             onChangeText={text => setTodoContent(text)}
             placeholder="Enter Todo Content"
           />
-          <Button title="Submit" onPress={submitTodo} />
+          <Button title="Submit" onPress={editTodoId ? updateTodo : submitTodo} />
         </View>
       )}
       <FlatList
@@ -129,4 +239,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  completedText: {
+    color: 'red', // 완료된 항목의 텍스트 색상 변경
+    textDecorationLine: 'line-through', // 취소선 추가
+    opacity: 0.5, // 완료된 항목은 투명도를 줘서 구분
+  }
 });
