@@ -59,11 +59,14 @@ function TodoRegistered() {
   };
 
   const addTodo = () => {
+    console.log(" addTodo : ") 
     setShowAddForm(!showAddForm);
   };
 
   const submitTodo = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
+
+    console.log("submit Todo : ")
 
     const today = await AsyncStorage.getItem('today');
     console.log('totototo : ', today)
@@ -172,6 +175,7 @@ function TodoRegistered() {
   const toggleTodoCompletion = async (id, isCompleted) => {
     const userToken = await AsyncStorage.getItem('userToken');
 
+
     axios({
         method: 'PUT',
         url: `http://192.168.0.160:8080/api/todos/${id}/complete`,
@@ -182,13 +186,19 @@ function TodoRegistered() {
         }
     })
     .then(response => {
-        console.log('체크리스트 완료:', response.data);
-        loadTodos();
+      // todos state를 변경하여 변경 사항을 반영한다
+      const updatedTodos = todos.map(todo => {
+        if (todo.id === id) { // 만약 선택한 todo id가 매개변수 id랑 일치하면
+          return { ...todo, isCompleted: !isCompleted }; // isCompleted 값을 반전시킨다
+        }
+        return todo;
+      });
+      setTodos(updatedTodos); // 업데이트 된 todos 를 updatedTodos에 할당
     })
     .catch(error => {
-        console.error('체크리스트 실패:', error);
+      console.error('체크리스트 실패:', error);
     });
-};
+  };
 
 
 
