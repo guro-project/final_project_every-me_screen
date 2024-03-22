@@ -62,7 +62,7 @@ const FoodFirst = () => {
 
         axios({
             method: 'GET',
-            url: `http://172.30.1.96:8080/diet?userNo=${userNo}&date=${today}`,
+            url: `http://192.168.0.64:8080/diet?userNo=${userNo}&date=${today}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`
@@ -73,7 +73,7 @@ const FoodFirst = () => {
             // console.log(response.data.dietCategory)
             // console.log(response.data)
         }).catch(error => {
-            console.error("조회 에러 : " + error)
+            // console.error("조회 에러 : " + error)
             console.log(userNo)
             console.log(today)
         })
@@ -128,7 +128,7 @@ const FoodFirst = () => {
                 <View>
                     <View style={sytles.modalView}>
                         {/* 상세정보 모달 */}
-                        <DietDetailPage dietNo={selectedDietNo} />
+                        <DietDetailPage dietNo={selectedDietNo} onClose={closeModal}/>
                         <Pressable onPress={() => closeModal()}>
                             <Text>닫기</Text>
                         </Pressable>
