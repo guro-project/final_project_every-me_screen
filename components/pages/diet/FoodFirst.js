@@ -11,26 +11,23 @@ const FoodFirst = () => {
 
     const page = () => {
         navigation.navigate("IngredientsSearch");
-        // console.log("클릭시 반응함?")
     }
-
 
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
-    const [dietNo, setDietNo] = useState(null);
     const [selectedDietNo, setSelectedDietNo] = useState(null);
     const [userNo, setUserNo] = useState('');
     const route = useRoute();
 
-    // 식단에 등록된 결과가 나오는 부분인데 첫 화면과 같이 있어서 들어갈시 데이터가 없으므로 없을때 조건을 걸어줌
-    // 조건을 걸지않으면 첫화면부터 없는 데이터가 나와서 에러 발생함
     const dietName = route.params ? route.params.dietName : null;
     const selectedMethod = route.params ? route.params.selectedMethod : null;
-    const totalCalories = route.params ? route.params.totalCalories : null;
+    const totalCaloriesProp = route.params ? route.params.totalCalories : null;
     const totalCarbohydrate = route.params ? route.params.totalCarbohydrate : null;
     const totalProvince = route.params ? route.params.totalProvince : null;
     const totalProtein = route.params ? route.params.totalProtein : null;
     const totalSalt = route.params ? route.params.totalSalt : null;
+
+    const [totalCalories, setTotalCalories] = useState(0); // totalCalories를 state로 변경
 
     useEffect(() => {
         getDietList();
@@ -41,7 +38,6 @@ const FoodFirst = () => {
             try {
                 const userNo = await AsyncStorage.getItem('userNo');
                 if (userNo !== null) {
-                    // console.log("userNo : " + userNo)
                     setUserNo(userNo);
                 }
             } catch (error) {
@@ -52,13 +48,10 @@ const FoodFirst = () => {
         fetchData();
     }, []);
 
-
     const getDietList = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const today = await AsyncStorage.getItem('today');
         const userNo = await AsyncStorage.getItem('userNo');
-        // console.log("유저번호 : " + userNo)
-        // console.log("날짜 : " + today)
 
         axios({
             method: 'GET',
@@ -68,20 +61,23 @@ const FoodFirst = () => {
                 'Authorization': `Bearer ${userToken}`
             }
         }).then(response => {
-            setData(response.data)
-            // console.log("데이터값")
-            // console.log(response.data.dietCategory)
-            // console.log(response.data)
+            setData(response.data);
+
+            // 데이터를 받아온 후에 전체 칼로리를 누적하여 업데이트
+            let total = 0;
+            response.data.forEach(item => {
+                total += parseFloat(item.totalKcal);
+            });
+            setTotalCalories(total);
+
         }).catch(error => {
-            // console.error("조회 에러 : " + error)
             console.log(userNo)
             console.log(today)
         })
     }
 
-    // 데이터가 객체로 되있어서 출력도 객체형식으로 나와서 데이터형식을 바꾼것
     const renderData = () => {
-        if (!data) return;
+        if (!data) return null;
 
         const results = [];
         for (const item of data) {
@@ -95,7 +91,6 @@ const FoodFirst = () => {
                         setModalVisible(true);
                     }}
                 >
-                    {/* 시작화면에 나오는 식단 출력 부분 */}
                     <Text>{dietCategory} {dietName} {totalKcal}Kcal{'\n'}</Text>
                 </TouchableOpacity>
             );
@@ -106,17 +101,102 @@ const FoodFirst = () => {
 
     const closeModal = () => {
         setModalVisible(false);
-        // navigation.navigate("CalendarView")
         getDietList();
     }
 
+        const morning = () => {
+        if (!data) return null;
+    
+        // 아침 카테고리에 해당하는 식단 필터링
+        const morningDiet = data.filter(item => item.dietCategory === "아침");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        {/* 아침 식단 출력 */}
+                        <Text> {item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+    
+    const lunch = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "점심");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+
+    const dinner = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "저녁");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+
+    const other = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "기타");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
 
     return (
         <View>
-            <Text>주간 달력 출력</Text>
-            <Text>하루 총 영양성분 출력</Text>
-            {/* add 누를시 검색화면으로 넘어감 */}
-            <TouchableOpacity onPress={page} style={sytles.touch}><Text>add</Text></TouchableOpacity>
+            <TouchableOpacity onPress={page} style={styles.touch}><Text>add</Text></TouchableOpacity>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -126,8 +206,7 @@ const FoodFirst = () => {
                 }}
             >
                 <View>
-                    <View style={sytles.modalView}>
-                        {/* 상세정보 모달 */}
+                    <View style={styles.modalView}>
                         <DietDetailPage dietNo={selectedDietNo} onClose={closeModal}/>
                         <Pressable onPress={() => closeModal()}>
                             <Text>닫기</Text>
@@ -135,16 +214,26 @@ const FoodFirst = () => {
                     </View>
                 </View>
             </Modal>
-            <Pressable onPress={() => setModalVisible(true)}>
-                {renderData()}
-            </Pressable>
+            {/* 하루 칼로리 출력 */}
+            <Text>오늘 칼로리: {totalCalories.toFixed(2)} Kcal / 3000 Kcal</Text>
+            {/* 각 카테고리별 식단 출력 */}
+            <View>
+                <Text>아침</Text>
+                {morning()}
+                <Text style={{fontSize:18}}>점심</Text>
+                {lunch()}
+                <Text>저녁</Text>
+                {dinner()}
+                <Text>기타</Text>
+                {other()}
+            </View>
         </View>
     )
 }
 
 export default FoodFirst;
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
     touch: {
         borderWidth: 1
     },
