@@ -247,6 +247,7 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                     <>
                         {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
                         <Text style={{color: 'white'}}>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
+                        <Text style={{color: 'white'}}>메모 : {data.dietMemo}</Text>
                     </>
                 )}
                 <TouchableOpacity
@@ -274,8 +275,9 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                                 totalProtein={totalProtein}
                                 totalProvince={totalProvince}
                                 totalSalt={totalSalt}
+                                dietMemo={dietMemo}
+                                onClose={updateCloseModal}
                             />
-
                             <Pressable
                                 onPress={() => setModalVisible(!modalVisible)}>
                                 <Text>닫기</Text>
@@ -283,69 +285,16 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                         </View>
                     </View>
                 </Modal>
-                <Pressable
-                    onPress={() => setModalVisible(true)}
-                    style={{position: 'absolute', bottom: '-2000%', left: 50}}
-                >
+                <Pressable onPress={() => setModalVisible(true)}>
                     {/* Pressable은 modal 여는거 */}
-                    <Text style={{ color: '#03C75A', fontSize: 20 }}>수정</Text>
+                    <Text style={{ color: 'blue' }}>수정</Text>
                 </Pressable>
-                {/* 삭제 */}
-                <DeleteDiet
-                    dietNo={dietNo}
-                />
+                <TouchableOpacity onPress={(handleDelete)}>
+                    <Text style={{ color: 'red' }}>삭제</Text>
+                </TouchableOpacity>
             </View>
         </>
-        
-        // <View>
-        //     {data && (
-        //         <>
-        //             {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
-        //             <Text>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
-        //             <Text>메모 : {data.dietMemo}</Text>
-        //         </>
-        //     )}
-        //     <TouchableOpacity onPress={selectBookMark}>
-        //         <Ionicons name="bookmark" color={bookmarked ? "yellow" : "black"} />
-        //     </TouchableOpacity>
-        //     <Modal
-        //         animationType="slide"
-        //         transparent={true}
-        //         visible={modalVisible}
-        //         onRequestClose={() => {
-        //             setModalVisible(!modalVisible);
-        //         }}>
-        //         <View style={styles.modalView}>
-        //             <View>
-        //                 {/* 식단 수정하려면 여기에 먼저 추가해야됨 */}
-        //                 <UpdateDiet
-        //                     dietNo={dietNo}
-        //                     dietName={dietName}
-        //                     selectedMethod={selectedMethod}
-        //                     totalCalories={totalCalories}
-        //                     totalCarbohydrate={totalCarbohydrate}
-        //                     totalProtein={totalProtein}
-        //                     totalProvince={totalProvince}
-        //                     totalSalt={totalSalt}
-        //                     dietMemo={dietMemo}
-        //                     onClose={updateCloseModal}
-        //                 />
-
-        //                 <Pressable
-        //                     onPress={() => setModalVisible(!modalVisible)}>
-        //                     <Text>닫기</Text>
-        //                 </Pressable>
-        //             </View>
-        //         </View>
-        //     </Modal>
-        //     <Pressable onPress={() => setModalVisible(true)}>
-        //         {/* Pressable은 modal 여는거 */}
-        //         <Text style={{ color: 'blue' }}>수정</Text>
-        //     </Pressable>
-        //     <TouchableOpacity onPress={(handleDelete)}>
-        //         <Text style={{ color: 'red' }}>삭제</Text>
-        //     </TouchableOpacity>
-        // </View>
+    
     );
 };
 

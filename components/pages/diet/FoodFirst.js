@@ -20,6 +20,7 @@ const FoodFirst = () => {
     const [selectedDietNo, setSelectedDietNo] = useState(null);
     const [userNo, setUserNo] = useState('');
     const route = useRoute();
+    const [avgKcal, setAvgKcal] = useState(0);
 
     const dietName = route.params ? route.params.dietName : null;
     const selectedMethod = route.params ? route.params.selectedMethod : null;
@@ -35,10 +36,13 @@ const FoodFirst = () => {
         getDietList();
     }, [isFocused])
 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userNo = await AsyncStorage.getItem('userNo');
+                const getAvgKcal = await AsyncStorage.getItem('avgKcal');
+                setAvgKcal(getAvgKcal);
                 if (userNo !== null) {
                     setUserNo(userNo);
                 }
@@ -74,9 +78,11 @@ const FoodFirst = () => {
     //     }
     // };
 
-    const getDietList = async (userNo) => {
+    const getDietList = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const today = await AsyncStorage.getItem('today');
+        const userNo = await AsyncStorage.getItem('userNo');
+        console.log("userNo : ", userNo)
         console.log("today123 : " , today)
         try {
             const response = await axios({
@@ -102,46 +108,46 @@ const FoodFirst = () => {
         }
     }
 
-    const renderData = () => {
-        if (!data) return null;
+    // const renderData = () => {
+    //     if (!data) return null;
 
-        const results = [];
-        for (const item of data) {
-            const { dietNo, dietName, totalKcal, dietCategory } = item;
+    //     const results = [];
+    //     for (const item of data) {
+    //         const { dietNo, dietName, totalKcal, dietCategory } = item;
 
-            results.push(
-                <View style={styles.dietItems}>
-                    <TouchableOpacity
-                        key={dietNo}
-                        onPress={() => {
-                            setSelectedDietNo(dietNo);
-                            setModalVisible(true);
-                        }}
-                    >
-                        {/* 시작화면에 나오는 식단 출력 부분 */}
-                        <View style={styles.dietItem}>
-                            <Text style={styles.itemText}>{dietCategory}</Text>
-                            <Text style={styles.itemText}>{dietName}</Text>
-                            <Text style={styles.itemText}>{totalKcal}Kcal</Text>
-                        </View>
+    //         results.push(
+    //             <View style={styles.dietItems}>
+    //                 <TouchableOpacity
+    //                     key={dietNo}
+    //                     onPress={() => {
+    //                         setSelectedDietNo(dietNo);
+    //                         setModalVisible(true);
+    //                     }}
+    //                 >
+    //                     {/* 시작화면에 나오는 식단 출력 부분 */}
+    //                     <View style={styles.dietItem}>
+    //                         <Text style={styles.itemText}>{dietCategory}</Text>
+    //                         <Text style={styles.itemText}>{dietName}</Text>
+    //                         <Text style={styles.itemText}>{totalKcal}Kcal</Text>
+    //                     </View>
                             
                             
                         
-                    </TouchableOpacity>
-                </View>
+    //                 </TouchableOpacity>
+    //             </View>
                 
-            );
-        }
+    //         );
+    //     }
 
-        return results;
-    };
+    //     return results;
+    // };
 
     const closeModal = () => {
         setModalVisible(false);
         getDietList();
     }
 
-        const morning = () => {
+    const morning = () => {
         if (!data) return null;
     
         // 아침 카테고리에 해당하는 식단 필터링
@@ -232,56 +238,60 @@ const FoodFirst = () => {
     };
 
     return (
-        <View style={styles.container}>
-            {/* add 누를시 검색화면으로 넘어감 */}
+        <>
             <TouchableOpacity onPress={page} style={styles.touch}><Ionicons name="add-circle-outline"  size={40} color='#03C75A'/></TouchableOpacity>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View>
-                    <View style={styles.modalView}>
-                        {/* 상세정보 모달 */}
-                        <DietDetailPage dietNo={selectedDietNo} />
-                        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: '25%'}}>
-                            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>닫기</Text>
-                        </Pressable>
+
+            <View style={styles.container}>
+                {/* add 누를시 검색화면으로 넘어감 */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View>
+                        <View style={styles.modalView}>
+                            {/* 상세정보 모달 */}
+                            <DietDetailPage dietNo={selectedDietNo} />
+                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: '25%'}}>
+                                <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>닫기</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
+                <View style={styles.resultContainer}>
+                    <Text>오늘 칼로리: {totalCalories.toFixed(2)} Kcal / {avgKcal} Kcal</Text>
+                    {/* 각 카테고리별 식단 출력 */}
+                    <View style={styles.dietList}>
+                        <Text>아침</Text>
+                        {morning()}
+                        <Text>점심</Text>
+                        {lunch()}
+                        <Text>저녁</Text>
+                        {dinner()}
+                        <Text>기타</Text>
+                        {other()}
                     </View>
                 </View>
-            </Modal>
-            <ScrollView style={styles.dietList}>
-                <Pressable onPress={() => setModalVisible(true)}>
-                    {renderData()}
-                </Pressable>
-            </ScrollView>
-            {/* 하루 칼로리 출력 */}
-            <Text>오늘 칼로리: {totalCalories.toFixed(2)} Kcal / 3000 Kcal</Text>
-            {/* 각 카테고리별 식단 출력 */}
-            <View>
-                <Text>아침</Text>
-                {morning()}
-                <Text style={{fontSize:18}}>점심</Text>
-                {lunch()}
-                <Text>저녁</Text>
-                {dinner()}
-                <Text>기타</Text>
-                {other()}
+                
             </View>
-        </View>
+        </>
+        
     )
 }
 
 export default FoodFirst;
 
 const styles = StyleSheet.create({
+    container: {
+
+    },
     touch: {
         zIndex: 999,
         position: 'absolute',
-        bottom: 0,
+        bottom: -550,
         right: 50,
         transform: [{ translateX: 0 }, { translateY: 0 }],
     },
@@ -325,7 +335,7 @@ const styles = StyleSheet.create({
     },
     dietList: {
         width: '80%',
-        height: Platform.OS === 'android' ? 500 : 450,
+        height: Platform.OS === 'android' ? 500 : 10,
         flexDirection: 'column',
         marginTop: 100,
     },
@@ -341,5 +351,13 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 18,
+    },
+    resultContainer: {
+        width: '80%',
+        marginTop: '20%',
+        position: 'absolute',
+        backgroundColor: 'green'
+    },
+    dietList: {
     }
 })

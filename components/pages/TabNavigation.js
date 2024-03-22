@@ -7,17 +7,18 @@ import FoodIndexPage from "./diet/FoodIndexPage";
 import CalendarView from "./calendar/Calendar";
 import MyPageIndex from "./myPages/MyPageIndex";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 import CalendarIndexPage from "./calendar/CalendarIndex";
-import CalendarTest from "./function/CalendarTest";
 
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+
+    const [bmr, setBmr] = useState(0);
 
     const loadUserInfo = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
@@ -90,9 +91,31 @@ const TabNavigation = () => {
 
     }
 
+    const dailyKcalories = async () => {
+        const gender = await AsyncStorage.getItem('userGender');
+        const height = await AsyncStorage.getItem('userHeight');
+        const weight = await AsyncStorage.getItem('userWeight');
+        const birthday = await AsyncStorage.getItem('userBirthday');
+        const age = new Date().getFullYear() - birthday.slice(0, 4);
+
+
+        if(gender === '남자') {
+            setBmr((10 * weight) + (6.25 * height) - (5 * age) + 5)
+        } else {
+            setBmr((10 * weight) + (6.25 * height) - (5 * age) - 161)
+        }
+
+        const avgKcal = 1.55 * bmr
+
+        console.log(avgKcal.toFixed(0));
+
+        await AsyncStorage.setItem('avgKcal', avgKcal.toFixed(0));
+    }
+
     useEffect(() => {
         loadUserInfo();
-    }, [])
+        dailyKcalories();
+    }, [bmr])
 
     return (
         <>
@@ -120,7 +143,7 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="Health"
-                    component={CalendarTest}
+                    component={HealthPage}
                     options={{
                         tabBarIcon: ({ focused }) => focused ? (<Ionicons name="barbell-outline" size={30} color='#03C75A' />) : (<Ionicons name="barbell-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,

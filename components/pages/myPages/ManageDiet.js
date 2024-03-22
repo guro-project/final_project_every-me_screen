@@ -6,7 +6,6 @@ import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation } from "@react-navigation/native";
-import SelectDiet from "./SelectDiet";
 
 const ManageDiet = () => {
 
