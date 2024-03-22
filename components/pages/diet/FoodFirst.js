@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -8,111 +8,71 @@ import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { Ionicons } from '@expo/vector-icons';
 // 식단의 메인화면
 const FoodFirst = () => {
-    
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
 
     const page = () => {
         navigation.navigate("IngredientsSearch");
-        // console.log("클릭시 반응함?")
     }
-
 
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
-    const [dietNo, setDietNo] = useState(null);
     const [selectedDietNo, setSelectedDietNo] = useState(null);
     const [userNo, setUserNo] = useState('');
     const route = useRoute();
 
-    // 식단에 등록된 결과가 나오는 부분인데 첫 화면과 같이 있어서 들어갈시 데이터가 없으므로 없을때 조건을 걸어줌
-    // 조건을 걸지않으면 첫화면부터 없는 데이터가 나와서 에러 발생함
     const dietName = route.params ? route.params.dietName : null;
     const selectedMethod = route.params ? route.params.selectedMethod : null;
-    const totalCalories = route.params ? route.params.totalCalories : null;
+    const totalCaloriesProp = route.params ? route.params.totalCalories : null;
     const totalCarbohydrate = route.params ? route.params.totalCarbohydrate : null;
     const totalProvince = route.params ? route.params.totalProvince : null;
     const totalProtein = route.params ? route.params.totalProtein : null;
     const totalSalt = route.params ? route.params.totalSalt : null;
 
-
-    // console.log("시작")
-    // console.log("식단이름 최종적으로 받았나?")
-    // console.log(dietName)
-    // console.log("끼니 최종적으로 받았나?")
-    // console.log(selectedMethod)
-    // console.log("총 칼로리 최종적으로 받았나?")
-    // console.log(totalCalories)
-
-    // 등록된 식단 클릭시 페이지가 나와서 영양상세정보가 나옴 가능하면 재료명도
+    const [totalCalories, setTotalCalories] = useState(0); // totalCalories를 state로 변경
 
     useEffect(() => {
+        getDietList();
+    }, [isFocused])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userNo = await AsyncStorage.getItem('userNo');
+                if (userNo !== null) {
+                    setUserNo(userNo);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         fetchData();
     }, []);
 
-    useEffect(() => {
-        const fetchUserNo = async () => {
-            try {
-                const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
-                    if (data === null) {
-                        fetchData(userNo);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchUserNo();
-    }, []); // data state 변화 감지
-
-    useEffect(() => {
-        const fetchDataPeriodically = async () => {
-            try {
-                const userNo = await AsyncStorage.getItem('userNo');
-                if (userNo !== null && userNo !== undefined) {
-                    setUserNo(userNo);
-                    getDietList(userNo);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-    
-        fetchDataPeriodically();
-        console.log('userNo 4343: ' , userNo)
-    
-        // const intervalId = setInterval(fetchDataPeriodically, 20000); // 5초마다 데이터 폴링 1000당 1초
-    
-        // return () => clearInterval(intervalId); // 컴포넌트가 언마운트되면 interval 정리
-    }, []); 
-
-
-    // 전체조회
-    const fetchData = async (userNo) => {
-        const userToken = await AsyncStorage.getItem('userToken');
-        const today = await AsyncStorage.getItem('today');
-        console.log("today : " , today)
-        console.log("유저번호");
-        console.log("userNo : " , userNo);
-        if (userNo !== undefined) {
-            axios({
-                method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}&date=${today}`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                }
-            })
-                .then(response => {
-                    setData(response.data);
-                })
-                .catch(error => {
-                    console.error('전체조회에러 : ' + error);
-                });
-        }
-    };
+    // const getDietList = async () => {
+    //     const userToken = await AsyncStorage.getItem('userToken');
+    //     const today = await AsyncStorage.getItem('today');
+    //     console.log("today : " , today)
+    //     console.log("유저번호");
+    //     console.log("userNo : " , userNo);
+    //     if (userNo !== undefined) {
+    //         axios({
+    //             method: 'GET',
+    //             url: `${REACT_NATIVE_AXIOS_URL}/diet?userNo=${userNo}&date=${today}`,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${userToken}`
+    //             }
+    //         })
+    //             .then(response => {
+    //                 setData(response.data);
+    //             })
+    //             .catch(error => {
+    //                 console.error('전체조회에러 : ' + error);
+    //             });
+    //     }
+    // };
 
     const getDietList = async (userNo) => {
         const userToken = await AsyncStorage.getItem('userToken');
@@ -128,15 +88,22 @@ const FoodFirst = () => {
                 }
             });
             setData(response.data);
-            // console.log(response.data)
-        } catch (error) { //해당유저의 db에 값이 없으면 404에러가남
-            console.log("조회에러 : " , error);
-        }
-    };
 
-    // 데이터가 객체로 되있어서 출력도 객체형식으로 나와서 데이터형식을 바꾼것
+            // 데이터를 받아온 후에 전체 칼로리를 누적하여 업데이트
+            let total = 0;
+            response.data.forEach(item => {
+                total += parseFloat(item.totalKcal);
+            });
+            setTotalCalories(total);
+
+        } catch(error) {
+            console.log(userNo)
+            console.log(today)
+        }
+    }
+
     const renderData = () => {
-        if (!data) return;
+        if (!data) return null;
 
         const results = [];
         for (const item of data) {
@@ -169,6 +136,100 @@ const FoodFirst = () => {
         return results;
     };
 
+    const closeModal = () => {
+        setModalVisible(false);
+        getDietList();
+    }
+
+        const morning = () => {
+        if (!data) return null;
+    
+        // 아침 카테고리에 해당하는 식단 필터링
+        const morningDiet = data.filter(item => item.dietCategory === "아침");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        {/* 아침 식단 출력 */}
+                        <Text> {item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+    
+    const lunch = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "점심");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+
+    const dinner = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "저녁");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+
+    const other = () => {
+        if (!data) return null;
+    
+        const morningDiet = data.filter(item => item.dietCategory === "기타");
+    
+        return (
+            <View>
+                {morningDiet.map(item => (
+                    <TouchableOpacity
+                        key={item.dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(item.dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -197,6 +258,19 @@ const FoodFirst = () => {
                     {renderData()}
                 </Pressable>
             </ScrollView>
+            {/* 하루 칼로리 출력 */}
+            <Text>오늘 칼로리: {totalCalories.toFixed(2)} Kcal / 3000 Kcal</Text>
+            {/* 각 카테고리별 식단 출력 */}
+            <View>
+                <Text>아침</Text>
+                {morning()}
+                <Text style={{fontSize:18}}>점심</Text>
+                {lunch()}
+                <Text>저녁</Text>
+                {dinner()}
+                <Text>기타</Text>
+                {other()}
+            </View>
         </View>
     )
 }

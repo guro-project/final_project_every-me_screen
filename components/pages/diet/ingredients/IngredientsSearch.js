@@ -66,8 +66,8 @@ const IngredientsSearch = () => {
 
     // 나온 리스트 클릭시 데이터 재료박스에 전달해줌
     const ListClickHandler = (clickedItem) => {
-        console.log("전달 한 값 확인")
-        console.log(clickedItem);
+        // console.log("전달 한 값 확인")
+        // console.log(clickedItem);
 
         if (!clickedNames.some(item => item.DESC_KOR === clickedItem.DESC_KOR)) {
             // 중복된 항목이 없을 때만 추가
@@ -78,7 +78,7 @@ const IngredientsSearch = () => {
 
     // TouchableOpacity 클릭시 재료박스에 담는 곳
     const handleRecommendations = (recommendedName) => {
-        console.log("버튼 전달 값")
+        // console.log("버튼 전달 값")
         if (!clickedNames.includes(recommendedName)) {
             setClickedNames(prevClickedNames => [...prevClickedNames, recommendedName]);
             console.log(recommendedName)

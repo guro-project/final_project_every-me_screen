@@ -19,6 +19,7 @@ const RegistFood = ({ navigation }) => {
     const [userNo, setUserNo] = useState('');
     const [dietNo,setDietNo] = useState('');
     const [image, setImage] = useState(null);
+    const [dietMemo,setDietMemo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -235,8 +236,9 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
-            'dietCalendarDate' : today
+            'dietCalendarDate' : today,
             // 'ingredientName' : ingredientName
+            "dietMemo" : dietMemo
         });
 
         console.log('image : ' , image)
@@ -266,7 +268,7 @@ const RegistFood = ({ navigation }) => {
             console.log("요청 성공")
             // 성공시 첫번째 페이지로 돌아감
             if (response.status === 200) {
-                navigation.navigate('FoodFirst');
+                navigation.navigate('CalendarView');
             } else {
                 alert('값 확인');
             }
@@ -346,6 +348,38 @@ const RegistFood = ({ navigation }) => {
                             )}
                         </View>
                     </View>
+        {/* <>
+            <View style={{paddingTop:60}}>
+                <TextInput placeholder="식단 이름을 정해주세요" value={dietName} onChangeText={(text) => setDietName(text)} />
+                <View style={styles.receiptMethods}>
+                    {methods.map((method, index) => {
+                        return (
+                            <View key={index} style={styles.receiptMethod}>
+                                <BouncyCheckbox
+                                    key={method}
+                                    unfillColor="#FFFFFF" //선택되지 않은 선택박스의 색
+                                    fillColor="#020715" // 선택된 선택 박스의 색
+                                    iconStyle={{ // 체크박스 아이콘에 적용되는 스타일
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: 20,
+                                        borderColor: "black",
+                                    }}
+                                    disableBuiltInState={true} //true로 사용시 체크박스 내부 상태 변화 애니메이션을 사용하지 않고 외부에서 상태관리를 할 수 있음
+                                    // 여기선 isSelected로 사용중이라 ture로 설정되었음
+                                    isChecked={method === selectedMethod} // 선택된 끼니에 대해 체크 여부 설정
+                                    onPress={() => setSelectedMethod(method)} // 체크박스를 누를 때 선택된 끼니 업데이트
+                                />
+                                <Text>
+                                    {method === "아침" ? "아침" : null}
+                                    {method === "점심" ? "점심" : null}
+                                    {method === "저녁" ? "저녁" : null}
+                                    {method === "기타" ? "기타" : null}
+                                </Text>
+                                
+                            </View>
+                        );
+                    })} */}
                 </View>
                 <View style={{justifyContent:'center', alignItems:'center'}}>
                     <TextInput ref={textInputRef} style={styles.textInput} placeholder="식단 이름을 정해주세요" placeholderTextColor='gray' value={dietName} onChangeText={(text) => setDietName(text)} />
@@ -424,6 +458,31 @@ const RegistFood = ({ navigation }) => {
             </SafeAreaView>
         </TouchableWithoutFeedback>
 
+                // {selectedIngredients.selectedIngredients.map((ingredient, index) => (
+                //     <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                //         <Text>
+                //             {`${ingredient.DESC_KOR} ${(parseFloat(ingredient.NUTR_CONT1) * quantities[index]).toFixed(2)}Kcal`}
+                //         </Text>
+                //         <Text style={{ marginLeft: 10, marginRight: 10 }} >{quantities[index]}개</Text>
+                //         <TouchableOpacity onPress={() => increaseQuantity(index)} style={{ marginLeft: 10, marginRight: 10, borderWidth: 1 }}><Text style={{ fontSize: 20 }}>+</Text></TouchableOpacity>
+                //         <TouchableOpacity onPress={() => decreaseQuantity(index)} style={{ marginLeft: 10, marginRight: 10, borderWidth: 1 }}><Text style={{ fontSize: 20 }}>-</Text></TouchableOpacity>
+                //     </View>
+                // ))}
+                // <TouchableOpacity onPress={calculateTotals} style={styles.touch}>
+                //     <Text>계산하기</Text>
+                // </TouchableOpacity>
+                // {/* 계산하기 누르면 계산된 정보가 나옴 확인차용으로 다 출력함 */}
+                // <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
+                
+                // <View>
+                //     {image !== null ? (
+                //         <Image source={{ uri: image }} style={{width: 100, height: 100}} />
+                //     ) : (
+                //         <Text>NO IMAGE</Text>
+                //     )}
+                // </View>
+                // <Text>메모칸</Text>
+                // <TextInput placeholder="식단 메모" value={dietMemo} onChangeText={(text) => setDietMemo(text)} />
 
 
             

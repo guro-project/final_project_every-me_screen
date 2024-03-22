@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import axios from 'axios';
 import UpdateDiet from './UpdateDiet';
-import DeleteDiet from './DeleteDiet';
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 // 식단 상세페이지 보는곳
-const DietDetailPage = ({ dietNo }) => {
+const DietDetailPage = ({ dietNo, onClose }) => {
     const [data, setData] = useState(null); // 데이터
     const [modalVisible, setModalVisible] = useState(false); // 모달
     const [dietName, setDietName] = useState(''); // 식단이름
@@ -22,6 +21,7 @@ const DietDetailPage = ({ dietNo }) => {
     const [userNo, setUserNo] = useState('');
     const [dietImg, setDietImg] = useState(null);
     
+    const [dietMemo, setDietMemo] = useState('');
 
     useEffect(() => {
         fetchDetailData();
@@ -40,7 +40,7 @@ const DietDetailPage = ({ dietNo }) => {
                 console.log(error);
             }
         };
-    
+
         fetchUserNo();
     }, []);
 
@@ -174,7 +174,62 @@ const DietDetailPage = ({ dietNo }) => {
         }
     }
 
+    // 수정 완료시 수정 모달 닫히고 상세페이지 새로고침함
+    const updateCloseModal = () => {
+        setModalVisible(false);
+        fetchDetailData();
+    }
 
+    // 식단 삭제확인 알터창
+    const handleDelete = async () => {
+        if (bookmarked) {
+            Alert.alert(
+                "북마크 확인",
+                "해당 식단은 북마크되어 있습니다. 그래도 삭제하시겠습니까?",
+                [
+                { 
+                    text: "예", 
+                    onPress: () => {
+                        selectBookMark();
+                        confirmDelete(onClose); // 삭제 함수 호출
+                    }
+                },
+                { text: "아니오", onPress: () => console.log("삭제 취소"), style: "cancel" }
+            ],
+                { cancelable: false }
+            );
+        } else {
+            Alert.alert(
+                "삭제 확인",
+                "정말로 삭제하시겠습니까?",
+                [
+                    { text: "예", onPress: () => confirmDelete(onClose) },
+                    { text: "아니오", onPress: () => console.log("삭제 취소"), style: "cancel" }
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+
+    // 식단 삭제
+    const confirmDelete = async (onClose) => {
+        const userToken = await AsyncStorage.getItem('userToken');
+        axios({
+            method: 'DELETE',
+            url: `http://192.168.0.64:8080/deletediet/${dietNo}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        })
+            .then(response => {
+                console.log("삭제 성공");
+                onClose(); // onClose 함수 호출하여 모달 닫기
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
 
     return (
         <>
@@ -242,6 +297,55 @@ const DietDetailPage = ({ dietNo }) => {
             </View>
         </>
         
+        // <View>
+        //     {data && (
+        //         <>
+        //             {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
+        //             <Text>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
+        //             <Text>메모 : {data.dietMemo}</Text>
+        //         </>
+        //     )}
+        //     <TouchableOpacity onPress={selectBookMark}>
+        //         <Ionicons name="bookmark" color={bookmarked ? "yellow" : "black"} />
+        //     </TouchableOpacity>
+        //     <Modal
+        //         animationType="slide"
+        //         transparent={true}
+        //         visible={modalVisible}
+        //         onRequestClose={() => {
+        //             setModalVisible(!modalVisible);
+        //         }}>
+        //         <View style={styles.modalView}>
+        //             <View>
+        //                 {/* 식단 수정하려면 여기에 먼저 추가해야됨 */}
+        //                 <UpdateDiet
+        //                     dietNo={dietNo}
+        //                     dietName={dietName}
+        //                     selectedMethod={selectedMethod}
+        //                     totalCalories={totalCalories}
+        //                     totalCarbohydrate={totalCarbohydrate}
+        //                     totalProtein={totalProtein}
+        //                     totalProvince={totalProvince}
+        //                     totalSalt={totalSalt}
+        //                     dietMemo={dietMemo}
+        //                     onClose={updateCloseModal}
+        //                 />
+
+        //                 <Pressable
+        //                     onPress={() => setModalVisible(!modalVisible)}>
+        //                     <Text>닫기</Text>
+        //                 </Pressable>
+        //             </View>
+        //         </View>
+        //     </Modal>
+        //     <Pressable onPress={() => setModalVisible(true)}>
+        //         {/* Pressable은 modal 여는거 */}
+        //         <Text style={{ color: 'blue' }}>수정</Text>
+        //     </Pressable>
+        //     <TouchableOpacity onPress={(handleDelete)}>
+        //         <Text style={{ color: 'red' }}>삭제</Text>
+        //     </TouchableOpacity>
+        // </View>
     );
 };
 

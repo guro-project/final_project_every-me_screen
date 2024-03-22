@@ -18,7 +18,9 @@ const CalendarView = () => {
     await AsyncStorage.setItem('today', day.dateString);
   
     // 새로운 item 생성
-    const newItem = { [day.dateString]: currentItem ? [...currentItem, { type: 'toggleButton' }] : [{ type: 'toggleButton' }] };
+    const newItem = {
+      [day.dateString]: currentItem ? currentItem : [{ type: 'toggleButton' }]
+    };
     // const newItem = { [day.dateString]:  [{ type: 'toggleButton' }]};
 
     console.log('newItem : ' , newItem)
