@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const FAQScreen = ({ navigation }) => {
   const [faqs, setFaqs] = useState([]);
@@ -8,7 +9,7 @@ const FAQScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const response = await axios.get('http://192.168.0.160:8080/api/faqs');
+        const response = await axios.get(`${REACT_NATIVE_AXIOS_URL}/api/faqs`);
         console.log(response.data); // 데이터 확인
         setFaqs(response.data);
       } catch (error) {

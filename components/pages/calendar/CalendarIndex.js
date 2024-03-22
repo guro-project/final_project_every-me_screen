@@ -19,23 +19,30 @@ const CalendarIndexPage = () => {
         name="IngredientsSearch"
         component={IngredientsSearch}
         options={{
-          title: "재료 검색 화면"
+          headerShown: false
         }}
         listeners={pageHandler}
       />
       <Stack.Screen
         name="CalendarView"
         component={CalendarView}
+        options={{
+          headerShown: false,
+          contentStyle: {backgroundColor: 'black'}
+        }}
       />
       <Stack.Screen
         name="FoodFirst"
         component={FoodFirst}
+        options={{
+          headerShown: false
+        }}
       />
       <Stack.Screen
         name="FoodSearch"
         component={FoodSearch}
         options={{
-          title: "음식 검색 화면"
+          headerShown: false
         }}
       />
       <Stack.Screen

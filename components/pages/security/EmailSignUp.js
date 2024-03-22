@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native"
 import { removeWhitespace, validateEmail } from "../../../util/Validation";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 
 const EmailSignUp = () => {
@@ -53,7 +53,7 @@ const EmailSignUp = () => {
 
         axios({
             method: 'POST',
-            url: `${ REACT_NATIVE_AXIOS_URL }/signup`,
+            url: `${REACT_NATIVE_AXIOS_URL}/signup`,
             data: signupData,
             headers: {
                 'Content-Type': 'application/json'

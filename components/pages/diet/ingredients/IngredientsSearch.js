@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IngredientsBasket from "./IngredientsBasket";
 import RecommendFood from "./RecommendButton";
 import FoodItemComponent from "../../../../model/api/FoodItemList";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 
 // 검색페이지
@@ -29,7 +30,6 @@ const IngredientsSearch = () => {
         fetch(apiUrl) // api에 요청보냄
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data && data.I2790 && data.I2790.row && data.I2790.row.length > 0) { // 검색한 데이터가 존재할시
                     const sortedRows = data.I2790.row.sort((a, b) => a.DESC_KOR.length - b.DESC_KOR.length); // 나온 리스트들의 이름을 길이순으로 비교해서 짧은 순부터 나열
                     const names = sortedRows.map(item => `${"이름 : " + item.DESC_KOR} ${"칼로리 : " + item.NUTR_CONT1} ${item.NUTR_CONT2} ${item.NUTR_CONT3} ${item.NUTR_CONT4} ${item.NUTR_CONT6}`); // 리스트 뽑는 곳                     
@@ -109,20 +109,24 @@ const IngredientsSearch = () => {
     // 화면상의 출력은 이름과 칼로리만 출력하되 출력하는건 모든 데이터가 다 담긴 객체형태로 보내기
 
     return (
-        <>
-            <View style={{ borderBottomWidth: 2, borderBlockColor: "blue" }}>
+        <SafeAreaView style={styles.safeArea}>
+            <View >
                 <IngredientsBasket clickedNames={clickedNames} setClickedNames={setClickedNames} recommendedNames={recommendedNames} setRecommendedNames={setRecommendedNames} />
                 {/* 재료박스에 담는 곳 */}
             </View>
-            <View style={{ borderBottomWidth: 2, borderBlockColor: "blue" }}>
-                <Text>추천 재료</Text>
+            <View >
+                <Text style={{color: 'white', marginTop: 10, marginLeft: 10, fontSize: 17}}>추천 재료</Text>
                 <RecommendFood food={food} onButtonClicked={handleRecommendations} />
                 {/* 추천버튼 눌렀을 시 */}
             </View>
+            <View style={styles.oneBorderLine}></View>
             <View >
-                <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력"
-                    keyboardType="default" value={name} />
-                <TouchableOpacity onPress={FindGroupName} style={sytles.TouchableBorder}><Text>검색</Text></TouchableOpacity>
+                <View style={{display:'flex', flexDirection: 'row'}}>
+                    <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력" placeholderTextColor='gray' style={styles.textInput}
+                        keyboardType="default" value={name} />
+                    <TouchableOpacity onPress={FindGroupName} style={styles.TouchableBorder}><Ionicons name="search-circle-outline" size={35} color='white'/></TouchableOpacity>
+                </View>
+                
                 {/* <Text>{name}</Text> */}
                 {/* groupNames의 길이가 0보다 클때 실행
                     keyExtractor : 각각의 키를 만들어줘서 react-natvie가 FlatList를 관리하기 쉽게 해줌
@@ -132,19 +136,16 @@ const IngredientsSearch = () => {
                         data={groupNames}
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => ListClickHandler(item)}>
-                                <Text style={sytles.listMargin}>{item.DESC_KOR} {item.NUTR_CONT1}Kcal</Text>
+                                <Text style={styles.listMargin}>{item.DESC_KOR}</Text>
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : null}
-                <View style={{ borderTopWidth: 2, borderBlockColor: "blue" }}>
-                    <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
-                        <Text>다음</Text>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 30}}>
+                    <TouchableOpacity onPress={handleRegistration} style={styles.TouchableBorder1}>
+                        <Text style={{color:'white'}}>다음</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
-                    <Text>스킵</Text>
-                </TouchableOpacity> */}
                 </View>
                 <Modal
                     animationType="slide"
@@ -154,46 +155,64 @@ const IngredientsSearch = () => {
                         setIsModalVisible(false);
                         setOneLetterModal(false);
                     }}>
-                    <View style={sytles.modalView}>
+                    <View style={styles.modalView}>
                         {oneLetterModal ? (
-                            <Text>한글자 이상을 검색해주세요</Text>
+                            <Text style={{fontSize: 15, marginTop: 50}}>한글자 이상을 검색해주세요</Text>
                         ) : (
-                            <Text>검색결과 없음</Text>
+                            <Text style={{fontSize: 15, marginTop: 50}}>검색결과 없음</Text>
                         )}
                         <Pressable
                             onPress={() => {
                                 setIsModalVisible(false);
                                 setOneLetterModal(false);
                             }}>
-                            <Text>닫기</Text>
+                            <Text style={{position:'absolute', bottom:-60, left: -10}}>닫기</Text>
                         </Pressable>
                     </View>
                 </Modal>
             </View>
-        </>
+        </SafeAreaView>
     )
 };
 
 export default IngredientsSearch;
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: 'black',
+        color: 'white',
+        paddingTop: Platform.OS === 'android' ? 50 : 0,
+    },
     TouchableBorder: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        marginTop: 18,
+        height: 60,
+    },
+    TouchableBorder1: {
+        borderColor: 'white',
         borderWidth: 1,
-        marginBottom: 5,
-        marginTop: 5,
-        width: 30
+        height: 40,
+        width: '20%',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     listMargin: {
-        marginTop: 2,
-        marginBottom: 2
+        marginTop: 5,
+        marginBottom: 7,
+        marginLeft: 15,
+        fontSize: 18,
+        color: 'white',
     },
     modalView: {
-        marginTop: '30%',
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 10,
         alignItems: 'center',
-        shadowColor: '#000', // 그림자 색깔
+        shadowColor: '#000', // 그림자 색깔 
         shadowOffset: { // 그림자 위치
             width: 0, // 가로 0
             height: 2, // 세로 2
@@ -201,7 +220,29 @@ const sytles = StyleSheet.create({
         shadowOpacity: 0.25, // 그림자 불투명도 클수록 진해짐
         shadowRadius: 4, // 그림자 반경 클수록 퍼져서 흐릿해짐
         elevation: 5, // 안드로이드에서만 적용됨 그림자의 높이
+        width: '60%',
+        height: '20%',
+        position: 'absolute',
+        left: '20%',
+        top: '35%',
+    },
+    oneBorderLine: {
+        borderBottomColor: 'white',
+        borderBottomWidth: 0.5,
+        opacity: 0.5,
         width: '100%',
-        height: '90%',
+        height: 1,
+    },
+    textInput: {
+        width: '80%',
+        height: 40,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'white',
+        padding: 10,
+        fontSize: 15,
+        marginTop: 30,
+        marginLeft: 15,
+        color: 'white',
     }
 })

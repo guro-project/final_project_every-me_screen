@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const ViewNotices = () => {
     const [noticeNo, setNoticeNo] = useState('');
@@ -23,7 +23,7 @@ const ViewNotices = () => {
         // console.log(userToken)
         axios({
             method: 'GET',
-            url: `${ REACT_NATIVE_AXIOS_URL }/readnotice`,
+            url: `${REACT_NATIVE_AXIOS_URL}/readnotice`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`

@@ -10,7 +10,6 @@ import TabNavigation from "./TabNavigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import FirstLogin from "./firstLogin/FirstLogin";
-import ViewNotices from "./notices/ViewNotices";
 
 
 const Stack = createNativeStackNavigator();
@@ -20,112 +19,97 @@ const IndexPage = () => {
     const navigation = useNavigation();
 
     const [loggedIn, setLoggedIn] = useState(false);
-    const [loaded, setLoaded] = useState(false);
+    const [userToken, setUserToken] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    
     useEffect(() => {
-        const checkLogin = async () => {
+        const checkToken = async () => {
             const token = await AsyncStorage.getItem('userToken');
-            console.log("checkLogin : ", token)
+            console.log(token);
             if (token) {
+                setUserToken(token);
                 setLoggedIn(true);
             }
-        }
-        checkLogin();
+            setLoading(false);
+        };
+        checkToken();
     }, []);
 
-    if (!loaded) {
-        setLoaded(true);
+    if (loading) {
         return (
             <View style={styles.container}>
                 <Animatable.Image
                     animation="fadeIn"
-                    duration={3000} // 애니메이션 지속 시간
+                    duration={3000}
                     source={require('../../images/logo.png')}
-                    style={{ borderRadius: 100 }}
+                    style={styles.logo}
                 />
             </View>
         );
     }
 
-
-    if (loggedIn) {
-        return (
-            <Stack.Navigator initialRouteName='TabNavigation'>
-                <Stack.Screen
-                    name='TabNavigation'
-                    component={TabNavigation}
-                    options={{ headerShown: false }}
-                />
-                {/* <Stack.Screen
-                    name='Login'
-                    component={Login}
-                    options={{ headerShown: false }}
-                /> */}
-                <Stack.Screen
-                    name='EmailSignUp'
-                    component={EmailSignUp}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name='MainPage'
-                    component={MainPage}
-                    options={{ headerShown: false }}
-                />
-
-                <Stack.Screen
-                    name='FirstLogin'
-                    component={FirstLogin}
-                    options={{ headerShown: false }}
-                />
-            </Stack.Navigator>
-        );
-    }
-
-
-    return (
-        <Stack.Navigator
-            initialRouteName='Login'
-        >
-
-            <Stack.Screen
-                name='Login'
-                component={Login}
-                options={{ headerShown: false }}
-            />
-
+    return loggedIn ? (
+        <Stack.Navigator initialRouteName='TabNavigation'>
             <Stack.Screen
                 name='TabNavigation'
                 component={TabNavigation}
                 options={{ headerShown: false }}
             />
-
-            {/* <Stack.Screen
-                name='MainPage'
-                component={MainPage}
-                options={{ headerShown: false }}
-            /> */}
-
             <Stack.Screen
-                name='FirstLogin'
-                component={FirstLogin}
+                name='Login'
+                component={Login}
                 options={{ headerShown: false }}
             />
-
             <Stack.Screen
                 name='EmailSignUp'
                 component={EmailSignUp}
                 options={{ headerShown: false }}
             />
-
+            <Stack.Screen
+                name='MainPage'
+                component={MainPage}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='FirstLogin'
+                component={FirstLogin}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    ) : (
+        <Stack.Navigator initialRouteName='Login'>
+            <Stack.Screen
+                name='Login'
+                component={Login}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='TabNavigation'
+                component={TabNavigation}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='MainPage'
+                component={MainPage}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='FirstLogin'
+                component={FirstLogin}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name='EmailSignUp'
+                component={EmailSignUp}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name='KaKaoLogin'
                 component={KaKaoLogin}
                 options={{ headerShown: false }}
             />
-
         </Stack.Navigator>
-    )
+    );
 }
 
 export default IndexPage;

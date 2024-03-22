@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 
 // 추천재료
@@ -15,21 +15,32 @@ const FoodItemComponent = ({ food, onButtonClicked }) => {
 
     // 추천재료 버튼
     return (
-        <TouchableOpacity onPress={ClickButtonHandler} style={sytles.TouchableBorder}>
-            <Text>{food.DESC_KOR}</Text>
-            <Text>{food.NUTR_CONT1}Kcal</Text>
-        </TouchableOpacity>
+        <View style={styles.recommList}>
+            <TouchableOpacity onPress={ClickButtonHandler} style={styles.TouchableBorder}>
+                <Text style={{color: 'white', padding: 3}}>{food.DESC_KOR}</Text>
+                <Text style={{color: 'white', padding: 3}}>{food.NUTR_CONT1}Kcal</Text>
+            </TouchableOpacity>
+        </View>
+        
     );
 }
 
 export default FoodItemComponent;
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
+    recommList: {
+        flex: 1,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },  
     TouchableBorder: {
+        color: 'white',
         borderWidth: 1,
-        marginBottom: 5,
-        marginTop: 5,
+        borderColor: 'white',
+        borderRadius: 10,
         width:100,
-        margin:5
+        alignItems: 'center'
     }
 })

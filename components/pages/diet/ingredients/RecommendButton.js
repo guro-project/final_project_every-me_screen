@@ -31,5 +31,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row', // 가로 방향으로 요소를 나열
         flexWrap: 'wrap', // 공간이 부족하면 다음 줄로 넘어감
+        marginBottom: 15
     }
 });

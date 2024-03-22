@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 
 const PersonalInfo = () => {
@@ -81,7 +81,7 @@ const PersonalInfo = () => {
 
         axios({
             method: 'POST',
-            url: `${ REACT_NATIVE_AXIOS_URL }/editUserInfo`,
+            url: `${REACT_NATIVE_AXIOS_URL}/editUserInfo`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

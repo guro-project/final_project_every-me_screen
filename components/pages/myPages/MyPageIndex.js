@@ -4,6 +4,7 @@ import AccountSettings from "./AccountSettings";
 import PersonalInfo from "./PersonalInfo";
 import PasswordReset from "./PasswordReset";
 import ManageDiet from "./ManageDiet";
+import SelectDiet from "./SelectDiet";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,12 @@ const MyPageIndex = () => {
                 component={ManageDiet}
                 options={{ headerShown: false }}
             />
+
+            {/* <Stack.Screen
+                name='SelectDiet'
+                component={SelectDiet}
+                options={{ headerShown: false }}
+            /> */}
 
             <Stack.Screen
                 name='PersonalInfo'

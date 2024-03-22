@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 
 const Login = () => {
@@ -56,7 +56,7 @@ const Login = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${ REACT_NATIVE_AXIOS_URL }/login`,
+                url: `${REACT_NATIVE_AXIOS_URL}/login`,
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/json'
@@ -84,8 +84,7 @@ const Login = () => {
 
             onLoginHandler(); // 재귀 호출
         } catch (error) {
-            console.log(error);
-        }
+            console.log(error);        }
     }
     
 

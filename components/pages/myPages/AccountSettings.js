@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
@@ -71,7 +71,7 @@ const AccountSettings = () => {
 
             axios({
                 method: 'POST',
-                url: `${ REACT_NATIVE_AXIOS_URL }/editProfileImg?userId=${userId}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/editProfileImg?userId=${userId}`,
                 data: formData,
                 headers: {
                     Accept: '*/*',

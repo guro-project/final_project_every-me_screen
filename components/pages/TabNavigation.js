@@ -10,8 +10,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 import CalendarIndexPage from "./calendar/CalendarIndex";
+import CalendarTest from "./function/CalendarTest";
 
 
 const Tab = createBottomTabNavigator();
@@ -25,7 +26,7 @@ const TabNavigation = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/loadUserInfo`,
+                url: `${REACT_NATIVE_AXIOS_URL}/loadUserInfo`,
                 params: { userId },
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -119,7 +120,7 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="Health"
-                    component={HealthPage}
+                    component={CalendarTest}
                     options={{
                         tabBarIcon: ({ focused }) => focused ? (<Ionicons name="barbell-outline" size={30} color='#03C75A' />) : (<Ionicons name="barbell-outline" size={30} color='#C1C1C1' />),
                         headerShown: false,

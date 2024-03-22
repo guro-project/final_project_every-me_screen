@@ -1,10 +1,11 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DietDetailPage from "./food/DietDetailPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
+import { Ionicons } from '@expo/vector-icons';
 // 식단의 메인화면
 const FoodFirst = () => {
     
@@ -142,16 +143,26 @@ const FoodFirst = () => {
             const { dietNo, dietName, totalKcal, dietCategory } = item;
 
             results.push(
-                <TouchableOpacity
-                    key={dietNo}
-                    onPress={() => {
-                        setSelectedDietNo(dietNo);
-                        setModalVisible(true);
-                    }}
-                >
-                    {/* 시작화면에 나오는 식단 출력 부분 */}
-                    <Text>{dietCategory} {dietName} {totalKcal}Kcal{'\n'}</Text>
-                </TouchableOpacity>
+                <View style={styles.dietItems}>
+                    <TouchableOpacity
+                        key={dietNo}
+                        onPress={() => {
+                            setSelectedDietNo(dietNo);
+                            setModalVisible(true);
+                        }}
+                    >
+                        {/* 시작화면에 나오는 식단 출력 부분 */}
+                        <View style={styles.dietItem}>
+                            <Text style={styles.itemText}>{dietCategory}</Text>
+                            <Text style={styles.itemText}>{dietName}</Text>
+                            <Text style={styles.itemText}>{totalKcal}Kcal</Text>
+                        </View>
+                            
+                            
+                        
+                    </TouchableOpacity>
+                </View>
+                
             );
         }
 
@@ -160,11 +171,9 @@ const FoodFirst = () => {
 
 
     return (
-        <View>
-            <Text>주간 달력 출력</Text>
-            <Text>하루 총 영양성분 출력</Text>
+        <View style={styles.container}>
             {/* add 누를시 검색화면으로 넘어감 */}
-            <TouchableOpacity onPress={page} style={sytles.touch}><Text>add</Text></TouchableOpacity>
+            <TouchableOpacity onPress={page} style={styles.touch}><Ionicons name="add-circle-outline"  size={40} color='#03C75A'/></TouchableOpacity>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -174,27 +183,33 @@ const FoodFirst = () => {
                 }}
             >
                 <View>
-                    <View style={sytles.modalView}>
+                    <View style={styles.modalView}>
                         {/* 상세정보 모달 */}
                         <DietDetailPage dietNo={selectedDietNo} />
-                        <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                            <Text>닫기</Text>
+                        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: '25%'}}>
+                            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>닫기</Text>
                         </Pressable>
                     </View>
                 </View>
             </Modal>
-            <Pressable onPress={() => setModalVisible(true)}>
-                {renderData()}
-            </Pressable>
+            <ScrollView style={styles.dietList}>
+                <Pressable onPress={() => setModalVisible(true)}>
+                    {renderData()}
+                </Pressable>
+            </ScrollView>
         </View>
     )
 }
 
 export default FoodFirst;
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
     touch: {
-        borderWidth: 1
+        zIndex: 999,
+        position: 'absolute',
+        bottom: 0,
+        right: 50,
+        transform: [{ translateX: 0 }, { translateY: 0 }],
     },
     centeredView: {
         flex: 1,
@@ -203,9 +218,8 @@ const sytles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        marginTop: '30%',
-        backgroundColor: 'white',
-        borderRadius: 20,
+        marginTop: '41%',
+        backgroundColor: '#202124',
         padding: 10,
         alignItems: 'center',
         shadowColor: '#000',
@@ -234,5 +248,24 @@ const sytles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    dietList: {
+        width: '80%',
+        height: Platform.OS === 'android' ? 500 : 450,
+        flexDirection: 'column',
+        marginTop: 100,
+    },
+    dietItems: {
+        width: '100%',
+    },
+    dietItem: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 15
+    },
+    itemText: {
+        fontSize: 18,
     }
 })

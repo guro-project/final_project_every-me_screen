@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 const ToggleButton = () => {
 
-    const [toggle, setToggle] = useState("");
+    const [toggle, setToggle] = useState('식단');
     const navigation = useNavigation();
 
     const toggleShowForm = (toggle) => {
@@ -55,13 +55,18 @@ export default ToggleButton;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
     },
     buttonContainer: {
+        zIndex: 999,
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        transform: [{ translateX: 63 }],
     },
     button: {
         backgroundColor: 'lightgray',

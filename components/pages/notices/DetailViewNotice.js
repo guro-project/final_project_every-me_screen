@@ -3,7 +3,7 @@ import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const DetailViewNotice = () => {
     const [data,setData] = useState('');
@@ -23,7 +23,7 @@ const DetailViewNotice = () => {
         // console.log(userToken)
         axios({
             method: 'GET',
-            url: `${ REACT_NATIVE_AXIOS_URL }/readnotice/${noticeNo}`,
+            url: `${REACT_NATIVE_AXIOS_URL}/readnotice/${noticeNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`

@@ -5,6 +5,7 @@ import IndexPage from './components/pages/IndexPage';
 
 const Stack = createNativeStackNavigator();
 
+// npm start -- --reset-cache 
 
 
 export default function App() {

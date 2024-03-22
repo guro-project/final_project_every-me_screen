@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const PeedBoard = () => {
 
@@ -18,7 +18,7 @@ const PeedBoard = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/dietPeed`, 
+                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed`, 
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -59,17 +59,23 @@ const PeedBoard = () => {
     }
 
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => modalCheck(item)}>
-            <View style={styles.peedBox}>
-                <Image
-                    source={{ uri: `data:image/png;base64,${item.dietImg}`}}
-                    style={styles.image}
-                    resizeMode="cover" // 이미지를 화면에 맞게 잘라내어 표시
-                />
-            </View>
-        </TouchableOpacity>
-    );
+    const renderItem = ({ item }) => {
+
+        return (
+            // item.dietImg가 존재하는 경우에만 렌더링
+            item.dietImg ? (
+                <TouchableOpacity onPress={() => modalCheck(item)}>
+                    <View style={styles.peedBox}>
+                        <Image
+                            source={{ uri: `data:image/png;base64,${item.dietImg}` }}
+                            style={styles.image}
+                            resizeMode="cover" // 이미지를 화면에 맞게 잘라내어 표시
+                        />
+                    </View>
+                </TouchableOpacity>
+            ) : null // item.dietImg가 없는 경우 렌더링하지 않음
+        )
+    }
 
     return (
         <View style={styles.container}>

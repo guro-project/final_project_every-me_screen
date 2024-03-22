@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 // 식단 수정페이지
 const UpdateDiet = ({ dietNo }) => {
     const [data, setData] = useState(null);
@@ -64,7 +64,7 @@ const UpdateDiet = ({ dietNo }) => {
         };
         axios({
             method: 'PUT',
-            url: `${ REACT_NATIVE_AXIOS_URL }/updatediet/${dietNo}`,
+            url: `${REACT_NATIVE_AXIOS_URL}/updatediet/${dietNo}`,
             data: updateDietData,
             headers: {
                 'Content-Type': 'application/json',

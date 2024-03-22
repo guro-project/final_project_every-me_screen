@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Agenda, Calendar } from "react-native-calendars";
 import ToggleButton from "./ToggleButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,8 +27,32 @@ const CalendarView = () => {
     setItems(newItem);
   };
 
+  const theme = {
+    calendarBackground: 'black', // 캘린더 배경
+    monthTextColor: 'white',
+    textDayFontWeight: 'bold' , // 날짜 서체
+    dayTextColor: 'white', // 캘린더 날짜 색상
+    textDayFontSize: 14, // 캘린더 날짜 글씨 크기
+    textSectionTitleColor: 'white', // 요일 날짜 글씨 크기
+    todayTextColor: 'green',
+    // agendaDayTextColor: variables.text_3, // 날짜 글씨 색상
+    // agendaDayNumColor: variables.text_4, // 요일 글씨 색상
+    // agendaTodayColor: variables.main, // 당일 글씨 색상
+    agendaKnobColor: 'white', // Knob => 문고리 / 캘린더 접었다폈다 하는 아이콘 색상
+    indicatorColor: 'green',
+    selectedDayBackgroundColor: 'white',
+    selectedDayTextColor: 'green',
+    'stylesheet.calendar.header': {
+      week: {paddingTop: 10, flexDirection: 'row', justifyContent: 'space-between'},
+    },
+  }
+
   return (
+    <SafeAreaView style={styles.safeArea}>
       <Agenda
+        theme={theme}
+        pagingEnabled={false}
+        showClosingKnob={true}
         items={items} // 변경된 items를 사용
         renderItem={(item, firstItemInDay) => {
           if (item.type === 'toggleButton') {
@@ -43,13 +67,19 @@ const CalendarView = () => {
         // 날짜 클릭 시 호출될 함수 설정
         onDayPress={onDayPress}
       />
+
+    </SafeAreaView>
   );
 }
 
 export default CalendarView;
 
-const sytles = StyleSheet.create({
-  touch: {
-    borderWidth: 1
+const styles = StyleSheet.create({
+  theme: {
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+    paddingTop: Platform.OS === 'android' ? 50 : 0,
+  }
 })

@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const PasswordReset = () => {
     const navigation = useNavigation();
@@ -40,7 +40,7 @@ const PasswordReset = () => {
 
         axios({
             method: 'POST',
-            url: `${ REACT_NATIVE_AXIOS_URL }/changePassword`,
+            url: `${REACT_NATIVE_AXIOS_URL}/changePassword`,
             data: userInfo,
             headers: {
                 'Content-Type': 'application/json',

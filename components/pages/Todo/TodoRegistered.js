@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, FlatList } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 function TodoRegistered() {
   const [todos, setTodos] = useState([]);
@@ -36,7 +36,7 @@ function TodoRegistered() {
 
     axios({
       method: 'GET',
-      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos?date=${today}&userNo=${userNo}`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos?date=${today}&userNo=${userNo}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${userToken}`
@@ -69,7 +69,7 @@ function TodoRegistered() {
 
     axios({
       method: 'POST',
-      url: `${ REACT_NATIVE_AXIOS_URL }/api/todos`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos`,
       data: newTodo,
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function TodoRegistered() {
 
     axios({
       method: 'PUT',
-      url: `http://192.168.0.160:8080/api/todos/${editTodoId}`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos/${editTodoId}`,
       data: updatedTodo,
       headers: {
         'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ function TodoRegistered() {
 
     axios({
       method: 'DELETE',
-      url: `http://192.168.0.160:8080/api/todos/${id}`,
+      url: `${REACT_NATIVE_AXIOS_URL}/api/todos/${id}`,
       headers: {
         'Content-Type' : 'application/json',
         'Authorization' : `Bearer ${userToken}`
@@ -165,7 +165,7 @@ function TodoRegistered() {
 
     axios({
         method: 'PUT',
-        url: `http://192.168.0.160:8080/api/todos/${id}/complete`,
+        url: `${REACT_NATIVE_AXIOS_URL}/api/todos/${id}/complete`,
         data: !isCompleted, // 반대 값으로 변경
         headers: {
             'Content-Type': 'application/json',

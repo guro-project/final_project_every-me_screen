@@ -1,11 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { REACT_NATIVE_AXIOS_URL } from "@env";
+import { Button, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useNavigation } from "@react-navigation/native";
+import SelectDiet from "./SelectDiet";
 
 const ManageDiet = () => {
+
+    const navigation = useNavigation();
 
     const [userNo, setUserNo] = useState('');
     const [userToken, setUserToken] = useState('');
@@ -13,12 +18,30 @@ const ManageDiet = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedDietImg, setSelectedDietImg] = useState(null);
     const [selectedDietInfo, setSelectedDietInfo] = useState(null);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        // 선택된 날짜를 원하는 형식으로 변환
+        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+        console.log("A date has been picked: ", formattedDate);
+        setSelectedDate(formattedDate);
+        hideDatePicker();
+    };
+
 
     const getUser = async () => {
         setUserNo(await AsyncStorage.getItem('userNo'));
         setUserToken(await AsyncStorage.getItem('userToken'));
-        console.log(userNo);
-        console.log(userToken);
     }
     useEffect(() => {
         getUser();
@@ -34,13 +57,21 @@ const ManageDiet = () => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/diet?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/dietList?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
                 }
             }).then(response => {
-                setDietList(response.data);
+                if (response.data && response.data.length > 0) {
+                    // 날짜 순서대로 정렬
+                    const sortedDietList = response.data.sort((a, b) => {
+                        return new Date(a.dietCalendarDate) - new Date(b.dietCalendarDate);
+                    });
+                    setDietList(sortedDietList);
+                } else {
+                    console.log('등록된 식단이 없습니다.');
+                }
             }).catch(error => {
                 console.error('Error : ' + error);
             });
@@ -52,9 +83,9 @@ const ManageDiet = () => {
         // Unix 타임스탬프를 날짜로 변환
         const updateDate = new Date(item.dietUpdateDate);
 
-        const year = updateDate.getYear() % 100; // 2자리 년도
+        // const year = updateDate.getYear() % 100; // 2자리 년도
 
-        const showDate = `${year.toString().padStart(2, '0')}-${(updateDate.getMonth() + 1).toString().padStart(2, '0')}-${updateDate.getDate().toString().padStart(2, '0')}`;
+        // const showDate = `${year.toString().padStart(2, '0')}-${(updateDate.getMonth() + 1).toString().padStart(2, '0')}-${updateDate.getDate().toString().padStart(2, '0')}`;
         
         // 날짜 형식 설정 (예: yyyy-mm-dd)
         const formattedDate = `${updateDate.getFullYear()}-${(updateDate.getMonth() + 1).toString().padStart(2, '0')}-${updateDate.getDate().toString().padStart(2, '0')}`;
@@ -62,17 +93,15 @@ const ManageDiet = () => {
         return (
             <TouchableOpacity onPress={() => dietPeed({item})}>
                 <View style={styles.listContents}>
-                    {/* {formattedDate && ( */}
+                    {formattedDate === selectedDate && (
                         <>
-                            <Text style={styles.listText}>{showDate}</Text>
+                            <Text style={styles.listText}>{formattedDate}</Text>
                             <Text style={styles.listText}>{item.dietCategory}</Text>
                             <Text style={styles.listText}>{item.dietName}</Text>
                             <Text style={styles.listText}>{item.totalKcal} Kcal</Text>
                         </>
-                    {/* )} */}
+                    )}
                 </View>
-
-
             </TouchableOpacity>
         );
         
@@ -87,7 +116,7 @@ const ManageDiet = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `${ REACT_NATIVE_AXIOS_URL }/dietPeed?dietNo=${selectedDiet}`,
+                url: `http://192.168.0.12:8080/dietPeed/${selectedDiet}`,
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -95,8 +124,8 @@ const ManageDiet = () => {
 
             try {
                 if (response.status === 200) {
-                    console.log(response.data);
-                    // setSelectedDietImg(response.data);
+                    // console.log(response.data.dietImg);
+                    setSelectedDietImg(response.data.dietImg);
                 }
             } catch (error) {
                 console.log(response);
@@ -106,7 +135,7 @@ const ManageDiet = () => {
             console.log(error);
             alert('에러 : 입력하신 정보를 확인해주세요.');
         }
-        setSelectedDietInfo(item)
+        setSelectedDietInfo(item);
         setIsModalVisible(true);
     }
 
@@ -119,6 +148,19 @@ const ManageDiet = () => {
                 {/* 구분선 */}
                 <View style={styles.oneBorderLine}></View>
 
+
+                <View style={styles.datePicker}>
+                    <TouchableOpacity onPress={showDatePicker} style={styles.dateBtn}><Text style={{color:'white'}}>Show Date Picker</Text></TouchableOpacity>
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                        locale="ko"
+                    />
+                </View>
+
+
                 <View style={styles.dietList}>
                     <FlatList
                         data={dietList}
@@ -126,6 +168,7 @@ const ManageDiet = () => {
                         keyExtractor={(item) => item.dietNo.toString()}
                     />
                 </View>
+
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -179,7 +222,7 @@ export default ManageDiet;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#202124',
+        backgroundColor: 'black', // '#202124'
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -205,11 +248,29 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '12%'
     },
+    dateBtn : {
+        height: '60%',
+        justifyContent:'center',
+        backgroundColor: '#202124',
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    datePicker: {
+        zIndex: 999,
+        width: '100%',
+        height: '10%',
+        position: 'absolute',
+        top: '13%',
+        left: '0%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     dietList: {
         width: '100%',
         height: '100%',
         position: 'absolute',
-        top: '17%',
+        top: '24%',
     },
     dietDate: {
         color: 'white',
