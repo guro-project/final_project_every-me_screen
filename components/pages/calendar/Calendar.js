@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Agenda, Calendar } from "react-native-calendars";
 import ToggleButton from "./ToggleButton";
@@ -6,14 +6,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CalendarView = () => {
 
-  // 초기 날짜 상태 설정
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [items, setItems] = useState({});
+
+  useEffect(() => {
+    const dateNow = new Date();
+    const year = dateNow.getFullYear();
+    const month = (dateNow.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateNow.getDate().toString().padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    setCurrentDate(dateString);
+    setItems({ [dateString]: [{ "type": "toggleButton" }] });
+  }, []);
 
   // 날짜를 클릭할 때 호출되는 함수
   const onDayPress = async (day) => {
     // 클릭된 날짜의 item을 가져옴
     const currentItem = items[day.dateString];
-    console.log('currentItem : ', currentItem)
 
     await AsyncStorage.setItem('today', day.dateString);
   
@@ -21,10 +31,6 @@ const CalendarView = () => {
     const newItem = {
       [day.dateString]: currentItem ? currentItem : [{ type: 'toggleButton' }]
     };
-    // const newItem = { [day.dateString]:  [{ type: 'toggleButton' }]};
-
-    console.log('newItem : ' , newItem)
-  
 
     setItems(newItem);
   };
@@ -52,6 +58,7 @@ const CalendarView = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Agenda
+        selected={currentDate}
         theme={theme}
         pagingEnabled={false}
         showClosingKnob={true}
