@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const ViewNotices = () => {
     const [noticeNo, setNoticeNo] = useState('');
@@ -12,10 +12,11 @@ const ViewNotices = () => {
     const [data, setData] = useState('');
     const [selectNoticeNo,setSelectNoticeNo] = useState('');
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [isFocused]);
 
     const fetchData = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
@@ -71,7 +72,7 @@ const ViewNotices = () => {
 
     return(
         <Text>
-            {renderData()};
+            {renderData()}
         </Text>
     )
 

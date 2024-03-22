@@ -56,9 +56,6 @@ const IngredientsSearch = () => {
             });
     }
 
-    // console.log("@@@@@@@@@@@@@@@@@@@")
-    // console.log(groupNames)
-
     // 요청 보내는 곳
     const OnChangeHandler = (text) => {
         setName(text);
@@ -81,7 +78,7 @@ const IngredientsSearch = () => {
         // console.log("버튼 전달 값")
         if (!clickedNames.includes(recommendedName)) {
             setClickedNames(prevClickedNames => [...prevClickedNames, recommendedName]);
-            console.log(recommendedName)
+            // console.log(recommendedName)
         }
     };
 
@@ -90,23 +87,6 @@ const IngredientsSearch = () => {
         navigation.navigate("RegistFood", { selectedIngredients: clickedNames });
         // console.log("clickedNames : ", clickedNames);
     };
-
-    // 카테고리 데이터 받아왔나 확인
-    // const route = useRoute()
-    // const category = route.params
-    // console.log("카테고리 받아왔나?")
-    // console.log(category);
-
-    // 스킵버튼
-    // const skipIngre = () => {
-    //     navigation.navigate("RegistFood")
-    // }
-
-    // 검색 시 리스트가 출력되고 리스트 된 것들을 누르면 바구니에 담긴다
-    // 바구니에 담긴 데이터를 수량 조절 페이지로 보냄
-    // 이때 전달되는 데이터는 ("이름 " + item.DESC_KOR + " 칼로리 : " + item.NUTR_CONT1)의 문자열인 배열형태
-    // 이렇게 전달되면 문제점 : 원하는것을 꺼낼려면 문자열을 잘라서 써야되는데 변수가 많이생김
-    // 화면상의 출력은 이름과 칼로리만 출력하되 출력하는건 모든 데이터가 다 담긴 객체형태로 보내기
 
     return (
         <>
@@ -123,7 +103,6 @@ const IngredientsSearch = () => {
                 <TextInput onChangeText={OnChangeHandler} placeholder="재료 입력"
                     keyboardType="default" value={name} />
                 <TouchableOpacity onPress={FindGroupName} style={sytles.TouchableBorder}><Text>검색</Text></TouchableOpacity>
-                {/* <Text>{name}</Text> */}
                 {/* groupNames의 길이가 0보다 클때 실행
                     keyExtractor : 각각의 키를 만들어줘서 react-natvie가 FlatList를 관리하기 쉽게 해줌
                 */}
@@ -142,9 +121,6 @@ const IngredientsSearch = () => {
                     <TouchableOpacity onPress={handleRegistration} style={sytles.TouchableBorder}>
                         <Text>다음</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={skipIngre} style={sytles.TouchableBorder}>
-                    <Text>스킵</Text>
-                </TouchableOpacity> */}
                 </View>
                 <Modal
                     animationType="slide"

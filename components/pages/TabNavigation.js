@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 import RegistFood from "./diet/food/RegistFood";
-import NoticeIndex from "./notices/NoticeIndex";
 import CalendarIndexPage from "./calendar/CalendarIndex";
 
 
@@ -132,15 +131,6 @@ const TabNavigation = () => {
                     component={HealthPage}
                     options={{
                         tabBarIcon: ({ focused }) => focused ? (<Ionicons name="barbell-outline" size={30} color='#03C75A' />) : (<Ionicons name="barbell-outline" size={30} color='#C1C1C1' />),
-                        headerShown: false,
-                    }}
-                />
-
-                <Tab.Screen
-                    name="Add"
-                    component={NoticeIndex}
-                    options={{
-                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="add-outline" size={30} color='#03C75A' />) : (<Ionicons name="add-outline" style={{}} size={30} color='#C1C1C1' />),
                         headerShown: false,
                     }}
                 />

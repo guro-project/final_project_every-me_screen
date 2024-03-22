@@ -52,8 +52,34 @@ const MyPage = () => {
         <View style={styles.container}>
             <View style={styles.myPageContents}>
                 <Text style={styles.titleText}>마이 페이지</Text>
-                {/* 톱니버튼 */}
-                <Ionicons name="settings-outline" style={styles.settingBtn} onPress={logOut}/>
+                {/* 로그아웃 */}
+                <Ionicons name="log-out-outline" style={styles.settingBtn} onPress={confirmLogout}/>
+                <TouchableOpacity onPress={confirmLogout}>
+                        <View style={styles.btnBox}>
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
+                                    <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>로그아웃 하시겠습니까?</Text>
+                                    <View style={styles.modalBox}>
+                                        <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
+                                            <Text style={styles.modalText}>확인</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => { setModalVisible(false); }}>
+                                            <Text style={styles.modalText}>취소</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                        </View>
+                    </TouchableOpacity>
                 {/* 프로필 이미지 */}
                 <View style={styles.profileBox}>
                     {loadImg !== null && loadImg.length > 22 ? (
@@ -100,32 +126,11 @@ const MyPage = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={confirmLogout}>
+                    
+                    <TouchableOpacity onPress={() => navigation.navigate('CustomService')}>
                         <View style={styles.btnBox}>
-                        <Modal
-                            animationType="fade"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                setModalVisible(!modalVisible);
-                            }}
-                        >
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
-                                    <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>로그아웃 하시겠습니까?</Text>
-                                    <View style={styles.modalBox}>
-                                        <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
-                                            <Text style={styles.modalText}>확인</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => { setModalVisible(false); }}>
-                                            <Text style={styles.modalText}>취소</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
-                            <Ionicons name="log-out-outline" style={styles.btnContents}/>
-                            <Text style={styles.btnText}>로그아웃</Text>
+                            <Ionicons name="headset-outline" style={styles.btnContents}/>
+                            <Text style={styles.btnText}>고객 센터</Text>
                             <Ionicons name="chevron-forward-outline" style={styles.btnContents}/>
                         </View>
                     </TouchableOpacity>

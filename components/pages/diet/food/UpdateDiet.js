@@ -14,6 +14,7 @@ const UpdateDiet = ({ dietNo, onClose }) => {
     const [totalProvince, setTotalProvince] = useState('');
     const [totalSalt, setTotalSalt] = useState('');
     const [dietMemo, setDietMemo] = useState('');
+    const [ingredientName,setIngredientName] = useState('');
     const navigation = useNavigation();
 
 
@@ -58,6 +59,7 @@ const UpdateDiet = ({ dietNo, onClose }) => {
             'totalProtein': totalProtein,
             'totalProvince': totalProvince,
             'totalSalt': totalSalt,
+            "ingredientName" : ingredientName,
             'dietMemo': dietMemo
         };
         axios({
@@ -133,6 +135,12 @@ const UpdateDiet = ({ dietNo, onClose }) => {
                             placeholder={data.dietMemo}
                             onChangeText={dietMemo => setDietMemo(dietMemo)} // 이름 입력값이 변경될 때마다 상태 업데이트
                             value={dietMemo} // 입력값을 상태와 동기화
+                        />
+                        <Text>재료</Text>
+                        <TextInput
+                            placeholder={data.ingredientName}
+                            onChangeText={ingredientName => setIngredientName(ingredientName)}
+                            value={ingredientName}
                         />
                     </>
                 )}

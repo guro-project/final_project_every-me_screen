@@ -3,6 +3,10 @@ import MyPage from "./MyPage";
 import AccountSettings from "./AccountSettings";
 import PersonalInfo from "./PersonalInfo";
 import PasswordReset from "./PasswordReset";
+import CustomService from "./CustomService";
+import ViewNotices from "../notices/ViewNotices";
+import DetailViewNotice from "../notices/DetailViewNotice";
+import ViewFaq from "../faq/faq";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +19,7 @@ const MyPageIndex = () => {
             <Stack.Screen
                 name='MyPages'
                 component={MyPage}
-                options={{ headerShown: false}}
+                options={{ headerShown: false }}
             />
 
             <Stack.Screen
@@ -36,6 +40,29 @@ const MyPageIndex = () => {
                 options={{ headerShown: false }}
             />
 
+            <Stack.Screen
+                name="CustomService"
+                component={CustomService}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="ViewNotices"
+                component={ViewNotices}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="DetailViewNotice"
+                component={DetailViewNotice}
+                options={{ headerShown: false}}
+            />
+
+            <Stack.Screen
+                name="ViewFaq"
+                component={ViewFaq}
+                options={{ headerShown: false }}
+            />
         </Stack.Navigator>
     )
 }
