@@ -17,6 +17,7 @@ const RegistFood = ({ navigation }) => {
     const [userNo, setUserNo] = useState('');
     const [dietNo,setDietNo] = useState('');
     const [image, setImage] = useState(null);
+    const [dietMemo,setDietMemo] = useState('');
 
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbohydrate, setTotalCarbohydrate] = useState(0);
@@ -274,8 +275,9 @@ const RegistFood = ({ navigation }) => {
             'totalProtein': totalProtein.toFixed(2),
             'totalProvince': totalProvince.toFixed(2),
             'totalSalt': totalSalt.toFixed(2),
-            'dietCalendarDate' : today
+            'dietCalendarDate' : today,
             // 'ingredientName' : ingredientName
+            "dietMemo" : dietMemo
         });
 
         console.log('image : ' , image)
@@ -294,7 +296,7 @@ const RegistFood = ({ navigation }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'POST',
-            url: 'http://192.168.0.160:8080/registdiet',
+            url: 'http://192.168.0.64:8080/registdiet',
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -305,7 +307,7 @@ const RegistFood = ({ navigation }) => {
             console.log("요청 성공")
             // 성공시 첫번째 페이지로 돌아감
             if (response.status === 200) {
-                navigation.navigate('FoodFirst');
+                navigation.navigate('CalendarView');
             } else {
                 alert('값 확인');
             }
@@ -394,6 +396,7 @@ const RegistFood = ({ navigation }) => {
                                     {method === "저녁" ? "저녁" : null}
                                     {method === "기타" ? "기타" : null}
                                 </Text>
+                                
                             </View>
                         );
                     })}
@@ -437,6 +440,8 @@ const RegistFood = ({ navigation }) => {
                         <Text>NO IMAGE</Text>
                     )}
                 </View>
+                <Text>메모칸</Text>
+                <TextInput placeholder="식단 메모" value={dietMemo} onChangeText={(text) => setDietMemo(text)} />
 
                 {/* <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                 <Text style={{ fontWeight: 'bold', fontSize: 16 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
