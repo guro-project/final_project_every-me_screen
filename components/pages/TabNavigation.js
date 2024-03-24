@@ -109,7 +109,7 @@ const TabNavigation = () => {
 
         console.log(avgKcal.toFixed(0));
 
-        await AsyncStorage.setItem('avgKcal', avgKcal.toFixed(0));
+        await AsyncStorage.setItem('avgKcal', avgKcal.toFixed(2));
     }
 
     useEffect(() => {

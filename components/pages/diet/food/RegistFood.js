@@ -422,22 +422,25 @@ const RegistFood = ({ navigation }) => {
                         <TextInput ref={textInputRef} style={styles.textInputMemo} multiline={true} placeholder="식단 메모들 적어주세요" placeholderTextColor='gray' />
                     </View>
 
-                    {selectedIngredients.selectedIngredients.map((ingredient, index) => (
-                        <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}>
-                            <Text style={{color: 'white'}}>
-                                {`${ingredient.DESC_KOR} ${(parseFloat(ingredient.NUTR_CONT1) * quantities[index]).toFixed(2)}Kcal`}
-                            </Text>
-                            <Text style={{ marginLeft: 10, marginRight: 10, color: 'white' }} >{quantities[index]}개</Text>
-                            <TouchableOpacity onPress={() => increaseQuantity(index)} style={styles.plusMinus}><Text style={{ fontSize: 20, color: 'white' }}>+</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => decreaseQuantity(index)} style={styles.plusMinus}><Text style={{ fontSize: 20, color: 'white' }}>-</Text></TouchableOpacity>
-                        </View>
-                    ))}
-                    <TouchableOpacity onPress={calculateTotals} style={styles.touchTotal}>
-                        <Text style={{color: 'white', marginLeft: 7}}>계산하기</Text>
-                    </TouchableOpacity>
+                    <View>
+                        {selectedIngredients.selectedIngredients.map((ingredient, index) => (
+                            <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}>
+                                <Text style={{color: 'white'}}>
+                                    {`${ingredient.DESC_KOR} ${(parseFloat(ingredient.NUTR_CONT1) * quantities[index]).toFixed(2)}Kcal`}
+                                </Text>
+                                <Text style={{ marginLeft: 10, marginRight: 10, color: 'white' }} >{quantities[index]}개</Text>
+                                <TouchableOpacity onPress={() => increaseQuantity(index)} style={styles.plusMinus}><Text style={{ fontSize: 20, color: 'white' }}>+</Text></TouchableOpacity>
+                                <TouchableOpacity onPress={() => decreaseQuantity(index)} style={styles.plusMinus}><Text style={{ fontSize: 20, color: 'white' }}>-</Text></TouchableOpacity>
+                            </View>
+                        ))}
+                        <TouchableOpacity onPress={calculateTotals} style={styles.touchTotal}>
+                            <Text style={{color: 'white'}}>계산하기</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
 
-                    <View style={{justifyContent:'center', alignItems:'center', marginTop: 20}}>
-                        <View style={{width: '45%', justifyContent:'center', alignItems:'center', borderColor: 'white', borderWidth: 1, borderRadius: 10 }}>
+                    <View style={styles.totalBox}>
+                        <View style={{width: '60%', justifyContent:'center', alignItems:'center', borderColor: 'white', borderWidth: 1, borderRadius: 10, padding: 10 }}>
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white', marginVertical: 5 }}>총합 칼로리: {totalCalories.toFixed(2)} Kcal</Text>
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white', marginVertical: 5 }}>총 탄수화물: {totalCarbohydrate.toFixed(2)} g</Text>
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white', marginVertical: 5 }}>총 단백질: {totalProtein.toFixed(2)} g</Text>
@@ -561,10 +564,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: Platform.OS === 'android' ? '53%' : '55%',
     },
-
-
-
-
     container: {
         flex: 1,
         alignItems: 'center',
@@ -596,11 +595,13 @@ const styles = StyleSheet.create({
         borderColor: 'green',
         borderRadius: 10,
         padding: 10,
-        width: '20%',
+        width: Platform.OS === 'android' ? '25%' : '20%',
         position: 'absolute',
         bottom: 20,
         right: 20,
         alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     touchTotal: {
         borderWidth: 1,
@@ -609,11 +610,19 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '20%',
         position: 'absolute',
-        bottom: '39%',
+        bottom: '25%',
         right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     plusMinus: {
         padding: 4,
         paddingHorizontal: 10,
+    },
+    totalBox: {
+        justifyContent:'center',
+        alignItems: 'flex-start',
+        marginTop: 20,
+        marginLeft: 40,
     }
 });

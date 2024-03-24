@@ -20,6 +20,8 @@ const ManageDiet = () => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
 
+    const [dietCategory, setDietCategory] = useState('');
+
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -67,6 +69,7 @@ const ManageDiet = () => {
                     const sortedDietList = response.data.sort((a, b) => {
                         return new Date(a.dietCalendarDate) - new Date(b.dietCalendarDate);
                     });
+                    console.log(sortedDietList)
                     setDietList(sortedDietList);
                 } else {
                     console.log('등록된 식단이 없습니다.');
@@ -80,7 +83,7 @@ const ManageDiet = () => {
     const renderItem = ({ item }) => {
 
         // Unix 타임스탬프를 날짜로 변환
-        const updateDate = new Date(item.dietUpdateDate);
+        const updateDate = new Date(item.dietCalendarDate);
 
         // const year = updateDate.getYear() % 100; // 2자리 년도
 
@@ -115,7 +118,7 @@ const ManageDiet = () => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://192.168.0.12:8080/dietPeed/${selectedDiet}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed/${selectedDiet}`,
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -134,10 +137,26 @@ const ManageDiet = () => {
             console.log(error);
             alert('에러 : 입력하신 정보를 확인해주세요.');
         }
+        console.log(item)
         setSelectedDietInfo(item);
+        setDietCategory(item.dietCategory)
         setIsModalVisible(true);
     }
 
+    const getColor = (dietCategory) => {
+        switch (dietCategory) {
+            case '아침':
+                return '#7ED957'; 
+            case '점심':
+                return '#FFA500'; 
+            case '저녁':
+                return '#A9A9A9'; 
+            case '기타':
+                return '#FFD700'; 
+            default:
+                return '#000000'; // 기본값: 검정
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -186,22 +205,33 @@ const ManageDiet = () => {
                                         />
                                     </View>
                                     <View style={styles.infoBox}>
-                                        <Text style={styles.infoTitle}>{selectedDietInfo.dietName}</Text>
-                                        <Text style={styles.infoSub}>{selectedDietInfo.dietCategory}</Text>
+
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: 'white', marginHorizontal: 20}}>
+                                            <Text style={styles.infoTitle}>{selectedDietInfo.dietName}</Text>
+                                            <Text style={[styles.infoSub, {color: getColor(dietCategory)}]}>{dietCategory}</Text>
+                                        </View>
+                                        
                                         <ScrollView>
-                                            <Text style={styles.infoText}>총 칼로리: {selectedDietInfo.totalKcal}</Text>
-                                            <Text style={styles.infoText}>총 탄수화물: {selectedDietInfo.totalCarbohydrate}</Text>
-                                            <Text style={styles.infoText}>총 단백질: {selectedDietInfo.totalProtein}</Text>
-                                            <Text style={styles.infoText}>총 나트륨: {selectedDietInfo.totalSalt}</Text>
-                                            <Text style={styles.infoText}>총 지방: {selectedDietInfo.totalProvince}</Text>
-                                            <Text style={styles.infoText}>총 지방: {selectedDietInfo.totalProvince}</Text>
-                                            <Text style={styles.infoText}>총 지방: {selectedDietInfo.totalProvince}</Text>
-                                            <Text style={styles.infoText}>총 지방: {selectedDietInfo.totalProvince}</Text>
+                                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
+                                                <View style={{alignItems: 'flex-start'}}>
+                                                    <Text style={styles.infoMemo}>메모</Text>
+                                                    <Text style={styles.infoMemo}>{selectedDietInfo.dietMemo}</Text>
+                                                </View>
+                                                
+                                                <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>
+                                                    <Text style={styles.infoText}>칼로리: {selectedDietInfo.totalKcal}</Text>
+                                                    <Text style={styles.infoText}>탄수화물: {selectedDietInfo.totalCarbohydrate}</Text>
+                                                    <Text style={styles.infoText}>단백질: {selectedDietInfo.totalProtein}</Text>
+                                                    <Text style={styles.infoText}>지방: {selectedDietInfo.totalProvince}</Text>
+                                                    <Text style={styles.infoText}>나트륨: {selectedDietInfo.totalSalt}</Text>
+                                                </View>
+                                            </View>
+                                            
                                         </ScrollView>
                                     </View>
                                     {/* 필요한 다른 정보들도 여기에 추가할 수 있습니다. */}
                                     <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
-                                        <Ionicons name="close" size={24} color="black" />
+                                        <Ionicons name="close" size={24} color="white" />
                                     </TouchableOpacity>
                                 </View>
                             </>
@@ -289,14 +319,11 @@ const styles = StyleSheet.create({
     },
 
     modalContainer: {
-        backgroundColor: 'white',
-        width: '90%',
-        height: '60%',
-        position: 'absolute',
-        top: '20%',
-        left: '5%',
-        borderWidth: 1,
-        borderRadius: 10,
+        marginTop: Platform.OS === 'android' ? '20%' : '30%',
+        backgroundColor: '#202124',
+        alignItems: 'center',
+        width: '100%',
+        height: '90%',
     },
     itemInfo: {
         width: '100%',
@@ -307,32 +334,38 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
-        height: '65%',
     },
     modalImg: {
-        width: '75%',
+        width: '90%',
         height: '90%',
+        borderRadius: 10
     },
     infoBox: {
         flex: 1,
     },
     infoTitle: {
-        fontSize: 25,
+        color: 'white',
+        fontSize: 30,
         fontWeight: 'bold',
-        textAlign: 'left',
-        marginLeft: 20,
         marginBottom: 5
     },
     infoSub: {
+        color: 'white',
         fontSize: 20,
-        textAlign: 'left',
-        marginLeft: 20
+    },
+    infoMemo: {
+        fontSize: 20,
+        marginVertical: 5,
+        textAlign: 'center',
+        marginLeft: 20,
+        color: 'white',
     },
     infoText: {
         fontSize: 20,
         marginVertical: 5,
         textAlign: 'center',
+        marginRight: 20,
+        color: 'white',
     },
     closeButton: {
         position: 'absolute',

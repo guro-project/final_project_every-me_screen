@@ -1,13 +1,14 @@
 import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DietDetailPage from "./food/DietDetailPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { Ionicons } from '@expo/vector-icons';
 // 식단의 메인화면
 const FoodFirst = () => {
+    const { width, height } = Dimensions.get('window');
     const isFocused = useIsFocused();
     const navigation = useNavigation();
 
@@ -34,7 +35,7 @@ const FoodFirst = () => {
 
     useEffect(() => {
         getDietList();
-    }, [isFocused])
+    }, [])
 
 
     useEffect(() => {
@@ -93,6 +94,7 @@ const FoodFirst = () => {
                     'Authorization': `Bearer ${userToken}`
                 }
             });
+            console.log('response.data : ', response.data)
             setData(response.data);
 
             // 데이터를 받아온 후에 전체 칼로리를 누적하여 업데이트
@@ -149,6 +151,8 @@ const FoodFirst = () => {
 
     const morning = () => {
         if (!data) return null;
+
+        console.log('morning : ', data)
     
         // 아침 카테고리에 해당하는 식단 필터링
         const morningDiet = data.filter(item => item.dietCategory === "아침");
@@ -164,7 +168,10 @@ const FoodFirst = () => {
                         }}
                     >
                         {/* 아침 식단 출력 */}
-                        <Text> {item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        <View style={styles.mealList}>
+                            <Text style={styles.foodText}> {item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        </View>
+                        
                     </TouchableOpacity>
                 ))}
             </View>
@@ -186,7 +193,10 @@ const FoodFirst = () => {
                             setModalVisible(true);
                         }}
                     >
-                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        <View style={styles.mealList}>
+                            <Text style={styles.foodText}>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        </View>
+                        
                     </TouchableOpacity>
                 ))}
             </View>
@@ -208,7 +218,9 @@ const FoodFirst = () => {
                             setModalVisible(true);
                         }}
                     >
-                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        <View style={styles.mealList}>
+                            <Text style={styles.foodText}>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        </View>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -230,7 +242,10 @@ const FoodFirst = () => {
                             setModalVisible(true);
                         }}
                     >
-                        <Text>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        <View style={styles.mealList}>
+                            <Text style={styles.foodText}>{item.dietName} {item.totalKcal}Kcal{'\n'}</Text>
+                        </View>
+                        
                     </TouchableOpacity>
                 ))}
             </View>
@@ -239,9 +254,7 @@ const FoodFirst = () => {
 
     return (
         <>
-            <TouchableOpacity onPress={page} style={styles.touch}><Ionicons name="add-circle-outline"  size={40} color='#03C75A'/></TouchableOpacity>
-
-            <View style={styles.container}>
+            <View style={{width: width}}>
                 {/* add 누를시 검색화면으로 넘어감 */}
                 <Modal
                     animationType="slide"
@@ -255,28 +268,39 @@ const FoodFirst = () => {
                         <View style={styles.modalView}>
                             {/* 상세정보 모달 */}
                             <DietDetailPage dietNo={selectedDietNo} />
-                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: '25%'}}>
+                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: Platform.OS === 'android' ? '10%' : '25%'}}>
                                 <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>닫기</Text>
                             </Pressable>
                         </View>
                     </View>
                 </Modal>
                 <View style={styles.resultContainer}>
-                    <Text>오늘 칼로리: {totalCalories.toFixed(2)} Kcal / {avgKcal} Kcal</Text>
+                    <View style={styles.kcalContainer}>
+                        <Ionicons name="flame-outline" size={25} color='red' style={{marginVertical: 5}}/>
+                        <Text style={styles.kcalText}>{totalCalories.toFixed(2)} Kcal / {avgKcal} Kcal</Text>
+                    </View>
+                    
                     {/* 각 카테고리별 식단 출력 */}
-                    <View style={styles.dietList}>
-                        <Text>아침</Text>
-                        {morning()}
-                        <Text>점심</Text>
-                        {lunch()}
-                        <Text>저녁</Text>
-                        {dinner()}
-                        <Text>기타</Text>
-                        {other()}
+                    <View style={[styles.dietList, {height: Platform.OS === 'android' ? 490 : 450}]}>
+                        <Text style={styles.mealText}><Ionicons name="restaurant-outline" size={20} color='#7ED957'/>  아침</Text>
+                        <View style={styles.oneBorderLine}></View>
+                            {morning()}
+                        <Text style={styles.mealText}><Ionicons name="restaurant-outline" size={20} color='#FFA500'/>  점심</Text>
+                        <View style={styles.oneBorderLine}></View>
+                            {lunch()}
+                        
+                        <Text style={styles.mealText}><Ionicons name="restaurant-outline" size={20} color='#A9A9A9'/>  저녁</Text>
+                        <View style={styles.oneBorderLine}></View>
+                            {dinner()}
+                        <Text style={styles.mealText}><Ionicons name="restaurant-outline" size={20} color='#FFD700'/>  기타</Text>
+                        <View style={styles.oneBorderLine}></View>
+                            {other()}
                     </View>
                 </View>
-                
+
             </View>
+                {/* <TouchableOpacity onPress={page} style={styles.touch}><Ionicons name="add-circle-outline"  size={40} color='#03C75A'/></TouchableOpacity> */}
+
         </>
         
     )
@@ -285,24 +309,59 @@ const FoodFirst = () => {
 export default FoodFirst;
 
 const styles = StyleSheet.create({
-    container: {
-
-    },
     touch: {
+        alignItems: 'flex-end',
         zIndex: 999,
-        position: 'absolute',
-        bottom: -550,
-        right: 50,
-        transform: [{ translateX: 0 }, { translateY: 0 }],
     },
-    centeredView: {
-        flex: 1,
+    resultContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+    },
+    kcalContainer: {
+        backgroundColor: '#005000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '90%',
+        borderRadius: 10
+    },
+    kcalText: {
+        fontSize: 18,
+        paddingBottom: 20,
+        color: 'white'
+    },
+    mealList: {
+        width: '90%',
+        marginLeft: 20
+    },
+    mealText: {
+        fontSize: 24,
+        color: 'white'
+    },
+    foodText: {
+        fontSize: 20,
+        color: 'white'
+    },
+    dietList: {
+        width: '90%',
+        flexDirection: 'column',
+        marginTop: 30,
+    },
+    // centeredView: {
+    //     flex: 1,
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     marginTop: 22,
+    // },
+    oneBorderLine: {
+        borderBottomColor: 'white',
+        borderBottomWidth: 0.5,
+        opacity: 0.5,
+        width: '100%',
+        height: 1,
+        marginVertical: 10
     },
     modalView: {
-        marginTop: '41%',
+        marginTop: Platform.OS === 'android' ? '27%' : '41%',
         backgroundColor: '#202124',
         padding: 10,
         alignItems: 'center',
@@ -317,47 +376,38 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '90%',
     },
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-    },
-    buttonOpen: {
-        backgroundColor: '#F194FF',
-    },
-    buttonClose: {
-        backgroundColor: '#2196F3',
-    },
-    textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    dietList: {
-        width: '80%',
-        height: Platform.OS === 'android' ? 500 : 10,
-        flexDirection: 'column',
-        marginTop: 100,
-    },
-    dietItems: {
-        width: '100%',
-    },
-    dietItem: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 15
-    },
-    itemText: {
-        fontSize: 18,
-    },
-    resultContainer: {
-        width: '80%',
-        marginTop: '20%',
-        position: 'absolute',
-        backgroundColor: 'green'
-    },
-    dietList: {
-    }
+    // button: {
+    //     borderRadius: 20,
+    //     padding: 10,
+    //     elevation: 2,
+    // },
+    // buttonOpen: {
+    //     backgroundColor: '#F194FF',
+    // },
+    // buttonClose: {
+    //     backgroundColor: '#2196F3',
+    // },
+    // textStyle: {
+    //     color: 'white',
+    //     fontWeight: 'bold',
+    //     textAlign: 'center',
+    // },
+    
+    // dietItems: {
+    //     width: '100%',
+    // },
+    // dietItem: {
+    //     width: '100%',
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between',
+    //     marginBottom: 15
+    // },
+    // itemText: {
+    //     fontSize: 18,
+    // },
+    // resultContainer: {
+    // },
+    // dietList: {
+    // }
 })

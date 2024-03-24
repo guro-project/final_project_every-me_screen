@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
 import UpdateDiet from './UpdateDiet';
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +20,8 @@ const DietDetailPage = ({ dietNo, onClose }) => {
     const [bookmarked, setBookmarked] = useState(false); // 북마크
     const [userNo, setUserNo] = useState('');
     const [dietImg, setDietImg] = useState(null);
+
+    const [dietCategory, setDietCategory] = useState('');
     
     const [dietMemo, setDietMemo] = useState('');
 
@@ -60,6 +62,8 @@ const DietDetailPage = ({ dietNo, onClose }) => {
         })
             .then(response => {
                 setData(response.data);
+                setDietCategory(response.data.dietCategory);
+
                 // console.log("asd");
                 // console.log(response.data);
             })
@@ -231,13 +235,36 @@ const DietDetailPage = ({ dietNo, onClose }) => {
             });
     }
 
+    const getColor = (dietCategory) => {
+        switch (dietCategory) {
+            case '아침':
+                return '#7ED957'; 
+            case '점심':
+                return '#FFA500'; 
+            case '저녁':
+                return '#A9A9A9'; 
+            case '기타':
+                return '#FFD700'; 
+            default:
+                return '#000000'; // 기본값: 검정
+        }
+    };
+
     return (
         <>
             <View>
-                <View style={{alignItems: 'center', marginTop: '7%'}}>
+                
+                <TouchableOpacity
+                    onPress={selectBookMark}
+                    style={{position: 'absolute', top: 0, right: 0, zIndex: 1}}
+                >
+                    <Ionicons name="bookmark" size={25} color={bookmarked ? "#03C75A" : "white"} />
+                </TouchableOpacity>
+
+                <View style={{alignItems: 'center', marginTop: '10%'}}>
                     <Image
                         source={{ uri: `data:image/png;base64,${dietImg}`}}
-                        style={{width: 200, height: 200, borderRadius: 10}}
+                        style={{width: 350, height: 350, borderRadius: 10}}
                         resizeMode="cover"
                     />
                 </View>
@@ -246,16 +273,30 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                 {data && (
                     <>
                         {/* 상세정보 출력되는곳 더 출력할거 있으면 여기에 추가하면 됨 */}
-                        <Text style={{color: 'white'}}>{data.dietCategory} {data.dietName} {data.totalKcal}Kcal {data.totalCarbohydrate}g {data.totalProtein}g {data.totalProvince}g {data.totalSalt}mg</Text>
-                        <Text style={{color: 'white'}}>메모 : {data.dietMemo}</Text>
+                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: 'white'}}>
+                            <Text style={styles.foodTitle}>{data.dietName}</Text>
+                            <Text style={[styles.foodCategory, {color: getColor(dietCategory)}]}>{dietCategory}</Text>
+                        </View>
+
+                        <ScrollView>
+                            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
+                                <View>
+                                    <Text style={{color: 'white', fontSize:20}}>메모</Text>
+                                    <Text style={{color: 'white', fontSize:18}}>{data.dietMemo}</Text>
+                                </View>
+                                <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>
+                                    <Text style={{color: 'white', fontSize: 15, marginBottom: '3%'}}>칼로리 : {data.totalKcal}Kcal</Text>
+                                    <Text style={{color: 'white', fontSize: 15, marginBottom: '3%'}}>탄수화물 : {data.totalCarbohydrate}g</Text>
+                                    <Text style={{color: 'white', fontSize: 15, marginBottom: '3%'}}>단백질 : {data.totalProtein}g</Text>
+                                    <Text style={{color: 'white', fontSize: 15, marginBottom: '3%'}}>지방 : {data.totalProvince}g</Text>
+                                    <Text style={{color: 'white', fontSize: 15, marginBottom: '3%'}}>나트륨 : {data.totalSalt}mg</Text>
+                                </View>
+                            </View>
+                        </ScrollView>
+                        
                     </>
                 )}
-                <TouchableOpacity
-                    onPress={selectBookMark}
-                    style={{position: 'absolute', top: '10%', left: '-12%'}}
-                >
-                    <Ionicons name="bookmark" size={35} color={bookmarked ? "#03C75A" : "white"} />
-                </TouchableOpacity>
+                
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -279,20 +320,32 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                                 onClose={updateCloseModal}
                             />
                             <Pressable
-                                onPress={() => setModalVisible(!modalVisible)}>
-                                <Text>닫기</Text>
+                                onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <View style={{alignItems: 'center', marginBottom: Platform.OS === 'android' ? 40 : 0}}>
+                                    <Text style={{color: 'white', fontSize: 18}}>닫기</Text>
+                                </View>
                             </Pressable>
                         </View>
                     </View>
                 </Modal>
-                <Pressable onPress={() => setModalVisible(true)}>
-                    {/* Pressable은 modal 여는거 */}
-                    <Text style={{ color: 'blue' }}>수정</Text>
-                </Pressable>
-                <TouchableOpacity onPress={(handleDelete)}>
-                    <Text style={{ color: 'red' }}>삭제</Text>
-                </TouchableOpacity>
+
+                
             </View>
+            <View style={{position: 'absolute', bottom: Platform.OS === 'android' ? '18%' : '30%', display: 'flex', flexDirection: 'row'}}>
+                    <Pressable onPress={() => setModalVisible(true)}>
+                        {/* Pressable은 modal 여는거 */}
+                        <View style={{alignItems: 'flex-end'}}>
+                            <Text style={{ color: '#03C75A', fontSize: 18, marginRight: 40}}>수정</Text>
+                        </View>
+                    </Pressable>
+
+                    <TouchableOpacity onPress={(handleDelete)}>
+                        <View style={{alignItems: 'flex-end'}}>
+                            <Text style={{ color: 'red', fontSize: 18, marginLeft: 40 }}>삭제</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
         </>
     
     );
@@ -300,8 +353,8 @@ const DietDetailPage = ({ dietNo, onClose }) => {
 
 const styles = StyleSheet.create({
     modalView: {
-        marginTop: '30%',
-        backgroundColor: 'white',
+        marginTop: Platform.OS === 'android' ? '30%' : '41%',
+        backgroundColor: '#202124',
         borderRadius: 20,
         padding: 10,
         alignItems: 'center',
@@ -316,6 +369,17 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '90%',
     },
+    foodTitle: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'white',
+        marginVertical: '3%'
+    },
+    foodCategory: {
+        fontSize: 25,
+        color: 'white',
+        marginVertical: '3%'
+    }
 });
 
 export default DietDetailPage;

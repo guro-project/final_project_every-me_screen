@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import TodoRegistered from "../Todo/TodoRegistered";
 import FoodIndexPage from "../diet/FoodIndexPage";
 import FoodFirst from "../diet/FoodFirst";
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -15,14 +16,19 @@ const ToggleButton = () => {
 
     const [toggle, setToggle] = useState('식단');
     const navigation = useNavigation();
+    const { width, height } = Dimensions.get('window');
 
     const toggleShowForm = (toggle) => {
         setToggle(toggle)
         console.log('toggle : ', toggle)
     };
 
+    const page = () => {
+        navigation.navigate("IngredientsSearch");
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container]}>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={[styles.button, toggle === '식단' && styles.selectedButton]}
@@ -45,6 +51,9 @@ const ToggleButton = () => {
                     <TodoRegistered/>
                 )}
             </View>
+
+            <TouchableOpacity onPress={page} style={toggle === '식단'? styles.touch : styles.disable}><Ionicons name="add-circle-outline"  size={40} color='#03C75A'/></TouchableOpacity>
+
         </View>
     )
 
@@ -54,19 +63,24 @@ export default ToggleButton;
 
 
 const styles = StyleSheet.create({
+    touch: {
+        zIndex: 999,
+        position: 'absolute',
+        bottom: Platform.OS === 'android' ? '5%' : '5%',
+        right: '10%',
+    },
+    disable: {
+        display: 'none',
+    },
     container: {
-        flex: 1,
+        width: '100%',
     },
     buttonContainer: {
         zIndex: 999,
-        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        transform: [{ translateX: 63 }],
+        marginVertical: 20
     },
     button: {
         backgroundColor: 'lightgray',
@@ -75,7 +89,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     selectedButton: {
-        backgroundColor: 'green',
+        backgroundColor: '#005000',
     },
     buttonText: {
         fontSize: 16,
@@ -85,6 +99,5 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     content: {
-        flex: 1
     },
 })

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, FlatList, Dimensions } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { MaterialIcons } from '@expo/vector-icons'; // 드롭다운 아이콘
+import { Ionicons } from '@expo/vector-icons';
 
 function TodoRegistered() {
   const [todos, setTodos] = useState([]);
@@ -17,6 +18,8 @@ function TodoRegistered() {
   const [editTodoUserNo, setEditTodoUserNo] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const { width, height } = Dimensions.get('window');
 
   useEffect(() => {
     loadTodos();
@@ -201,34 +204,38 @@ function TodoRegistered() {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <View style={[styles.item, {width: width*0.8}]}>
       {editMode && editTodoId === item.id ? (
         <TextInput
           value={todoContent}
           onChangeText={text => setTodoContent(text)}
           placeholder={editTodoContent}
+          placeholderTextColor={'white'}
+          style={[styles.textInput, {width: width*0.5}]}
         />
       ) : (
         <TouchableOpacity onPress={() => toggleTodoCompletion(item.id, item.isCompleted)}>
-          <Text style={[item.isCompleted && styles.completedText]}>
+          <Text style={[item.isCompleted ? styles.completedText : styles.inCompletedText]}>
             {item.isCompleted ? '✓' : '○'} {item.contents}
           </Text>
         </TouchableOpacity>
       )}
       {/* 드롭다운 버튼 추가 */}
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-        <TouchableOpacity onPress={() => renderOptions(item.id)}>
-          <MaterialIcons name="more-vert" size={24} color="black" />
-        </TouchableOpacity>
+      <View>
+      {selectedItemId !== item.id && ( // 선택된 아이템 ID와 현재 아이템의 ID가 같지 않은 경우에만 렌더링
+    <TouchableOpacity onPress={() => renderOptions(item.id)} >
+      <Ionicons name="ellipsis-vertical-outline" size={24} color="white"/>
+    </TouchableOpacity>
+  )}
       </View>
       {/* 드롭다운 메뉴 */}
       {selectedItemId === item.id && (
         <View style={styles.optionsPopup}>
           <TouchableOpacity onPress={() => editMode ? updateTodo() : handleTodoUpdate(item.id, item.contents, item.registDate, item.userNo)}>
-            <Text>{editMode ? '완료' : '수정'}</Text>
+            <Text style={styles.optionText}>{editMode ? '완료' : '수정'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => removeTodo(item.id)}>
-            <Text style={styles.optionText}>삭제</Text>
+            <Text style={[styles.optionText, {color: 'red'}]}>삭제</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectedItemId(null)}>
             <Text style={styles.optionText}>닫기</Text>
@@ -239,27 +246,29 @@ function TodoRegistered() {
   );
 
   return (
-    <View style={{ flex: 1, paddingTop: 40 }}>
-      <Button
-        onPress={addTodo}
-        title="계획 등록"
-        style={styles.addButtonContainer}
-      />
+    <View style={{ height: Platform.OS === 'android' ? 585 : 540, alignItems: 'center' }}>
+      <TouchableOpacity onPress={addTodo}>
+        <Text style={{color: '#03C75A', fontSize: 20, marginBottom: 20}}>계획 등록</Text>
+      </TouchableOpacity>
       {showAddForm && (
-        <View>
+        <View style={{alignItems: 'center'}}>
           <TextInput
             value={todoContent}
             onChangeText={text => setTodoContent(text)}
             placeholder="Enter Todo Content"
+            placeholderTextColor={'gray'}
+            style={[styles.textInput, {width: width*0.5}]}
           />
-          <Button title="Submit" onPress={submitTodo} />
+          <TouchableOpacity onPress={submitTodo} style={styles.submitBtn}>
+            <Text style={{color: 'white'}}>Submit</Text>
+          </TouchableOpacity>
         </View>
       )}
       <FlatList
         data={todos} 
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text>등록된 계획이 없습니다</Text>}
+        ListEmptyComponent={<Text style={{color:'white', marginTop: 20}}>등록된 계획이 없습니다</Text>}
       />
     </View>
   );
@@ -268,21 +277,42 @@ function TodoRegistered() {
 export default TodoRegistered;
 
 const styles = StyleSheet.create({
-  addButtonContainer: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
   item: {
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     flexDirection: 'row', // 아이템을 가로로 나열
-    alignItems: 'center'
+    justifyContent:'space-between',
+    alignItems: 'center',
   },
   completedText: {
     color: 'red', // 완료된 항목의 텍스트 색상 변경
     textDecorationLine: 'line-through', // 취소선 추가
     opacity: 0.5, // 완료된 항목은 투명도를 줘서 구분
   },
+  inCompletedText: {
+    color: 'white'
+  },
+  submitBtn: {
+    borderColor:'white',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 20
+  },
+  textInput: {
+    color: 'white',
+    borderColor: 'white',
+    borderWidth: 0.5,
+    borderRadius: 10,
+    padding: 10
+  },
+  optionsPopup: {
+    color: 'white'
+  },
+  optionText: {
+    color: 'white',
+    fontSize: 15,
+    marginVertical: 3,
+  }
 });

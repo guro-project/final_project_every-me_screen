@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -86,61 +86,102 @@ const UpdateDiet = ({ dietNo, onClose }) => {
         <>
             <View>
                 {data && (
-                    <>
-                        <Text>끼니</Text>
+                    <View style={styles.updateView}>
+                        <Text style={styles.updateText}>끼니</Text>
                         <TextInput
                             placeholder={data.dietCategory}
+                            placeholderTextColor={'gray'}
                             onChangeText={dietCategory => setDietCategory(dietCategory)} // 끼니 입력값이 변경될 때마다 상태 업데이트
                             value={dietCategory} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>이름</Text>
+                        <Text style={styles.updateText}>이름</Text>
                         <TextInput
                             placeholder={data.dietName}
+                            placeholderTextColor={'gray'}
                             onChangeText={dietName => setDietName(dietName)} // 이름 입력값이 변경될 때마다 상태 업데이트
                             value={dietName} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>칼로리</Text>
+                        <Text style={styles.updateText}>칼로리</Text>
                         <TextInput
                             placeholder={`${data.totalKcal}kcal`}
+                            placeholderTextColor={'gray'}
                             onChangeText={totalCalories => setTotalCalories(totalCalories)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalCalories} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>탄수화물</Text>
+                        <Text style={styles.updateText}>탄수화물</Text>
                         <TextInput
                             placeholder={`${data.totalCarbohydrate}g`}
+                            placeholderTextColor={'gray'}
                             onChangeText={totalCarbohydrate => setTotalCarbohydrate(totalCarbohydrate)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalCarbohydrate} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>단백질</Text>
+                        <Text style={styles.updateText}>단백질</Text>
                         <TextInput
                             placeholder={`${data.totalProtein}g`}
+                            placeholderTextColor={'gray'}
                             onChangeText={totalProtein => setTotalProtein(totalProtein)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalProtein} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>지방</Text>
+                        <Text style={styles.updateText}>지방</Text>
                         <TextInput
                             placeholder={`${data.totalProvince}g`}
+                            placeholderTextColor={'gray'}
                             onChangeText={totalProvince => setTotalProvince(totalProvince)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalProvince} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>나트륨</Text>
+                        <Text style={styles.updateText}>나트륨</Text>
                         <TextInput
                             placeholder={`${data.totalSalt}mg`}
+                            placeholderTextColor={'gray'}
                             onChangeText={totalSalt => setTotalSalt(totalSalt)} // 칼로리 입력값이 변경될 때마다 상태 업데이트
                             value={totalSalt} // 입력값을 상태와 동기화
+                            style={styles.inputBox}
                         />
-                        <Text>메모</Text>
+                        <Text style={styles.updateText}>메모</Text>
                         <TextInput
                             placeholder={data.dietMemo}
+                            placeholderTextColor={'gray'}
                             onChangeText={dietMemo => setDietMemo(dietMemo)} // 이름 입력값이 변경될 때마다 상태 업데이트
                             value={dietMemo} // 입력값을 상태와 동기화
+                            multiline={true}
+                            style={styles.inputBox}
                         />
-                    </>
+                    </View>
                 )}
-                <TouchableOpacity onPress={handleUpdate}><Text>등록</Text></TouchableOpacity>
+                <TouchableOpacity onPress={handleUpdate}><View style={{alignItems: 'center'}}><Text style={{color: '#03C75A', fontSize: 18, marginTop: 20}}>등록</Text></View></TouchableOpacity>
             </View>
         </>
     )
 }
 
 export default UpdateDiet;
+
+const styles = StyleSheet.create({
+    updateView: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '20%',
+    },
+    updateText: {
+        color: 'white',
+        fontSize: Platform.OS === 'android' ? 15 : 18,
+        fontWeight: 'bold',
+        marginBottom: 3
+    },
+    inputBox: {
+        color: 'white',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 5,
+        width: '100%',
+        marginBottom: Platform.OS === 'android' ? 10 : 20
+    }
+
+})
