@@ -44,12 +44,12 @@ const Stopwatch = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.navigate('StopWatch')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('StopWatch')}>
                 <Text style={{color: 'white'}}>StopWatch</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('HealthHome')}>
                 <Text style={{color: 'white'}}>HealthHome</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={styles.centerContent}>
                 <Text style={styles.time}>{formatTime(currentTime)}</Text>
                 <View style={styles.buttonsContainer}>

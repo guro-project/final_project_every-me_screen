@@ -220,7 +220,7 @@ const DietDetailPage = ({ dietNo, onClose }) => {
         const userToken = await AsyncStorage.getItem('userToken');
         axios({
             method: 'DELETE',
-            url: `http://192.168.0.64:8080/deletediet/${dietNo}`,
+            url: `${REACT_NATIVE_AXIOS_URL}/deletediet/${dietNo}`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${userToken}`

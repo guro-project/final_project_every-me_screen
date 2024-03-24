@@ -95,29 +95,24 @@ const Login = () => {
                     <View style={styles.container}>
                         <Text style={styles.textTitle1}>EVERY</Text>
                         <Text style={styles.textTitle2}>ME</Text>
-                        <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
-                        <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" onChangeText={onChangePassHandler} keyboardType="default" value={userPass} style={styles.textBox}/>
+                        <TextInput ref={idKeyBoardRef} blurOnSubmit={true} placeholder="아이디 입력" placeholderTextColor={'gray'} onChangeText={onChangeIdHandler} keyboardType="default" value={userId} style={styles.textBox}/>
+                        <TextInput ref={passKeyBoardRef} blurOnSubmit={true} placeholder="비밀번호 입력" placeholderTextColor={'gray'} onChangeText={onChangePassHandler} keyboardType="default" value={userPass} secureTextEntry={true} style={styles.textBox}/>
                         <TouchableOpacity style={styles.loginBtn} onPress={onLoginHandler}>{/*() => navigation.navigate('FirstLogin')*/}
-                            <Text>로그인</Text>
+                            <Text style={{fontWeight: 'bold'}}>로그인</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.secContainer}>
                         <TouchableOpacity style={(styles.signUpBtn)} onPress={() => navigation.navigate('EmailSignUp')}>
-                            
-                            <Text>이메일로 가입하기</Text>
+                            <Text style={{fontWeight: 'bold'}}>이메일로 가입하기</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.signUpBtn, {backgroundColor: '#FEE500'}]} onPress={() => navigation.navigate('KaKaoLogin')}>
-                            {/* <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                            <Ionicons name="chatbubble-outline" style={styles.kakaoIcon}/>
-                            <Text>카카오톡으로 가입하기</Text>
-                            </View> */}
+                        {/* <TouchableOpacity style={[styles.signUpBtn, {backgroundColor: '#FEE500'}]} onPress={() => navigation.navigate('KaKaoLogin')}>
                             <Image
                                 source={require('../../../images/Kakao.png')}
                                 style={{width: 270 , height: 30}}
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -130,7 +125,7 @@ export default Login;
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#202124',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -165,12 +160,14 @@ const styles = StyleSheet.create({
     textTitle1: {
         fontSize: 40,
         fontWeight: 'bold',
-        marginBottom: -20
+        marginBottom: -20,
+        color: 'white'
     },
     textTitle2: {
         fontSize: 88,
         fontWeight: 'bold',
-        marginRight: 3
+        marginRight: 3,
+        color: 'white'
     },
     loginBtn: {
         width: 80,
@@ -187,9 +184,7 @@ const styles = StyleSheet.create({
         width: 300,
         height: 40,
         marginVertical: 10,
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#ccc',
+        backgroundColor: '#03C75A',
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',

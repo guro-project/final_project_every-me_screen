@@ -419,7 +419,7 @@ const RegistFood = ({ navigation }) => {
                     </View>
 
                     <View style={{justifyContent:'center', alignItems:'center'}}>
-                        <TextInput ref={textInputRef} style={styles.textInputMemo} multiline={true} placeholder="식단 메모들 적어주세요" placeholderTextColor='gray' />
+                        <TextInput ref={textInputRef} style={styles.textInputMemo} multiline={true} value={dietMemo} onChangeText={(text) => setDietMemo(text)} placeholder="식단 메모들 적어주세요" placeholderTextColor='gray' />
                     </View>
 
                     <View>

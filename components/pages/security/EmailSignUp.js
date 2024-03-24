@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native"
+import { useRef, useState } from "react";
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { removeWhitespace, validateEmail } from "../../../util/Validation";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 
@@ -17,6 +17,13 @@ const EmailSignUp = () => {
     const [emailCheckResult, setEmailCheckResult] = useState('');   
     const [passCheckResult, setPassCheckResult] = useState('');
 
+    const keyBoardRef = useRef(null);
+    const screenTouchHandler = () => {
+        if (keyBoardRef.current) {
+            keyBoardRef.current.blur();
+        }
+    }
+
     const emailChangeHandler = (email) => {
         const changedEmail = removeWhitespace(email);
         setEmail(changedEmail);
@@ -29,8 +36,11 @@ const EmailSignUp = () => {
         const changedPass = removeWhitespace(password);
         setPassword(changedPass);
         setPassCheckResult(
-            changedPass === ''? '' : password.length < 4? 'Password must be at least 4 characters long' : ''
-        )
+        changedPass === '' ? '' :
+        password.length < 7 ? 'Password must be at least 7 characters long' :
+        !/[a-zA-Z]/.test(password) ? 'Password must contain at least one alphabet' :
+        ''
+    );
     }
     const passCheckChangeHandler = (passwordCheck) => {
         const changedPassCheck = removeWhitespace(passwordCheck);
@@ -74,21 +84,29 @@ const EmailSignUp = () => {
 
     
     return (
-        <View style={styles.container}>
-            <Text>emailSignUp</Text>
-            <TextInput onChangeText={emailChangeHandler} blurOnSubmit={true} placeholder="아이디 입력" keyboardType="default" value={email} style={styles.textBox}/>
-            
-            <TextInput onChangeText={passChangeHandler} blurOnSubmit={true} placeholder="비밀번호 입력" keyboardType="default" value={password} style={styles.textBox}/>
-            <TextInput onChangeText={passCheckChangeHandler} blurOnSubmit={true} placeholder="비밀번호 확인" keyboardType="default" value={passwordCheck} style={styles.textBox}/>
-            <Text style={(emailCheckResult.length === 0 ? styles.errorMsg : styles.showErrorMsg)}>{emailCheckResult}</Text>
-            <Text style={(passCheckResult.length === 0 ? styles.errorMsg : styles.showErrorMsg)}>{passCheckResult}</Text>
-            
-            <Button
-                title='Submit'
-                onPress={submitBtnHandler}
-                disabled={(email.length === 0 || password.length === 0 || passwordCheck.length === 0) ? true : !(emailCheckResult.length === 0 && passCheckResult.length === 0) ? true : false}
-            />
-        </View>
+        <TouchableWithoutFeedback onPress={screenTouchHandler}>
+            <View style={styles.container}>
+                <View style={styles.signUpText}>
+                    <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold'}}>{'< emailSignUp >'}</Text>
+                </View>
+                
+                <TextInput ref={keyBoardRef} onChangeText={emailChangeHandler} blurOnSubmit={true} placeholder="아이디 입력" placeholderTextColor={'gray'} keyboardType="default" value={email} style={styles.textBox}/>
+                
+                <TextInput ref={keyBoardRef} onChangeText={passChangeHandler} blurOnSubmit={true} placeholder="비밀번호 입력" placeholderTextColor={'gray'} keyboardType="default" value={password} secureTextEntry={true} style={styles.textBox}/>
+                <TextInput ref={keyBoardRef} onChangeText={passCheckChangeHandler} blurOnSubmit={true} placeholder="비밀번호 확인" placeholderTextColor={'gray'} keyboardType="default" value={passwordCheck} secureTextEntry={true} style={styles.textBox}/>
+                <Text style={(emailCheckResult.length === 0 ? styles.errorMsg : styles.showErrorMsg)}>{emailCheckResult}</Text>
+                <Text style={(passCheckResult.length === 0 ? styles.errorMsg : styles.showErrorMsg)}>{passCheckResult}</Text>
+                
+                <TouchableOpacity
+                    disabled={(email.length === 0 || password.length === 0 || passwordCheck.length === 0) ? true : !(emailCheckResult.length === 0 && passCheckResult.length === 0) ? true : false}
+                    onPress={submitBtnHandler}
+                    style={{borderColor: 'white', borderWidth: 1, borderRadius: 10, marginTop: 10, padding: 7}}
+                >
+                    <Text style={{color: 'white', fontSize: 18}}>Submit</Text>
+                </TouchableOpacity>
+            </View>
+        </TouchableWithoutFeedback>
+        
     )
 }
 
@@ -97,11 +115,16 @@ export default EmailSignUp;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#202124',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    signUpText: {
+        position: 'absolute',
+        top: '25%'
+    },
     textBox: {
+        color: 'white',
         width: 300,
         height: 40,
         borderWidth: 1,

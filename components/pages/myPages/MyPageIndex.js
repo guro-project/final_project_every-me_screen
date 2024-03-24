@@ -4,6 +4,7 @@ import AccountSettings from "./AccountSettings";
 import PersonalInfo from "./PersonalInfo";
 import PasswordReset from "./PasswordReset";
 import ManageDiet from "./ManageDiet";
+import ManageTodo from "./ManageTodo";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,12 @@ const MyPageIndex = () => {
             <Stack.Screen
                 name='ManageDiet'
                 component={ManageDiet}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name='ManageTodo'
+                component={ManageTodo}
                 options={{ headerShown: false }}
             />
 

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, Alert, Button, Modal, Image, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
@@ -11,6 +11,7 @@ import axios from "axios";
 
 const AccountSettings = () => {
 
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
     const [userNickname, setUserNickName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -24,7 +25,7 @@ const AccountSettings = () => {
             setUserNickName(userNickName);
         };
         loadUserInfo();
-    },[loadImg]);
+    },[isFocused]);
     
 
     useEffect(() => {

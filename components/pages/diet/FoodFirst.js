@@ -35,7 +35,7 @@ const FoodFirst = () => {
 
     useEffect(() => {
         getDietList();
-    }, [])
+    }, [isFocused])
 
 
     useEffect(() => {
@@ -43,6 +43,7 @@ const FoodFirst = () => {
             try {
                 const userNo = await AsyncStorage.getItem('userNo');
                 const getAvgKcal = await AsyncStorage.getItem('avgKcal');
+                console.log('getAvgKcal : ', getAvgKcal);
                 setAvgKcal(getAvgKcal);
                 if (userNo !== null) {
                     setUserNo(userNo);
@@ -53,7 +54,7 @@ const FoodFirst = () => {
         };
 
         fetchData();
-    }, []);
+    }, [avgKcal]);
 
     // const getDietList = async () => {
     //     const userToken = await AsyncStorage.getItem('userToken');
@@ -81,10 +82,18 @@ const FoodFirst = () => {
 
     const getDietList = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
-        const today = await AsyncStorage.getItem('today');
+        const todayDate = await AsyncStorage.getItem('today');
         const userNo = await AsyncStorage.getItem('userNo');
-        console.log("userNo : ", userNo)
-        console.log("today123 : " , today)
+
+        const dateNow = new Date();
+        const year = dateNow.getFullYear();
+        const month = (dateNow.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateNow.getDate().toString().padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
+
+        const today = todayDate ? todayDate : dateString;
+
+
         try {
             const response = await axios({
                 method: 'GET',
@@ -151,8 +160,6 @@ const FoodFirst = () => {
 
     const morning = () => {
         if (!data) return null;
-
-        console.log('morning : ', data)
     
         // 아침 카테고리에 해당하는 식단 필터링
         const morningDiet = data.filter(item => item.dietCategory === "아침");
@@ -267,8 +274,8 @@ const FoodFirst = () => {
                     <View>
                         <View style={styles.modalView}>
                             {/* 상세정보 모달 */}
-                            <DietDetailPage dietNo={selectedDietNo} />
-                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{position: 'absolute', bottom: Platform.OS === 'android' ? '10%' : '25%'}}>
+                            <DietDetailPage dietNo={selectedDietNo} onClose={closeModal} />
+                            <Pressable onPress={() => closeModal()} style={{position: 'absolute', bottom: Platform.OS === 'android' ? '10%' : '25%'}}>
                                 <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>닫기</Text>
                             </Pressable>
                         </View>

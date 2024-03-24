@@ -12,6 +12,8 @@ const PeedBoard = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
+    const [dietCategory, setDietCategory] = useState('');
+
     const dietPeed = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
 
@@ -54,6 +56,7 @@ const PeedBoard = () => {
     }
 
     const modalCheck = (item) => {
+        setDietCategory(item.dietCategory);
         setSelectedItem(item);
         setIsModalVisible(true);
     }
@@ -76,6 +79,21 @@ const PeedBoard = () => {
             ) : null // item.dietImg가 없는 경우 렌더링하지 않음
         )
     }
+
+    const getColor = (dietCategory) => {
+        switch (dietCategory) {
+            case '아침':
+                return '#7ED957'; 
+            case '점심':
+                return '#FFA500'; 
+            case '저녁':
+                return '#A9A9A9'; 
+            case '기타':
+                return '#FFD700'; 
+            default:
+                return '#000000'; // 기본값: 검정
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -106,9 +124,28 @@ const PeedBoard = () => {
                                     />
                                 </View>
                                 <View style={styles.infoBox}>
-                                    <Text style={styles.infoTitle}>{selectedItem.dietName}</Text>
-                                    <Text style={styles.infoSub}>{selectedItem.dietCategory}</Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: 'white'}}>
+                                        <Text style={styles.infoTitle}>{selectedItem.dietName}</Text>
+                                        <Text style={[styles.infoSub, {color: getColor(dietCategory)}]}>{dietCategory}</Text>
+                                    </View>
+                                    
                                     <ScrollView>
+                                        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
+                                            <View>
+                                                <Text style={{color: 'white', fontSize:22, marginBottom: 5}}>메모</Text>
+                                                <Text style={{color: 'white', fontSize:18}}>{selectedItem.dietMemo}</Text>
+                                            </View>
+                                            <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>칼로리 : {selectedItem.totalKcal}Kcal</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>탄수화물 : {selectedItem.totalCarbohydrate}g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>단백질 : {selectedItem.totalProtein}g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>지방 : {selectedItem.totalProvince}g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>나트륨 : {selectedItem.totalSalt}mg</Text>
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+
+                                    {/* <ScrollView>
                                         <Text style={styles.infoText}>총 칼로리: {selectedItem.totalKcal}</Text>
                                         <Text style={styles.infoText}>총 탄수화물: {selectedItem.totalCarbohydrate}</Text>
                                         <Text style={styles.infoText}>총 단백질: {selectedItem.totalProtein}</Text>
@@ -117,11 +154,11 @@ const PeedBoard = () => {
                                         <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
                                         <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
                                         <Text style={styles.infoText}>총 지방: {selectedItem.totalProvince}</Text>
-                                    </ScrollView>
+                                    </ScrollView> */}
                                 </View>
                                 {/* 필요한 다른 정보들도 여기에 추가할 수 있습니다. */}
                                 <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
-                                    <Ionicons name="close" size={24} color="black" />
+                                    <Ionicons name="close" size={30} color="white" />
                                 </TouchableOpacity>
                             </View>
                         </>
@@ -158,18 +195,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalContainer: {
-        backgroundColor: 'white',
-        width: '90%',
-        height: '60%',
-        position: 'absolute',
-        top: '20%',
-        left: '5%',
-        borderWidth: 1,
-        borderRadius: 10,
+        marginTop: Platform.OS === 'android' ? '5%' : '17%',
+        backgroundColor: '#202124',
+        width: '100%',
+        height: Platform.OS === 'android' ? '91.5%' : '82.9%',
     },
     itemInfo: {
         width: '100%',
         height: '100%',
+        alignItems: 'center',
     },
     imgBox: {
         flex: 1.5,
@@ -180,23 +214,26 @@ const styles = StyleSheet.create({
         height: '65%',
     },
     modalImg: {
-        width: '75%',
+        width: '90%',
         height: '90%',
+        borderRadius: 10
     },
     infoBox: {
         flex: 1,
+        width: '90%'
     },
     infoTitle: {
-        fontSize: 25,
+        fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'left',
-        marginLeft: 20,
-        marginBottom: 5
+        marginBottom: 5,
+        color: 'white',
+        marginBottom: '5%'
     },
     infoSub: {
-        fontSize: 20,
-        textAlign: 'left',
-        marginLeft: 20
+        fontSize: 25,
+        color: 'white',
+        marginBottom: '5%'
     },
     infoText: {
         fontSize: 20,
@@ -204,8 +241,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     closeButton: {
+        color: 'white',                                                                                                                                                                                                                                                          
         position: 'absolute',
-        bottom: '20%',
+        bottom: '17%',
         right: '50%',
         transform: [{ translateX: 20 }, { translateY: 100 }],
         justifyContent: 'center',

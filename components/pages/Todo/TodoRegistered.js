@@ -33,11 +33,18 @@ function TodoRegistered() {
 
   const loadTodos = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
-    const today = await AsyncStorage.getItem('today');
+    const todayDate = await AsyncStorage.getItem('today');
     console.log('ioioioioioioioio : ', today)
     const userNo = await AsyncStorage.getItem('userNo');
     setUserNo(userNo);
     console.log("userNo : ", userNo);
+
+    const dateNow = new Date();
+    const year = dateNow.getFullYear();
+    const month = (dateNow.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateNow.getDate().toString().padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    const today = todayDate ? todayDate : dateString
 
 
     axios({

@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation } from "@react-navigation/native";
 
-const ManageDiet = () => {
+const ManageTodo = () => {
 
     const navigation = useNavigation();
 
@@ -60,7 +60,7 @@ const ManageDiet = () => {
         if (userNo !== undefined) {
             axios({
                 method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/dietList?userNo=${userNo}`,
+                url: `${REACT_NATIVE_AXIOS_URL}/api/todos/todoList?userNo=${userNo}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`
@@ -68,13 +68,13 @@ const ManageDiet = () => {
             }).then(response => {
                 if (response.data && response.data.length > 0) {
                     // 날짜 순서대로 정렬
-                    const sortedDietList = response.data.sort((a, b) => {
-                        return new Date(a.dietCalendarDate) - new Date(b.dietCalendarDate);
+                    const sortedTodoList = response.data.sort((a, b) => {
+                        return new Date(a.registDate) - new Date(b.registDate);
                     });
-                    console.log(sortedDietList)
-                    setDietList(sortedDietList);
+                    console.log(sortedTodoList)
+                    setDietList(sortedTodoList);
                 } else {
-                    console.log('등록된 식단이 없습니다.');
+                    console.log('등록된 계획이 없습니다.');
                 }
             }).catch(error => {
                 console.error('Error : ' + error);
@@ -85,7 +85,7 @@ const ManageDiet = () => {
     const renderItem = ({ item }) => {
 
         // Unix 타임스탬프를 날짜로 변환
-        const updateDate = new Date(item.dietCalendarDate);
+        const updateDate = new Date(item.registDate);
         console.log('updateDate : ', updateDate);
         const UpdatedDate = updateDate.toISOString().slice(0, 10);
 
@@ -103,9 +103,8 @@ const ManageDiet = () => {
                     {UpdatedDate === selectedDate && (
                         <>
                             <Text style={styles.listText}>{formattedDate}</Text>
-                            <Text style={styles.listText}>{item.dietCategory}</Text>
-                            <Text style={styles.listText}>{item.dietName}</Text>
-                            <Text style={styles.listText}>{item.totalKcal} Kcal</Text>
+                            <Text style={styles.listText}>{item.todoContents}</Text>
+                            <Text style={styles.listText}>{item.todoComplete}</Text>
                         </>
                     )}
                 </View>
@@ -115,58 +114,58 @@ const ManageDiet = () => {
     };
 
 
-    const dietPeed = async ({ item }) => {
+    // const dietPeed = async ({ item }) => {
         
-        const selectedDiet = item.dietNo;
-        console.log(selectedDiet);
+    //     const selectedDiet = item.dietNo;
+    //     console.log(selectedDiet);
 
-        try {
-            const response = await axios({
-                method: 'GET',
-                url: `${REACT_NATIVE_AXIOS_URL}/dietPeed/${selectedDiet}`,
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
-                }
-            })
+    //     try {
+    //         const response = await axios({
+    //             method: 'GET',
+    //             url: `${REACT_NATIVE_AXIOS_URL}/dietPeed/${selectedDiet}`,
+    //             headers: {
+    //                 'Authorization': `Bearer ${userToken}`
+    //             }
+    //         })
 
-            try {
-                if (response.status === 200) {
-                    // console.log(response.data.dietImg);
-                    setSelectedDietImg(response.data.dietImg);
-                }
-            } catch (error) {
-                console.log(response);
-                alert('입력하신 정보를 확인해주세요.');
-            }
-        } catch(error) {
-            console.log(error);
-            alert('에러 : 입력하신 정보를 확인해주세요.');
-        }
-        console.log(item)
-        setSelectedDietInfo(item);
-        setDietCategory(item.dietCategory)
-        setIsModalVisible(true);
-    }
+    //         try {
+    //             if (response.status === 200) {
+    //                 // console.log(response.data.dietImg);
+    //                 setSelectedDietImg(response.data.dietImg);
+    //             }
+    //         } catch (error) {
+    //             console.log(response);
+    //             alert('입력하신 정보를 확인해주세요.');
+    //         }
+    //     } catch(error) {
+    //         console.log(error);
+    //         alert('에러 : 입력하신 정보를 확인해주세요.');
+    //     }
+    //     console.log(item)
+    //     setSelectedDietInfo(item);
+    //     setDietCategory(item.dietCategory)
+    //     setIsModalVisible(true);
+    // }
 
-    const getColor = (dietCategory) => {
-        switch (dietCategory) {
-            case '아침':
-                return '#7ED957'; 
-            case '점심':
-                return '#FFA500'; 
-            case '저녁':
-                return '#A9A9A9'; 
-            case '기타':
-                return '#FFD700'; 
-            default:
-                return '#000000'; // 기본값: 검정
-        }
-    };
+    // const getColor = (dietCategory) => {
+    //     switch (dietCategory) {
+    //         case '아침':
+    //             return '#7ED957'; 
+    //         case '점심':
+    //             return '#FFA500'; 
+    //         case '저녁':
+    //             return '#A9A9A9'; 
+    //         case '기타':
+    //             return '#FFD700'; 
+    //         default:
+    //             return '#000000'; // 기본값: 검정
+    //     }
+    // };
 
     return (
         <View style={styles.container}>
             <View style={styles.myPageContents}>
-                <Text style={styles.titleText}>식단 관리</Text>
+                <Text style={styles.titleText}>ToDo 관리</Text>
                 
                 {/* 구분선 */}
                 <View style={styles.oneBorderLine}></View>
@@ -251,135 +250,13 @@ const ManageDiet = () => {
     )
 }
 
-export default ManageDiet;
+export default ManageTodo;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black', // '#202124'
+        backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    myPageContents: {
-        width: '90%',
-        height: '90%',
-        justifyContent: 'center'
-    },
-    titleText: {
-        position: 'absolute',
-        top: '4%',
-        left: '1%',
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    oneBorderLine: {
-        borderBottomColor: 'white',
-        borderBottomWidth: 0.5,
-        opacity: 0.5,
-        width: '100%',
-        height: 1,
-        position: 'absolute',
-        top: '12%'
-    },
-    dateBtn : {
-        height: '60%',
-        justifyContent:'center',
-        backgroundColor: '#202124',
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 10,
-    },
-    datePicker: {
-        zIndex: 999,
-        width: '100%',
-        height: '10%',
-        position: 'absolute',
-        top: '13%',
-        left: '0%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    dietList: {
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        top: '24%',
-    },
-    dietDate: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    listContents: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent:'space-between',
-        marginBottom: 10
-    },
-    listText: {
-        color: 'white',
-        flex: 1,
-        textAlign: 'center',
-    },
-
-    modalContainer: {
-        marginTop: Platform.OS === 'android' ? '20%' : '30%',
-        backgroundColor: '#202124',
-        alignItems: 'center',
-        width: '100%',
-        height: '90%',
-    },
-    itemInfo: {
-        width: '100%',
-        height: '100%',
-    },
-    imgBox: {
-        flex: 1.5,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalImg: {
-        width: '90%',
-        height: '90%',
-        borderRadius: 10
-    },
-    infoBox: {
-        flex: 1,
-    },
-    infoTitle: {
-        color: 'white',
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginBottom: 5
-    },
-    infoSub: {
-        color: 'white',
-        fontSize: 20,
-    },
-    infoMemo: {
-        fontSize: 20,
-        marginVertical: 5,
-        textAlign: 'center',
-        marginLeft: 20,
-        color: 'white',
-    },
-    infoText: {
-        fontSize: 20,
-        marginVertical: 5,
-        textAlign: 'center',
-        marginRight: 20,
-        color: 'white',
-    },
-    closeButton: {
-        position: 'absolute',
-        bottom: '20%',
-        right: '50%',
-        transform: [{ translateX: 20 }, { translateY: 100 }],
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 40,
-        height: 40,
     }
-});
+})

@@ -47,16 +47,8 @@ const TabNavigation = () => {
                     await AsyncStorage.setItem('userHeight', JSON.stringify(response.data.userHeight));
                     await AsyncStorage.setItem('userWeight', JSON.stringify(response.data.userWeight));
                     await AsyncStorage.setItem('userWeightGoal', JSON.stringify(response.data.userWeightGoal));
-                    console.log(
-                        await AsyncStorage.getItem('userNo'),
-                        await AsyncStorage.getItem('userNickName'),
-                        await AsyncStorage.getItem('userGender'),
-                        await AsyncStorage.getItem('userBirthday'),
-                        await AsyncStorage.getItem('userHeight'),
-                        await AsyncStorage.getItem('userWeight'),
-                        await AsyncStorage.getItem('userWeightGoal'),
-                    )
                 }
+                dailyKcalories();
             } catch (error) {
                 console.log(response.data);
             }
@@ -96,7 +88,14 @@ const TabNavigation = () => {
         const height = await AsyncStorage.getItem('userHeight');
         const weight = await AsyncStorage.getItem('userWeight');
         const birthday = await AsyncStorage.getItem('userBirthday');
-        const age = new Date().getFullYear() - birthday.slice(0, 4);
+        const birthDate = new Date(birthday);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+
+        console.log('gender : ', gender);
+        console.log('height : ', height);
+        console.log('weight : ', weight);
+        console.log('age : ', age);
 
 
         if(gender === '남자') {
@@ -107,14 +106,13 @@ const TabNavigation = () => {
 
         const avgKcal = 1.55 * bmr
 
-        console.log(avgKcal.toFixed(0));
+        console.log(avgKcal.toFixed(2));
 
         await AsyncStorage.setItem('avgKcal', avgKcal.toFixed(2));
     }
 
     useEffect(() => {
         loadUserInfo();
-        dailyKcalories();
     }, [bmr])
 
     return (
@@ -124,14 +122,6 @@ const TabNavigation = () => {
                 screenOptions={{ tabBarStyle: { backgroundColor: 'black', borderTopWidth: 0.2 } }}
                 initialRouteName='Home'
             >
-                {/* <Tab.Screen
-                    name="Calendar"
-                    component={FoodIndexPage}
-                    options={{
-                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="calendar-outline" size={30} color='#03C75A' />) : (<Ionicons name="calendar-outline" size={30} color='#C1C1C1' />),
-                        headerShown: false,
-                    }}
-                /> */}
                 <Tab.Screen
                     name="Home"
                     component={CalendarIndexPage}
@@ -149,15 +139,6 @@ const TabNavigation = () => {
                         headerShown: false,
                     }}
                 />
-
-                {/* <Tab.Screen
-                    name="Add"
-                    component={NoticeIndex}
-                    options={{
-                        tabBarIcon: ({ focused }) => focused ? (<Ionicons name="add-outline" size={30} color='#03C75A' />) : (<Ionicons name="add-outline" style={{}} size={30} color='#C1C1C1' />),
-                        headerShown: false,
-                    }}
-                /> */}
 
                 <Tab.Screen
                     name="Community"

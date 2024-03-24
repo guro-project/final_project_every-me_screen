@@ -52,7 +52,32 @@ const MyPage = () => {
             <View style={styles.myPageContents}>
                 <Text style={styles.titleText}>마이 페이지</Text>
                 {/* 톱니버튼 */}
-                <Ionicons name="settings-outline" style={styles.settingBtn} onPress={logOut}/>
+                <TouchableOpacity onPress={confirmLogout} style={{zIndex: 999, position: 'absolute', top: '3%', right: '5%'}}>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
+                                <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>로그아웃 하시겠습니까?</Text>
+                                <View style={styles.modalBox}>
+                                    <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
+                                        <Text style={styles.modalText}>확인</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { setModalVisible(false); }}>
+                                        <Text style={styles.modalText}>취소</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    <Ionicons name="log-out-outline" style={styles.settingBtn}/>
+                </TouchableOpacity>
+                {/* <Ionicons name="log-out-outline" style={styles.settingBtn} /> */}
                 {/* 프로필 이미지 */}
                 <View style={styles.profileBox}>
                     {loadImg !== null && loadImg.length > 22 ? (
@@ -83,7 +108,7 @@ const MyPage = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={pressTest}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('ManageTodo')}>
                         <View style={styles.btnBox}>
                             <Ionicons name="file-tray-full-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>ToDo 관리</Text>
