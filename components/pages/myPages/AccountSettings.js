@@ -163,13 +163,13 @@ const AccountSettings = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={pickImage}>
+                    {/* <TouchableOpacity onPress={pickImage}>
                         <View style={styles.btnBox}>
                             <Ionicons name="body-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>신체정보 변경</Text>
                             <Ionicons name="chevron-forward-outline" style={styles.btnContents}/>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity onPress={()=> navigation.navigate('PasswordReset')}>
                         <View style={styles.btnBox}>
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     myPageBtns: {
         backgroundColor: 'black',
         width: '90%',
-        height: '30%',
+        height: '25%',
         position: 'absolute',
         top: '48%',
         justifyContent: 'space-between',

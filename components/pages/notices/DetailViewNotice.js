@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
 
 const DetailViewNotice = () => {
@@ -49,16 +49,55 @@ const DetailViewNotice = () => {
 
     return(
         <>
-            <View>
-                <Text>
-                번호 : {data.noticeNo} 
-                제목 : {data.noticeTitle}
-                날짜 : {formatDate(data.noticeRegistDate)}
-                내용 : {data.noticeContent}
+            <View style={styles.container}>
+                <Text style={styles.noticeTitle}>
+                    [공지] {data.noticeTitle}
                 </Text>
+
+                <Text style={styles.noticeDate}>
+                    날짜 : {formatDate(data.noticeRegistDate)}
+                </Text>
+                
+                <Text style={styles.noticeContents}>
+                    {data.noticeContent}
+                </Text>
+
             </View>
         </>
     )
 }
 
 export default DetailViewNotice;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noticeTitle: {
+        fontSize: 25,
+        color: 'white',
+        position: 'absolute',
+        top: '25%'
+    },
+    noticeDate: {
+        fontSize: 20,
+        color: 'white',
+        position: 'absolute',
+        top: '30%'
+    },
+    noticeContents: {
+        fontSize: 20,
+        color: 'white',
+        position: 'absolute',
+        top: '35%',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 15,
+        width: '80%',
+        height: 300,
+    }
+})

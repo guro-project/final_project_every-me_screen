@@ -132,15 +132,14 @@ const PeedBoard = () => {
                                     <ScrollView>
                                         <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
                                             <View>
-                                                <Text style={{color: 'white', fontSize:22, marginBottom: 5}}>메모</Text>
                                                 <Text style={{color: 'white', fontSize:18}}>{selectedItem.dietMemo}</Text>
                                             </View>
                                             <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>
-                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>칼로리 : {selectedItem.totalKcal}Kcal</Text>
-                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>탄수화물 : {selectedItem.totalCarbohydrate}g</Text>
-                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>단백질 : {selectedItem.totalProtein}g</Text>
-                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>지방 : {selectedItem.totalProvince}g</Text>
-                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>나트륨 : {selectedItem.totalSalt}mg</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>칼로리 : {selectedItem.totalKcal} Kcal</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>탄수화물 : {selectedItem.totalCarbohydrate} g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>단백질 : {selectedItem.totalProtein} g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>지방 : {selectedItem.totalProvince} g</Text>
+                                                <Text style={{color: 'white', fontSize: 18, marginBottom: '3%'}}>나트륨 : {selectedItem.totalSalt} mg</Text>
                                             </View>
                                         </View>
                                     </ScrollView>

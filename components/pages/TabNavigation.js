@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PeedIndex from "./peed/PeedIndex";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
+import RegistFood from "./diet/food/RegistFood";
 import CalendarIndexPage from "./calendar/CalendarIndex";
 
 

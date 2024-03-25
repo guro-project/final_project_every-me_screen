@@ -82,15 +82,12 @@ const RegistFood = ({ navigation }) => {
             const newQuantities = [...prevQuantities];
             newQuantities[index] += 0.5;
 
-
             // 탄수화물, 단백질, 지방, 나트륨 계산
-            // 탄 단 지 나 는 화면에 출력은 안되지만 + -버튼을 누르면 계산해줌
             const ingredient = selectedIngredients.selectedIngredients[index];
             const carbohydrate = parseFloat((ingredient.NUTR_CONT2) * newQuantities[index].toFixed(2));
             const protein = parseFloat((ingredient.NUTR_CONT3) * newQuantities[index].toFixed(2));
             const province = parseFloat((ingredient.NUTR_CONT4) * newQuantities[index].toFixed(2));
             const salt = parseFloat((ingredient.NUTR_CONT6) * newQuantities[index].toFixed(2));
-
 
             // `NaN` 체크 및 0으로 변경
             if (isNaN(carbohydrate)) {
@@ -128,14 +125,12 @@ const RegistFood = ({ navigation }) => {
                 const newQuantities = [...prevQuantities];
                 newQuantities[index] -= 0.5;
 
-
                 // 해당 재료의 영양소 값을 감소시키는 부분
                 const ingredient = selectedIngredients.selectedIngredients[index];
                 const carbohydrate = parseFloat(ingredient.NUTR_CONT2) * 0.5;
                 const protein = parseFloat(ingredient.NUTR_CONT3) * 0.5;
                 const province = parseFloat(ingredient.NUTR_CONT4) * 0.5;
                 const salt = parseFloat(ingredient.NUTR_CONT6) * 0.5;
-
 
                 // `NaN` 체크 및 0으로 변경
                 if (isNaN(carbohydrate)) {
@@ -213,7 +208,6 @@ const RegistFood = ({ navigation }) => {
 
     };
 
-
     const searchPage = () => {
         navigation.navigate("FoodSearch")
     }
@@ -226,7 +220,6 @@ const RegistFood = ({ navigation }) => {
         console.log('today : ' , today)
         console.log('userNo : ', userNo)
 
-        // 식단 데이터 등록하기위한 json화
         let dietData = JSON.stringify({
             'dietName': dietName,
             'totalKcal': totalCalories.toFixed(2),
@@ -266,7 +259,6 @@ const RegistFood = ({ navigation }) => {
             transformRequest: data => data,
         }).then(response => {
             console.log("요청 성공")
-            // 성공시 첫번째 페이지로 돌아감
             if (response.status === 200) {
                 navigation.navigate('CalendarView');
             } else {

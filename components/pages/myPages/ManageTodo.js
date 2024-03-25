@@ -33,7 +33,6 @@ const ManageTodo = () => {
 
     const handleConfirm = (date) => {
         const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-        console.log("A date has been picked: ", localDate);
         // 선택된 날짜를 원하는 형식으로 변환
         const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
         console.log("A date has been picked: ", formattedDate);
@@ -71,7 +70,7 @@ const ManageTodo = () => {
                     const sortedTodoList = response.data.sort((a, b) => {
                         return new Date(a.registDate) - new Date(b.registDate);
                     });
-                    console.log(sortedTodoList)
+                    console.log('sortedTodoList : ', sortedTodoList);
                     setDietList(sortedTodoList);
                 } else {
                     console.log('등록된 계획이 없습니다.');
@@ -88,6 +87,7 @@ const ManageTodo = () => {
         const updateDate = new Date(item.registDate);
         console.log('updateDate : ', updateDate);
         const UpdatedDate = updateDate.toISOString().slice(0, 10);
+        console.log('UpdatedDate : ', UpdatedDate);
 
         const year = updateDate.getYear() % 100; // 2자리 년도
 
@@ -114,38 +114,16 @@ const ManageTodo = () => {
     };
 
 
-    // const dietPeed = async ({ item }) => {
+    const dietPeed = async ({ item }) => {
         
-    //     const selectedDiet = item.dietNo;
-    //     console.log(selectedDiet);
+        const selectedDiet = item.todoNo;
+        console.log(selectedDiet);
 
-    //     try {
-    //         const response = await axios({
-    //             method: 'GET',
-    //             url: `${REACT_NATIVE_AXIOS_URL}/dietPeed/${selectedDiet}`,
-    //             headers: {
-    //                 'Authorization': `Bearer ${userToken}`
-    //             }
-    //         })
-
-    //         try {
-    //             if (response.status === 200) {
-    //                 // console.log(response.data.dietImg);
-    //                 setSelectedDietImg(response.data.dietImg);
-    //             }
-    //         } catch (error) {
-    //             console.log(response);
-    //             alert('입력하신 정보를 확인해주세요.');
-    //         }
-    //     } catch(error) {
-    //         console.log(error);
-    //         alert('에러 : 입력하신 정보를 확인해주세요.');
-    //     }
-    //     console.log(item)
-    //     setSelectedDietInfo(item);
-    //     setDietCategory(item.dietCategory)
-    //     setIsModalVisible(true);
-    // }
+        console.log(item)
+        setSelectedDietInfo(item);
+        setDietCategory(item.dietCategory)
+        setIsModalVisible(true);
+    }
 
     // const getColor = (dietCategory) => {
     //     switch (dietCategory) {
@@ -187,11 +165,11 @@ const ManageTodo = () => {
                     <FlatList
                         data={dietList}
                         renderItem={renderItem}
-                        keyExtractor={(item) => item.dietNo.toString()}
+                        keyExtractor={(item) => item.id.toString()}
                     />
                 </View>
 
-                <Modal
+                {/* <Modal
                     animationType="slide"
                     transparent={true}
                     visible={isModalVisible}
@@ -212,7 +190,7 @@ const ManageTodo = () => {
 
                                         <View style={{flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: 'white', marginHorizontal: 20}}>
                                             <Text style={styles.infoTitle}>{selectedDietInfo.dietName}</Text>
-                                            <Text style={[styles.infoSub, {color: getColor(dietCategory)}]}>{dietCategory}</Text>
+                                            <Text style={[styles.infoSub]}>{dietCategory}</Text>
                                         </View>
                                         
                                         <ScrollView>
@@ -233,7 +211,7 @@ const ManageTodo = () => {
                                             
                                         </ScrollView>
                                     </View>
-                                    {/* 필요한 다른 정보들도 여기에 추가할 수 있습니다. */}
+                                    
                                     <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
                                         <Ionicons name="close" size={24} color="white" />
                                     </TouchableOpacity>
@@ -242,7 +220,7 @@ const ManageTodo = () => {
                             
                         )}
                     </View>
-                </Modal>
+                </Modal> */}
                 
 
             </View>
@@ -255,8 +233,132 @@ export default ManageTodo;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: 'black', // '#202124'
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    myPageContents: {
+        width: '90%',
+        height: '90%',
+        justifyContent: 'center'
+    },
+    titleText: {
+        position: 'absolute',
+        top: '4%',
+        left: '1%',
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    oneBorderLine: {
+        borderBottomColor: 'white',
+        borderBottomWidth: 0.5,
+        opacity: 0.5,
+        width: '100%',
+        height: 1,
+        position: 'absolute',
+        top: '12%'
+    },
+    dateBtn : {
+        height: '60%',
+        justifyContent:'center',
+        backgroundColor: '#202124',
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    datePicker: {
+        zIndex: 999,
+        width: '100%',
+        height: '10%',
+        position: 'absolute',
+        top: '13%',
+        left: '0%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dietList: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: '24%',
+        color: 'white'
+    },
+    dietDate: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    listContents: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        marginBottom: 10,
+    },
+    listText: {
+        fontSize: 16,
+        color: 'white',
+        flex: 1,
+        textAlign: 'center',
+    },
+
+    modalContainer: {
+        marginTop: Platform.OS === 'android' ? '20%' : '30%',
+        backgroundColor: '#202124',
+        alignItems: 'center',
+        width: '100%',
+        height: '90%',
+    },
+    itemInfo: {
+        width: '100%',
+        height: '100%',
+    },
+    imgBox: {
+        flex: 1.5,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalImg: {
+        width: '90%',
+        height: '90%',
+        borderRadius: 10
+    },
+    infoBox: {
+        flex: 1,
+    },
+    infoTitle: {
+        color: 'white',
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 5
+    },
+    infoSub: {
+        color: 'white',
+        fontSize: 20,
+    },
+    infoMemo: {
+        fontSize: 20,
+        marginVertical: 5,
+        textAlign: 'center',
+        marginLeft: 20,
+        color: 'white',
+    },
+    infoText: {
+        fontSize: 20,
+        marginVertical: 5,
+        textAlign: 'center',
+        marginRight: 20,
+        color: 'white',
+    },
+    closeButton: {
+        position: 'absolute',
+        bottom: '20%',
+        right: '50%',
+        transform: [{ translateX: 20 }, { translateY: 100 }],
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 40,
+        height: 40,
     }
 })

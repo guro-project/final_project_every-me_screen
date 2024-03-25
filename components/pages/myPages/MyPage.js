@@ -108,7 +108,7 @@ const MyPage = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=> navigation.navigate('ManageTodo')}>
+                    {/* <TouchableOpacity onPress={()=> navigation.navigate('ManageTodo')}>
                         <View style={styles.btnBox}>
                             <Ionicons name="file-tray-full-outline" style={styles.btnContents}/>
                             <Text style={styles.btnText}>ToDo 관리</Text>
@@ -122,34 +122,13 @@ const MyPage = () => {
                             <Text style={styles.btnText}>북마크 관리</Text>
                             <Ionicons name="chevron-forward-outline" style={styles.btnContents}/>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
-                    <TouchableOpacity onPress={confirmLogout}>
+                    
+                    <TouchableOpacity onPress={() => navigation.navigate('CustomService')}>
                         <View style={styles.btnBox}>
-                        <Modal
-                            animationType="fade"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                setModalVisible(!modalVisible);
-                            }}
-                        >
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{ backgroundColor: 'white', padding: 40, borderRadius: 20 }}>
-                                    <Text style={{fontSize: 20, marginBottom: 15, fontWeight: 'bold'}}>로그아웃 하시겠습니까?</Text>
-                                    <View style={styles.modalBox}>
-                                        <TouchableOpacity onPress={() => { setModalVisible(false); logOut(); }}>
-                                            <Text style={styles.modalText}>확인</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => { setModalVisible(false); }}>
-                                            <Text style={styles.modalText}>취소</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
-                            <Ionicons name="log-out-outline" style={styles.btnContents}/>
-                            <Text style={styles.btnText}>로그아웃</Text>
+                            <Ionicons name="headset-outline" style={styles.btnContents}/>
+                            <Text style={styles.btnText}>고객 센터</Text>
                             <Ionicons name="chevron-forward-outline" style={styles.btnContents}/>
                         </View>
                     </TouchableOpacity>
@@ -178,7 +157,7 @@ const styles = StyleSheet.create({
     myPageBtns: {
         backgroundColor: 'black',
         width: '90%',
-        height: '50%',
+        height: '35%',
         position: 'absolute',
         top: '48%',
         justifyContent: 'space-between',

@@ -281,7 +281,6 @@ const DietDetailPage = ({ dietNo, onClose }) => {
                         <ScrollView>
                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
                                 <View>
-                                    <Text style={{color: 'white', fontSize:20}}>메모</Text>
                                     <Text style={{color: 'white', fontSize:18}}>{data.dietMemo}</Text>
                                 </View>
                                 <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>

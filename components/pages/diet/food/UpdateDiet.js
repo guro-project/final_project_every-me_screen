@@ -15,6 +15,7 @@ const UpdateDiet = ({ dietNo, onClose }) => {
     const [totalProvince, setTotalProvince] = useState('');
     const [totalSalt, setTotalSalt] = useState('');
     const [dietMemo, setDietMemo] = useState('');
+    const [ingredientName,setIngredientName] = useState('');
     const navigation = useNavigation();
 
 
@@ -59,6 +60,7 @@ const UpdateDiet = ({ dietNo, onClose }) => {
             'totalProtein': totalProtein,
             'totalProvince': totalProvince,
             'totalSalt': totalSalt,
+            "ingredientName" : ingredientName,
             'dietMemo': dietMemo
         };
         axios({

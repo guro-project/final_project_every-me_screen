@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
 import {REACT_NATIVE_AXIOS_URL} from "@env";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const ViewNotices = () => {
     const [noticeNo, setNoticeNo] = useState('');
@@ -13,10 +13,11 @@ const ViewNotices = () => {
     const [data, setData] = useState('');
     const [selectNoticeNo,setSelectNoticeNo] = useState('');
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [isFocused]);
 
     const fetchData = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
@@ -53,7 +54,11 @@ const ViewNotices = () => {
                         navigation.navigate("DetailViewNotice", noticeNo)
                     }}
                 >
-                    <Text>{item.noticeNo} 제목 : {item.noticeTitle} 날짜 : {formatDate(item.noticeRegistDate)}{'\n'}</Text>
+                    <View style={{display: 'flex'}}>
+                            <Text style={[styles.noticeText, {marginBottom: 5}]}>[공지] {item.noticeTitle}</Text>
+                        <Text style={[styles.noticeText, {marginLeft: '60%'}]}>{formatDate(item.noticeRegistDate)}{'\n'}</Text>
+                    </View>
+                    
                 </TouchableOpacity>
             );
         }
@@ -71,11 +76,52 @@ const ViewNotices = () => {
     }
 
     return(
-        <Text>
-            {renderData()};
-        </Text>
+        <View style={styles.container}>
+            <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>공지사항</Text>
+            </View>
+            <View style={styles.noticeContainer}>
+                {renderData()}
+            </View>
+            
+        </View>
+        
     )
 
 }
 
 export default ViewNotices;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    titleContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: '12%',
+        left: 0,
+        right: 0,
+    },
+    titleText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+    noticeContainer: {
+        marginLeft: '10%',
+        position: 'absolute',
+        top: '25%',
+        left: 0,
+        right: 0,
+    },
+    noticeText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+    }
+})

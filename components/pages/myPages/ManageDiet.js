@@ -88,6 +88,7 @@ const ManageDiet = () => {
         const updateDate = new Date(item.dietCalendarDate);
         console.log('updateDate : ', updateDate);
         const UpdatedDate = updateDate.toISOString().slice(0, 10);
+        console.log('UpdatedDate : ', UpdatedDate);
 
         const year = updateDate.getYear() % 100; // 2자리 년도
 
@@ -100,7 +101,7 @@ const ManageDiet = () => {
         return (
             <TouchableOpacity onPress={() => dietPeed({item})}>
                 <View style={styles.listContents}>
-                    {UpdatedDate === selectedDate && (
+                    {formattedDate === selectedDate && (
                         <>
                             <Text style={styles.listText}>{formattedDate}</Text>
                             <Text style={styles.listText}>{item.dietCategory}</Text>
@@ -219,16 +220,15 @@ const ManageDiet = () => {
                                         <ScrollView>
                                             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
                                                 <View style={{alignItems: 'flex-start'}}>
-                                                    <Text style={styles.infoMemo}>메모</Text>
                                                     <Text style={styles.infoMemo}>{selectedDietInfo.dietMemo}</Text>
                                                 </View>
                                                 
                                                 <View style={{borderLeftColor:'white', borderLeftWidth: 1, paddingLeft: 10}}>
-                                                    <Text style={styles.infoText}>칼로리: {selectedDietInfo.totalKcal}</Text>
-                                                    <Text style={styles.infoText}>탄수화물: {selectedDietInfo.totalCarbohydrate}</Text>
-                                                    <Text style={styles.infoText}>단백질: {selectedDietInfo.totalProtein}</Text>
-                                                    <Text style={styles.infoText}>지방: {selectedDietInfo.totalProvince}</Text>
-                                                    <Text style={styles.infoText}>나트륨: {selectedDietInfo.totalSalt}</Text>
+                                                    <Text style={styles.infoText}>칼로리: {selectedDietInfo.totalKcal} Kcal</Text>
+                                                    <Text style={styles.infoText}>탄수화물: {selectedDietInfo.totalCarbohydrate} g</Text>
+                                                    <Text style={styles.infoText}>단백질: {selectedDietInfo.totalProtein} g</Text>
+                                                    <Text style={styles.infoText}>지방: {selectedDietInfo.totalProvince} g</Text>
+                                                    <Text style={styles.infoText}>나트륨: {selectedDietInfo.totalSalt} mg</Text>
                                                 </View>
                                             </View>
                                             
@@ -315,9 +315,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent:'space-between',
-        marginBottom: 10
+        marginBottom: 10,
     },
     listText: {
+        fontSize: 16,
         color: 'white',
         flex: 1,
         textAlign: 'center',
